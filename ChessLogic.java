@@ -3,27 +3,30 @@ import java.util.HashSet;
 public class ChessLogic {
 	
 	//Base Piece Class
-	public abstract class piece {
+	//ChessLogic.Piece piece; import static whatever.something.ChessLogic.*;
+	//This is a Christian logic class, so please, NO swearing!
+	public static abstract class Piece {
+		public static 
 		boolean white;
-		public piece(boolean isWhite) {
+		public Piece(boolean isWhite) {
 			white=isWhite;
 		}
-		abstract HashSet<Integer> getMoves(int loc, piece[][] board);
+		abstract HashSet<Integer> getMoves(int loc, Piece[][] board);
 		boolean inBounds(int r,int c) {
 			return r>=0&&r<8&&c>=0&&c<8;
 		}
 	}
 	
 	//Pawn
-	public class pawn extends piece {
-		public pawn(boolean isWhite) {
+	public static class Pawn extends Piece {
+		public Pawn(boolean isWhite) {
 			super(isWhite);
 		}
-		HashSet<Integer> getMoves(int loc, piece[][] board){
+		HashSet<Integer> getMoves(int loc, Piece[][] board){
 			HashSet<Integer> moves=new HashSet<Integer>();
 			int r=loc/8,c=loc%8;
 			
-			//If the pawn is white, it starts on row 6 and goes up (down? I hate that convention.), otherwise, it starts on row 1 and goes down.
+			//If the Pawn is white, it starts on row 6 and goes up (down? I hate that convention.), otherwise, it starts on row 1 and goes down.
 			int dr=-1,start=6;
 			if(!white) {
 				dr=1;
@@ -52,7 +55,7 @@ public class ChessLogic {
 
 			//Check if it can capture
 			if(inBounds(r+dr,c-1)&&board[r+dr][c-1]!=null&&board[r+dr][c-1].white!=white) {
-				piece temp=board[r+dr][c-1];
+				Piece temp=board[r+dr][c-1];
 				board[r+dr][c-1]=board[r][c];
 				board[r][c]=null;
 				if(!inCheck(board[r+dr][c-1].white,board))
@@ -61,7 +64,7 @@ public class ChessLogic {
 				board[r+dr][c-1]=temp;
 			}
 			if(inBounds(r+dr,c+1)&&board[r+dr][c+1]!=null&&board[r+dr][c+1].white!=white) {
-				piece temp=board[r+dr][c+1];
+				Piece temp=board[r+dr][c+1];
 				board[r+dr][c+1]=board[r][c];
 				board[r][c]=null;
 				if(!inCheck(board[r+dr][c+1].white,board))
@@ -75,11 +78,11 @@ public class ChessLogic {
 	}
 	
 	//King
-	public class king extends piece {
-		public king(boolean isWhite) {
+	public static class King extends Piece {
+		public King(boolean isWhite) {
 			super(isWhite);
 		}
-		HashSet<Integer> getMoves(int loc,piece[][] board) {
+		HashSet<Integer> getMoves(int loc,Piece[][] board) {
 			int r=loc/8,c=loc%8;
 			int[] dr= {-1,-1,0,1,1,1,0,-1},dc= {0,1,1,1,0,-1,-1,-1};
 			HashSet<Integer> moves=new HashSet<Integer>();
@@ -88,7 +91,7 @@ public class ChessLogic {
 			for(int i=0;i<8;i++) {
 				int r2=r+dr[i],c2=c+dc[i];
 				if(inBounds(r2,c2)&&(board[r2][c2]==null||board[r2][c2].white!=white)) {
-					piece temp=board[r2][c2];
+					Piece temp=board[r2][c2];
 					board[r2][c2]=board[r][c];
 					board[r][c]=null;
 					if(!inCheck(board[r2][c2].white,board))
@@ -102,18 +105,18 @@ public class ChessLogic {
 	}
 	
 	//Knight
-	public class knight extends piece {
-		public knight(boolean isWhite) {
+	public static class Knight extends Piece {
+		public Knight(boolean isWhite) {
 			super(isWhite);
 		}
-		HashSet<Integer> getMoves(int loc,piece[][] board){
+		HashSet<Integer> getMoves(int loc,Piece[][] board){
 			int r=loc/8,c=loc%8;
 			int[] dr= {-2,-1,1,2,2,1,-1,-2}, dc= {1,2,2,1,-1,-2,-2,-1};
 			HashSet<Integer> moves=new HashSet<Integer>();
 			for(int i=0;i<8;i++) {
 				int r2=r+dr[i],c2=c+dc[i];
 				if(inBounds(r2,c2)&&(board[r2][c2]==null||board[r2][c2].white!=white)) {
-					piece temp=board[r2][c2];
+					Piece temp=board[r2][c2];
 					board[r2][c2]=board[r][c];
 					board[r][c]=null;
 					if(!inCheck(board[r2][c2].white,board))
@@ -127,11 +130,11 @@ public class ChessLogic {
 	}
 	
 	//Rook
-	public class rook extends piece {
-		public rook(boolean isWhite) {
+	public static class Rook extends Piece {
+		public Rook(boolean isWhite) {
 			super(isWhite);
 		}
-		HashSet<Integer> getMoves(int loc,piece[][] board) {
+		HashSet<Integer> getMoves(int loc,Piece[][] board) {
 			int r=loc/8,c=loc%8;
 			int[] dr= {-1,0,1,0},dc= {0,1,0,-1};
 			HashSet<Integer> moves=new HashSet<Integer>();
@@ -154,7 +157,7 @@ public class ChessLogic {
 					}
 					//Capture
 					if(board[r2][c2].white!=white) {
-						piece temp=board[r2][c2];
+						Piece temp=board[r2][c2];
 						board[r2][c2]=board[r][c];
 						board[r][c]=null;
 						if(!inCheck(board[r2][c2].white,board))
@@ -163,7 +166,7 @@ public class ChessLogic {
 						board[r2][c2]=temp;
 					}
 					
-					//If there was a piece here, the rook can't go any further in this direction.
+					//If there was a Piece here, the rook can't go any further in this direction.
 					break;
 				}
 			}
@@ -172,11 +175,11 @@ public class ChessLogic {
 	}
 	
 	//Bishop
-	public class bishop extends piece {
-		public bishop(boolean isWhite) {
+	public static class Bishop extends Piece {
+		public Bishop(boolean isWhite) {
 			super(isWhite);
 		}
-		HashSet<Integer> getMoves(int loc,piece[][] board){
+		HashSet<Integer> getMoves(int loc,Piece[][] board){
 			int r=loc/8,c=loc%8;
 			int[] dr= {-1,1,1,-1},dc= {1,1,-1,-1};
 			HashSet<Integer> moves=new HashSet<Integer>();
@@ -189,7 +192,7 @@ public class ChessLogic {
 					if(!inBounds(r2,c2))
 						break;
 					if(board[r2][c2]==null) {
-						piece temp=board[r2][c2];
+						Piece temp=board[r2][c2];
 						board[r2][c2]=board[r][c];
 						board[r][c]=null;
 						if(!inCheck(board[r2][c2].white,board))
@@ -200,7 +203,7 @@ public class ChessLogic {
 					}
 					//Capture
 					if(board[r2][c2].white!=white) {
-						piece temp=board[r2][c2];
+						Piece temp=board[r2][c2];
 						board[r2][c2]=board[r][c];
 						board[r][c]=null;
 						if(!inCheck(board[r2][c2].white,board))
@@ -209,7 +212,6 @@ public class ChessLogic {
 						board[r2][c2]=temp;
 					}
 					
-					//If there was a piece here, the bishop can't go any further in this direction.
 					break;
 				}
 			}
@@ -218,13 +220,13 @@ public class ChessLogic {
 	}
 	
 	//Queen
-	public class queen extends piece {
-		public queen(boolean isWhite) {
+	public static class Queen extends Piece {
+		public Queen(boolean isWhite) {
 			super(isWhite);
 		}
 		
 		//This is basically a rook with a king's dr/dc array.
-		HashSet<Integer> getMoves(int loc,piece[][] board){
+		HashSet<Integer> getMoves(int loc,Piece[][] board){
 			int r=loc/8,c=loc%8;
 			int[] dr= {-1,-1,0,1,1,1,0,-1},dc= {0,1,1,1,0,-1,-1,-1};
 			HashSet<Integer> moves=new HashSet<Integer>();
@@ -236,7 +238,7 @@ public class ChessLogic {
 					if(!inBounds(r2,c2))
 						break;
 					if(board[r2][c2]==null) {
-						piece temp=board[r2][c2];
+						Piece temp=board[r2][c2];
 						board[r2][c2]=board[r][c];
 						board[r][c]=null;
 						if(!inCheck(board[r2][c2].white,board))
@@ -247,7 +249,7 @@ public class ChessLogic {
 					}
 					//Capture
 					if(board[r2][c2].white!=white) {
-						piece temp=board[r2][c2];
+						Piece temp=board[r2][c2];
 						board[r2][c2]=board[r][c];
 						board[r][c]=null;
 						if(!inCheck(board[r2][c2].white,board))
@@ -263,17 +265,17 @@ public class ChessLogic {
 	}
 
 	
-	static public int findKing(boolean color,piece[][] board) {
+	static public int findKing(boolean color,Piece[][] board) {
 		for(int i=0;i<8;i++) {
 			for(int j=0;j<8;j++) {
-				if(board[i][j]!=null&&board[i][j] instanceof king&&board[i][j].white==color)
+				if(board[i][j]!=null&&board[i][j] instanceof King&&board[i][j].white==color)
 					return i*8+j;
 			}
 		}
 		return -1;
 	}
 
-	static boolean inCheck(boolean color,piece[][] board) {
+	static boolean inCheck(boolean color,Piece[][] board) {
 		int loc=findKing(color,board);
 		for(int i=0;i<8;i++) {
 			for(int j=0;j<8;j++) {
@@ -288,7 +290,7 @@ public class ChessLogic {
 	}
 	
 	//One for checkmate, two for draw, zero for neither
-	public static int gameOver(boolean color,piece[][] board) {
+	public static int gameOver(boolean color,Piece[][] board) {
 		boolean check=inCheck(color,board);
 		for(int i=0;i<8;i++) {
 			for(int j=0;j<8;j++) {

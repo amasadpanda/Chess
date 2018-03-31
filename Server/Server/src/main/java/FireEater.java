@@ -11,6 +11,8 @@ import java.io.IOException;
 
 public abstract class FireEater {
 
+    private static final String _RESOURCEKEYPATH = "resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json";
+
     private static FirebaseDatabase database;
     private static boolean isInitialized = false;
 
@@ -41,6 +43,7 @@ public abstract class FireEater {
                 .setDatabaseUrl("https://chess-with-hats.firebaseio.com")
                 .build();
         FirebaseApp.initializeApp(options);
+        database = FirebaseDatabase.getInstance();
 
         isInitialized = true;
     }

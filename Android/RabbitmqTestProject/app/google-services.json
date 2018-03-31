@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "81417897133",
+    "firebase_url": "https://rabbitmqtestproject.firebaseio.com",
+    "project_id": "rabbitmqtestproject",
+    "storage_bucket": "rabbitmqtestproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81417897133:android:232c62189c20ab80",
+        "android_client_info": {
+          "package_name": "com.example.phili.rabbitmqtestproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81417897133-arl224j8emiunn6393oeqqks3q4r2et8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.phili.rabbitmqtestproject",
+            "certificate_hash": "8e8847b4100b4932c248d550a63a04eca435361b"
+          }
+        },
+        {
+          "client_id": "81417897133-ufnt27j2sa088jo831gn69m2nsnil2jo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXmoXsntY8am7-eY-3V9dLAbfIa551yzA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81417897133-ufnt27j2sa088jo831gn69m2nsnil2jo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

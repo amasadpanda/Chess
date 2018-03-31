@@ -5,7 +5,9 @@ import java.util.concurrent.TimeoutException;
 
 public class Main {
     private static Scanner scan = new Scanner(System.in);
+
     public static void main(String[] args) throws Exception {
+
         while(true)
         {
             System.out.println("Start producer or consumer or http enqueuer (p/c/h)?");
@@ -40,7 +42,7 @@ public class Main {
         DateOutputHandler dateOutputHandler = new DateOutputHandler(System.out, System.lineSeparator());
         Producer producer = new Producer("127.0.0.1", "mainQueue");
         producer.connect();
-        JettyEnqueuerHttpServer server = new JettyEnqueuerHttpServer("enqueuer1", -1, 1357,
+        JettyEnqueuerHttpServer server = new JettyEnqueuerHttpServer("enqueuer1", 1356, 1357,
                 "ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9",
                 producer, new EnqueuerRequestValidator(100, 1024, dateOutputHandler),
                 dateOutputHandler);

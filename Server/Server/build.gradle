@@ -11,5 +11,8 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.google.firebase:firebase-admin:5.9.0'
-
+    compile 'com.google.code.gson:gson:2.8.1'
+    compile files("libs/slf4j-simple-1.7.22.jar")
+    compile files("libs/slf4j-api-1.7.21.jar")
+    compile files("libs/jetty-all-9.4.8.v20171121-uber.jar")
 }

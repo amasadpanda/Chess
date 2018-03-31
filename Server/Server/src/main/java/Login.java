@@ -16,7 +16,7 @@ public class Login extends FireEater{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // ...
-                System.out.println(dataSnapshot.)
+                //System.out.println(dataSnapshot.)
             }
 
             @Override

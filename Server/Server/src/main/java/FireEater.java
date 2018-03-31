@@ -20,9 +20,11 @@ public abstract class FireEater {
     }
 
     /**
+     *
      * TODO: Custom requests class as parameter
+     *
      */
-    public abstract void handle(HttpServletRequest request, HttpServletResponse response);
+    public abstract CWHResponse handle();
 
 
     protected static void initialize(String serviceKeyPath) throws IOException {

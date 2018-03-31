@@ -9,5 +9,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         System.out.println("goodbye!");
+        JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
+        server.start();
     }
 }

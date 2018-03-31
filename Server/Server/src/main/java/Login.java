@@ -11,9 +11,9 @@ public class Login extends FireEater{
      */
     @Override
     public CWHResponse handle() {
-        FirebaseDatabase database = getDatabase();
-        DatabaseReference ref = database.getReference();
-
+        final FirebaseDatabase database = getDatabase();
+        DatabaseReference ref = database.getReference("chess-with-hats/users");
+        
         return null;
     }
 }

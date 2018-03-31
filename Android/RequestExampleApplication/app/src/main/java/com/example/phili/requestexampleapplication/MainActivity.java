@@ -14,13 +14,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void doSend(View view)
     {
-        new CWHRequest("blahblahmyauthid", CWHRequest.RequestType.LOGIN_NOTIFICATION, new OnCWHResponseListener() {
+        CWHRequest request = new CWHRequest("blahblahmyauthid", CWHRequest.RequestType.MAKE_MOVE, new OnCWHResponseListener() {
             @Override
             public void onCWHResponse(CWHResponse response) {
                 System.out.println("Server responded!");
                 System.out.println("Message: " + response.getMessage());
                 System.out.println("Success Status: " + response.isSuccess());
             }
-        }).sendRequest(this);
+        });
+        request.getExtras().put("extra1", "smoe value 1");
+        request.getExtras().put("extra2", "smoe value 2");
+        request.sendRequest(this);
     }
 }

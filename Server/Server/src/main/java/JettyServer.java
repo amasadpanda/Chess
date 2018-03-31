@@ -99,6 +99,7 @@ public class JettyServer {
                                 CWHRequest reconstructedRequest = new GsonBuilder().create().fromJson(messageContents, CWHRequest.class);
                                 logger.log(Level.INFO, reconstructedRequest.getAuthID());
                                 logger.log(Level.INFO, reconstructedRequest.getRequestType().toString());
+                                logger.log(Level.INFO, "Hashmap extras = " + reconstructedRequest.getExtras());
 
                                 httpServletResponse.setContentType("application/json; charset=utf-8");
 

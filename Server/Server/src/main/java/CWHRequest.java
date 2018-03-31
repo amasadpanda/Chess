@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class CWHRequest {
 
     public enum RequestType {
-        MAKE_MOVE, LOGIN_NOTIFICATION
+        MAKE_MOVE, LOGIN, ACCEPT_INVITE, FRIEND_REQUEST, GAME_CREATION, MATCHMAKING_REQUEST
     }
 
     @Expose

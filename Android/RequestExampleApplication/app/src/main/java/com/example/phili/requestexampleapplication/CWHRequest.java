@@ -27,7 +27,7 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
 
     public enum RequestType {
-        MAKE_MOVE, LOGIN_NOTIFICATION
+        MAKE_MOVE, LOGIN, ACCEPT_INVITE, FRIEND_REQUEST, GAME_CREATION, MATCHMAKING_REQUEST
     }
 
     @Expose

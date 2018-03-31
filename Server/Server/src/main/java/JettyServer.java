@@ -1,3 +1,4 @@
+import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -76,12 +77,6 @@ public class JettyServer {
                 @Override
                 public void handle(String target, Request baseRequest, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
                         logger.log(Level.INFO, "Handling request from " + baseRequest.getRemoteAddr());
-//
-//                       outputHandler.appendMessage("HEADERS:");
-//                        for (String key : Collections.list(httpServletRequest.getHeaderNames()))
-//                        {
-//                            System.out.println(key + " = " + httpServletRequest.getHeader(key));
-//                        }
 
                         int contentLength = baseRequest.getContentLength();
                         if (contentLength > 0)
@@ -97,11 +92,20 @@ public class JettyServer {
                             if (numBytesRead == contentLength)
                             {
                                 //Everything is ok, so we may pass off the request to the producer...
-                                logger.log(Level.INFO,"Request acceptable. Passing request off to RabbitMQ...");
-                                //producer.sendMessage(messageBytes);
-                                logger.log(Level.INFO,"Message contains: " + new String(messageBytes, Charset.forName("UTF-8")));
-                                httpServletResponse.setContentType("application/json");
-                                String response = "{\"num\":1}";
+                                logger.log(Level.INFO,"Request acceptable.");
+                                String messageContents = new String(messageBytes, Charset.forName("UTF-8"));
+                                logger.log(Level.INFO,"Message contains: " + messageContents);
+
+                                CWHRequest reconstructedRequest = new GsonBuilder().create().fromJson(messageContents, CWHRequest.class);
+                                logger.log(Level.INFO, reconstructedRequest.getAuthID());
+                                logger.log(Level.INFO, reconstructedRequest.getRequestType().toString());
+
+                                httpServletResponse.setContentType("application/json; charset=utf-8");
+
+                                // Construct a CWHResponse and respond!
+                                CWHResponse cwhResponse = new CWHResponse("Request acceptable!!!", true);
+                                String response = cwhResponse.getJSON();
+
                                 httpServletResponse.setContentLength(response.getBytes(Charset.forName("UTF-8")).length);
                                 httpServletResponse.getOutputStream().write(response.getBytes(Charset.forName("UTF-8")));
                                 httpServletResponse.getOutputStream().flush();

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class JettyEnqueuerHttpServer {
@@ -83,6 +85,12 @@ public class JettyEnqueuerHttpServer {
                 public void handle(String target, Request baseRequest, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
                     if (requestValidator.isValid(baseRequest)) {
                         outputHandler.appendMessage("Handling request from " + baseRequest.getRemoteAddr());
+//
+//                       outputHandler.appendMessage("HEADERS:");
+//                        for (String key : Collections.list(httpServletRequest.getHeaderNames()))
+//                        {
+//                            System.out.println(key + " = " + httpServletRequest.getHeader(key));
+//                        }
 
                         int contentLength = baseRequest.getContentLength();
                         if (contentLength > 0)
@@ -99,9 +107,10 @@ public class JettyEnqueuerHttpServer {
                             {
                                 //Everything is ok, so we may pass off the request to the producer...
                                 outputHandler.appendMessage("Request acceptable. Passing request off to RabbitMQ...");
-                                producer.sendMessage(messageBytes);
-                                httpServletResponse.setContentType("text/html");
-                                String response = "Request accepted! " + new Date().toString();
+                                //producer.sendMessage(messageBytes);
+                                outputHandler.appendMessage("Message contains: " + new String(messageBytes, Charset.forName("UTF-8")));
+                                httpServletResponse.setContentType("application/json");
+                                String response = "{\"num\":1}";
                                 httpServletResponse.setContentLength(response.getBytes(Charset.forName("UTF-8")).length);
                                 httpServletResponse.getOutputStream().write(response.getBytes(Charset.forName("UTF-8")));
                                 httpServletResponse.getOutputStream().flush();

@@ -3,7 +3,12 @@ package com.example.phili.requestexampleapplication;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
@@ -16,6 +21,7 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.HashMap;
+import java.util.concurrent.Semaphore;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -30,6 +36,8 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
         MAKE_MOVE, LOGIN, ACCEPT_INVITE, FRIEND_REQUEST, GAME_CREATION, MATCHMAKING_REQUEST
     }
 
+    private Semaphore authIDSet;
+
     @Expose
     private String authID;
 
@@ -41,9 +49,16 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
 
     private OnCWHResponseListener onCWHResponseListener;
 
-    public CWHRequest(String authID, RequestType requestType, OnCWHResponseListener onCWHResponseListener)
+    public CWHRequest(FirebaseUser user, RequestType requestType, OnCWHResponseListener onCWHResponseListener)
     {
-        this.authID = authID;
+        authIDSet = new Semaphore(0);
+        user.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                authID = task.getResult().getToken();
+                authIDSet.release();
+            }
+        });
         this.requestType = requestType;
         this.extras = new HashMap<String, String>();
         this.onCWHResponseListener = onCWHResponseListener;
@@ -66,6 +81,9 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
         HttpsURLConnection connection = null;
         try
         {
+            // Wait to ensure the authID is assigned
+            authIDSet.acquire();
+
             // Open basic connection
             URL url = new URL(serverURL);
 

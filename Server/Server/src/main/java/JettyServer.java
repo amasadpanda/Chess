@@ -11,6 +11,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -100,6 +101,15 @@ public class JettyServer {
                                 logger.log(Level.INFO, reconstructedRequest.getAuthID());
                                 logger.log(Level.INFO, reconstructedRequest.getRequestType().toString());
                                 logger.log(Level.INFO, "Hashmap extras = " + reconstructedRequest.getExtras());
+
+                                logger.log(Level.INFO, "Validating the authID...");
+                                try {
+                                    logger.log(Level.INFO, FireEater.tokenToUID(reconstructedRequest.getAuthID()));
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
 
                                 httpServletResponse.setContentType("application/json; charset=utf-8");
 

@@ -1,8 +1,5 @@
 import com.google.firebase.database.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Login extends FireEater{
@@ -11,26 +8,28 @@ public class Login extends FireEater{
      * Request as parameter
      */
     @Override
-    public CWHResponse handle() {
+    public CWHResponse handle(CWHRequest request) {
         final FirebaseDatabase database = getDatabase();
         DatabaseReference usersRef = database.getReference().child("users");
-        // method to get username based on all users -> usersRef.orderByChild().equalTo().addListenerForSingleValueEvent();
 
+        String username = request.getExtras().get("username");
         // set this to the desired user's UID
-        DatabaseReference usersPath = usersRef.child("new person");
+        DatabaseReference usersPath = usersRef.child(username);
         usersPath.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // ...
-                User test = dataSnapshot.getValue(User.class);
-                if(test == null)
+
+                User get = dataSnapshot.getValue(User.class);
+                if(get == null)
                 {
-                    DatabaseReference usersRef = dataSnapshot.getRef();
-                    usersRef.setValueAsync(new User("heeeellllo"));
-                    System.out.println("created new users");
+                   DatabaseReference usersRef = dataSnapshot.getRef();
+                   usersRef.setValueAsync(new User(username));
+                   System.out.println("created new users");
                 }
                 else
-                    System.out.println(dataSnapshot.getKey() + " " +test.username);
+                {
+                    System.out.println(dataSnapshot.getKey() + " " +get.username);
+                }
             }
 
             @Override
@@ -40,18 +39,5 @@ public class Login extends FireEater{
             }
         });
         return null;
-    }
-
-    static class User {
-        public String username;
-
-        public User(String name) {
-            username = name;
-        }
-
-        public User()
-        {
-
-        }
     }
 }

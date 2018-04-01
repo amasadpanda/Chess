@@ -26,7 +26,7 @@ public abstract class FireEater {
      * TODO: Custom requests class as parameter
      *
      */
-    public abstract CWHResponse handle();
+    public abstract CWHResponse handle(CWHRequest request);
 
 
     protected static void initialize(String serviceKeyPath) throws IOException {

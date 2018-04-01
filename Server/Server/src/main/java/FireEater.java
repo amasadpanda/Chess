@@ -47,7 +47,17 @@ public abstract class FireEater {
                 .build();
         FirebaseApp.initializeApp(options);
 
+        database = FirebaseDatabase.getInstance();
+
         isInitialized = true;
+    }
+
+    public static String UIDToUsername(String UID)
+    {
+        DatabaseReference usersPath = database.getReference().child("users").child(UID);
+        SynchronousListener s = new SynchronousListener();
+        usersPath.addListenerForSingleValueEvent(s);
+        return s.getSnapshot().child("username").getValue().toString();
     }
 
     /*

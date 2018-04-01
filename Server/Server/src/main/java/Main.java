@@ -1,13 +1,4 @@
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.FileInputStream;
 import java.util.Scanner;
 
 public class Main {
@@ -17,6 +8,7 @@ public class Main {
         Scanner scan = new Scanner(System.in);
         System.out.println("goodbye!");
 
+        System.out.println(FireEater.UIDToUsername("tim"));
 
         while(true)
         {

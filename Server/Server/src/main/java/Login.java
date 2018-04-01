@@ -1,7 +1,5 @@
 import com.google.firebase.database.*;
 
-import java.util.Map;
-
 public class Login extends FireEater{
 
     /**

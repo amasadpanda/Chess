@@ -2,7 +2,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 
 public class SynchronousListener implements ValueEventListener {

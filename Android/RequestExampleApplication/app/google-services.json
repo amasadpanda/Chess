@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "441264005967",
+    "firebase_url": "https://chess-with-hats.firebaseio.com",
+    "project_id": "chess-with-hats",
+    "storage_bucket": "chess-with-hats.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441264005967:android:4ee78e9a45286d62",
+        "android_client_info": {
+          "package_name": "com.example.phili.requestexampleapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441264005967-uht3b67onjukic34jlln8dda5iuiu3f5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.phili.requestexampleapplication",
+            "certificate_hash": "8e8847b4100b4932c248d550a63a04eca435361b"
+          }
+        },
+        {
+          "client_id": "441264005967-ej4rk6a2umdibiqgj0iqohp14q309o2p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6qB80_fsU5RzHz2tZA16nn8LA5e_vUs8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441264005967-ej4rk6a2umdibiqgj0iqohp14q309o2p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,7 +9,7 @@ public class Login extends FireEater{
      * Request as parameter
      */
     @Override
-    public CWHResponse handle() {
+    public CWHResponse handle(CWHRequest cwhRequest) {
         final FirebaseDatabase database = getDatabase();
         DatabaseReference ref = database.getReference("chess-with-hats/users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {

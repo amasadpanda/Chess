@@ -104,6 +104,12 @@ public abstract class FireEater {
         return result.toString();
     }
 
+    protected static boolean isUIDExist(String UID)
+    {
+        DatabaseReference inviteeRef = database.getReference().child("users").child(UID);
+        return (inviteeRef.child("username") == null);
+    }
+
     protected static FirebaseDatabase getDatabase() throws NullPointerException
     {
         if(database == null)

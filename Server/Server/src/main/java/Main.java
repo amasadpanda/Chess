@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
@@ -15,6 +17,8 @@ public class Main {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
         System.out.println("goodbye!");
 
+        System.out.println(FireEater.isUIDExist("tim"));
+        System.out.println(FireEater.isUIDExist(""));
         //JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
         //server.start();
         CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.LOGIN);

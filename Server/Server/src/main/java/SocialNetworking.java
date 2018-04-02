@@ -16,11 +16,11 @@ public class SocialNetworking extends FireEater{
      */
     @Override
     public CWHResponse handle(CWHRequest request) {
-        String sendTo = "tim";//request.getExtras().get("username");
-        String UID = "phio";
+        String sendTo = request.getExtras().get("username");
+        String UID = "";
 
         try {
-        //    UID = FireEater.tokenToUID(request.getAuthID());
+            UID = FireEater.tokenToUID(request.getAuthID());
         } catch (Exception e) {
             e.printStackTrace();
         }

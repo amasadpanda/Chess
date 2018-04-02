@@ -37,6 +37,8 @@ public class CWHRequest {
         return extras;
     }
 
+    public void put(String key, String value) { extras.put(key, value); }
+
     private String getJSON()
     {
         return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(this);

@@ -5,8 +5,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.database.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,10 +24,8 @@ public abstract class FireEater {
 
     /**
      *
-     * TODO: Custom requests class as parameter
-     *
      */
-    public abstract CWHResponse handle(CWHRequest cwhRequest);
+    public abstract CWHResponse handle(CWHRequest request);
 
 
     protected static void initialize(String serviceKeyPath) throws IOException {
@@ -52,12 +48,20 @@ public abstract class FireEater {
         isInitialized = true;
     }
 
+    /**
+     *
+     * @param UID
+     * @return Username matched with the UID or empty string if not found.
+     */
     public static String UIDToUsername(String UID)
     {
         DatabaseReference usersPath = database.getReference().child("users").child(UID);
         SynchronousListener s = new SynchronousListener();
         usersPath.addListenerForSingleValueEvent(s);
-        return s.getSnapshot().child("username").getValue().toString();
+        Object b = s.getSnapshot().child("username").getValue();
+        if(b == null)
+            return "";
+        return b.toString();
     }
 
     /*
@@ -92,11 +96,7 @@ public abstract class FireEater {
 
             }
         });
-        try {
-            semaphore.tryAcquire(1000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            // Should not happen
-        }
+        semaphore.tryAcquire(1000, TimeUnit.MILLISECONDS);
         if (result.length() <= 0)
         {
             throw new Exception("Username to UID took too long!");
@@ -107,7 +107,7 @@ public abstract class FireEater {
     protected static FirebaseDatabase getDatabase() throws NullPointerException
     {
         if(database == null)
-            throw new NullPointerException();
+            throw new NullPointerException("Firebase Database was not initialized!");
         return database;
     }
 

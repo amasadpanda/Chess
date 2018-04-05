@@ -15,6 +15,9 @@ public class CWHResponse {
         this.isSuccess = isSuccess;
     }
 
+    @Override
+    public String toString() { return message; }
+
     public String getMessage() {
         return message;
     }

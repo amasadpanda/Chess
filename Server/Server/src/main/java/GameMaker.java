@@ -12,24 +12,14 @@ public class GameMaker extends FireEater {
     @Override
     public CWHResponse handle(CWHRequest request) {
         DatabaseReference ref = FireEater.getDatabase().getReference();
-        String UID = "";
-        String invitee = request.getExtras().get("uid");
+        String UID = request.getExtras().get("uid");
+        String invitee = request.getExtras().get("friend");
+        String inviteeUID = request.getExtras().get("frienduid");
 
-        try {
-            UID = FireEater.tokenToUID(request.getAuthID());
-        } catch (Exception e) {
-            return new CWHResponse("Cannot find user associated with the AuthID: " + request.getAuthID(), false);
-        }
-        // ensures that the uid does exist, maybe an architectural design should have the client pull this information from
-        // the database, making it always a valid uid
-        // this might not work
-        DatabaseReference inviteeRef = ref.child("users").child(invitee);
-        if(inviteeRef.child("username") == null)
-            return new CWHResponse("Cannot find user with the UID", false);
+        DatabaseReference inviteeRef = ref.child("users").child(inviteeUID);
 
         // Creates new game in games list
-        DatabaseReference gamesRef = getDatabase().getReference("games");
-        DatabaseReference newGame = gamesRef.push();
+        DatabaseReference newGame = ref.child("games").push();
         String gameID = newGame.getKey();
 
         // Adds the game invitation to the invetee's list

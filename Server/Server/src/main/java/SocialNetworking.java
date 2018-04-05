@@ -16,14 +16,8 @@ public class SocialNetworking extends FireEater{
      */
     @Override
     public CWHResponse handle(CWHRequest request) {
-        String sendTo = request.getExtras().get("username");
-        String UID = "";
-
-        try {
-            UID = FireEater.tokenToUID(request.getAuthID());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String sendTo = request.getExtras().get("frienduid");
+        String UID = request.getExtras().get("uid");
 
         final FirebaseDatabase database = getDatabase();
         DatabaseReference usersRef = database.getReference().child("users");
@@ -35,20 +29,13 @@ public class SocialNetworking extends FireEater{
         DataSnapshot user = getUser.getSnapshot();
         User u = user.getValue(User.class);
 
-        if(u == null || UID.equals(""))
-        {
-            return new CWHResponse("Cannot find user " + sendTo, false);
-        }
-        else // The friend is found, update their friends invitation list.
-        {
-            // vvv This should never return an empty string because it has already been checked up top.
-            String friendsUsername = FireEater.UIDToUsername(UID);
-            DatabaseReference friend = user.getRef().child("friend_invitations");
-            Map<String, Object> updateFriendsInv = new HashMap<>();
-            updateFriendsInv.put(UID, friendsUsername);
-            friend.updateChildrenAsync(updateFriendsInv);
+        String friendsUsername = request.getExtras().get("friend");
+        DatabaseReference friend = user.getRef().child("friend_invitations");
+        Map<String, Object> updateFriendsInv = new HashMap<>();
+        updateFriendsInv.put(UID, friendsUsername);
+        friend.updateChildrenAsync(updateFriendsInv);
 
-            return new CWHResponse("Added friend " + friendsUsername, true);
-        }
+        return new CWHResponse("Request sent to " + friendsUsername, true);
+
     }
 }

@@ -15,17 +15,15 @@ import java.util.concurrent.Semaphore;
 public class Main {
     public static void main(String[] args) throws Exception {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
+        Validator.initialize();
         System.out.println("goodbye!");
 
-        System.out.println(FireEater.isUIDExist("tim"));
-        System.out.println(FireEater.isUIDExist(""));
         //JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
         //server.start();
-        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.LOGIN);
+        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MATCHMAKING_REQUEST);
         c.put("uid", "tim");
-
-        GameMaker gm = new GameMaker();
-        gm.handle(c);
+        c.put("friend", "philip1");
+        System.out.println(Validator.processRequest(c));
 
         new Scanner(System.in).next();
     }

@@ -1,20 +1,9 @@
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/*
-currently assumes that all information gotten is valid
-the passing class should check it
- */
-
-public class AcceptFriend extends FireEater {
-
-
+public class DenyFriend extends FireEater {
     @Override
     public CWHResponse handle(CWHRequest request) {
-
         String UID = request.getExtras().get("uid");
         String friendUID = request.getExtras().get("frienduid");
         String friendUser = request.getExtras().get("friend");
@@ -26,13 +15,8 @@ public class AcceptFriend extends FireEater {
         userRef.addListenerForSingleValueEvent(s);
         DataSnapshot isFriendRequest = s.getSnapshot();
         if(isFriendRequest.getValue() == null)
-            return new CWHResponse("No friend invitation to accept", false);
+            return new CWHResponse("No friend invitation to reject", false);
         userRef.removeValueAsync();
-
-        userRef = ref.child("users").child(UID).child("friends");
-        Map<String, Object> updateFriendList = new HashMap<>();
-        updateFriendList.put(friendUID, friendUser);
-        userRef.updateChildrenAsync(updateFriendList);
-        return new CWHResponse("Accepted friend request from " + friendUser, true);
+        return new CWHResponse("Rejected friend request from " + friendUser, true);
     }
 }

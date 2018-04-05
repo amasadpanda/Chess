@@ -16,12 +16,12 @@ public class Login extends FireEater{
 
     @Override
     public CWHResponse handle(CWHRequest request) {
-        final FirebaseDatabase database = getDatabase();
+        FirebaseDatabase database = getDatabase();
         DatabaseReference usersRef = database.getReference().child("users");
 
-        String username = request.getExtras().get("username");
+        String uid = request.getExtras().get("uid");
         // set this .child() parameter to the desired user's UID
-        DatabaseReference usersPath = usersRef.child(username);
+        DatabaseReference usersPath = usersRef.child(uid);
         SynchronousListener s = new SynchronousListener();
         usersPath.addListenerForSingleValueEvent(s);
 
@@ -29,6 +29,7 @@ public class Login extends FireEater{
         User get = userSnapshot.getValue(User.class);
         if(get == null)
         {
+            String username = request.getExtras().get("username");
             usersPath.setValueAsync(new User(username));
             System.out.println("created new users");
             return new CWHResponse("Created new user: " + username, false);

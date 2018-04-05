@@ -1,53 +1,50 @@
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 
-public class MatchmakingPool extends FireEater implements Runnable{
+public class MatchmakingPool extends FireEater{
 
     // Strings are the users UIDs
     public static  Queue<String> pool;
     public MatchmakingPool()
     {
         pool = new ConcurrentLinkedQueue<>();
+        pool.add("tim");
     }
 
     @Override
     public CWHResponse handle(CWHRequest request) {
-        String UID = "";
-        try {
-            UID = FireEater.tokenToUID(request.getAuthID());
-        } catch (Exception e) {
-            return new CWHResponse("Cannot find user associated with the AuthID: " + request.getAuthID(), false);
-        }
-
-        pool.offer(UID);
-
-        // should we check the queue here and make the game if another user was found?
-
-        return null;
-    }
-
-    @Override
-    public void run() {
-        while(true)
+        String UID = request.getExtras().get("uid");
+        if(pool.isEmpty())
         {
-            if(pool.size() >= 2)
-            {
-                String user1 = pool.remove();
-                String user2 = pool.remove();
+            pool.offer(UID);
+            return new CWHResponse("Place in matchingmaking pool", true);
+        }
+        else
+        {
+            String pooledUser = pool.remove();
 
-                // place users in game here, do we automatically make the game here or send back CWHResponse back to client
-                // first?
-            }
-            else
-            {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    System.err.println("There was a problem with the Matchmaking pool thread.");
-                }
-            }
+            DatabaseReference ref = FireEater.getDatabase().getReference();
+            DatabaseReference newGame = ref.child("games").push();
+            DatabaseReference user1Path = ref.child("users").child(UID).child("current_games");
+            DatabaseReference user2Path = ref.child("users").child(pooledUser).child("current_games");
+
+            // makes the actual game in games database
+            String gameID = newGame.getKey();
+            Game g = new Game(UID, pooledUser);
+            newGame.setValueAsync(g);
+
+            // update user information
+            Map<String, String> updateGameList = new HashMap<>();
+            updateGameList.put(gameID, "random");
+            user1Path.setValueAsync(updateGameList);
+            user2Path.setValueAsync(updateGameList);
+
+            return new CWHResponse("Matched with user", true);
         }
     }
 }

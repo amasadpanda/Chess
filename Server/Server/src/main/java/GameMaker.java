@@ -25,21 +25,12 @@ public class GameMaker extends FireEater {
         // Adds the game invitation to the invetee's list
         inviteeRef = inviteeRef.child("game_invitations");
         Map<String, Object > addGameInv = new HashMap<>();
-        addGameInv.put(gameID, "feature to be added");
+        addGameInv.put(gameID, UID);
         inviteeRef.updateChildrenAsync(addGameInv);
 
         // Adds the game object to the game lists
-        Game g = new Game(UID);
+        Game g = new Game(UID, inviteeUID);
         newGame.setValueAsync(g);
-        if(g.black == null)
-        {
-            g.black = invitee;
-            return new CWHResponse("Invitation sent, starting as black", true);
-        }
-        else
-        {
-            g.white = invitee;
-            return new CWHResponse("Invitation sent, starting as white", true);
-        }
+        return new CWHResponse("Invitation sent", true);
     }
 }

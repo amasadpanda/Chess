@@ -20,15 +20,13 @@ public class Main {
 
         //JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
         //server.start();
-        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MATCHMAKING_REQUEST);
+        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.GAME_CREATION);
         c.put("uid", "tim");
         c.put("friend", "philip1");
         System.out.println(Validator.processRequest(c));
 
         new Scanner(System.in).next();
     }
-
-
 
 
     private static class TestData

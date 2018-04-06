@@ -13,7 +13,6 @@ public class MatchmakingPool extends FireEater{
     public MatchmakingPool()
     {
         pool = new ConcurrentLinkedQueue<>();
-        pool.add("tim");
     }
 
     @Override

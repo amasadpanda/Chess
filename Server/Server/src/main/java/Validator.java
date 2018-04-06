@@ -28,6 +28,10 @@ public class Validator {
             case MATCHMAKING_REQUEST:{
                 break;
             }
+            case ACCEPT_GAME:{
+                //String gameID = request.getExtras().get("game");
+                break;
+            }
             case ACCEPT_FRIEND:
             case DENY_FRIEND:
             case GAME_CREATION:
@@ -60,6 +64,7 @@ public class Validator {
         eaters.put(CWHRequest.RequestType.MATCHMAKING_REQUEST, new MatchmakingPool());
         eaters.put(CWHRequest.RequestType.ACCEPT_FRIEND, new AcceptFriend());
         eaters.put(CWHRequest.RequestType.DENY_FRIEND, new DenyFriend());
+        eaters.put(CWHRequest.RequestType.ACCEPT_GAME, new AcceptGame());
 
         System.out.print("DONE\n");
     }

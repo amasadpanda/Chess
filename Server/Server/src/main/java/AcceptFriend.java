@@ -14,7 +14,6 @@ public class AcceptFriend extends FireEater {
 
     @Override
     public CWHResponse handle(CWHRequest request) {
-
         String UID = request.getExtras().get("uid");
         String friendUID = request.getExtras().get("frienduid");
         String friendUser = request.getExtras().get("friend");

@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
@@ -13,29 +15,20 @@ import java.util.concurrent.Semaphore;
 public class Main {
     public static void main(String[] args) throws Exception {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
-        Login test = new Login();
-        Scanner scan = new Scanner(System.in);
+        Validator.initialize();
         System.out.println("goodbye!");
 
-        FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
 
-        JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
-        server.start();
+        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.GAME_CREATION);
+        c.put("uid", "tim");
+        c.put("friend", "philip1");
+        System.out.println(Validator.processRequest(c));
 
         new Scanner(System.in).next();
     }
 
-
-
-
-    private static class TestData
-    {
-        public String s1;
-        public String s2;
-        public TestData(String something1, String something2)
-        {
-            this.s1 = something1;
-            this.s2 = something2;
-        }
+    private void startServer() throws Exception {
+        JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
+        server.start();
     }
 }

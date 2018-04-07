@@ -1,27 +1,23 @@
-/*
-    Assumes that the person to be added is stored as key-value pair with the key "userid"
-    NOT DONE YET
- */
-
 import com.google.firebase.database.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
+/*
+   This class takes requests from users for a friend invitation and adds the user to the friend's invitation list.
+   It uses the AuthID to return the UID.
+ */
 public class SocialNetworking extends FireEater{
 
+    /**
+     *
+     * @param request request.extras needs to contain the key-value pair "username":"" which is the friend to be added
+     * @return
+     */
     @Override
     public CWHResponse handle(CWHRequest request) {
-        String sendTo = request.getExtras().get("userid");
-        String UID = "";
-        try {
-            UID = FireEater.tokenToUID(request.getAuthID());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        String sendTo = request.getExtras().get("frienduid");
+        String UID = request.getExtras().get("uid");
 
         final FirebaseDatabase database = getDatabase();
         DatabaseReference usersRef = database.getReference().child("users");
@@ -32,20 +28,14 @@ public class SocialNetworking extends FireEater{
 
         DataSnapshot user = getUser.getSnapshot();
         User u = user.getValue(User.class);
-        if(u == null || UID.equals(""))
-        {
-            return new CWHResponse("Cannot find user " + sendTo, false);
-        }
-        else
-        {
-            // update user's friend invitation list
-            DatabaseReference ref = user.getRef().child("friend_invitations");
-            Map<String, Object> updateFriendsInv = new HashMap<>();
-            updateFriendsInv.put(UID, FireEater.UIDToUsername(UID));
-        }
 
+        String friendsUsername = request.getExtras().get("friend");
+        DatabaseReference friend = user.getRef().child("friend_invitations");
+        Map<String, Object> updateFriendsInv = new HashMap<>();
+        updateFriendsInv.put(UID, friendsUsername);
+        friend.updateChildrenAsync(updateFriendsInv);
 
+        return new CWHResponse("Request sent to " + friendsUsername, true);
 
-        return null;
     }
 }

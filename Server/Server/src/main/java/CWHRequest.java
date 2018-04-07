@@ -6,7 +6,8 @@ import java.util.HashMap;
 public class CWHRequest {
 
     public enum RequestType {
-        MAKE_MOVE, LOGIN, ACCEPT_INVITE, FRIEND_REQUEST, GAME_CREATION, MATCHMAKING_REQUEST
+        MAKE_MOVE, LOGIN, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,
+        MATCHMAKING_REQUEST, LEAVE_GAME, CREATE_ACCOUNT
     }
 
     @Expose
@@ -36,6 +37,8 @@ public class CWHRequest {
     public HashMap<String, String> getExtras() {
         return extras;
     }
+
+    public void put(String key, String value) { extras.put(key, value); }
 
     private String getJSON()
     {

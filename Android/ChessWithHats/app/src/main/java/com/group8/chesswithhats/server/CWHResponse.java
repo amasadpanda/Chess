@@ -1,6 +1,11 @@
+package com.group8.chesswithhats.server;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
+/*
+ * @author Philip Rodriguez
+ */
 public class CWHResponse {
 
     @Expose
@@ -14,9 +19,6 @@ public class CWHResponse {
         this.message = message;
         this.isSuccess = isSuccess;
     }
-
-    @Override
-    public String toString() { return message; }
 
     public String getMessage() {
         return message;

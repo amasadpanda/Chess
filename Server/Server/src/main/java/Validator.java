@@ -50,7 +50,6 @@ public class Validator {
                 break;
             }
         }
-
         return eaters.get(request.getRequestType()).handle(request);
     }
 
@@ -65,6 +64,7 @@ public class Validator {
         eaters.put(CWHRequest.RequestType.ACCEPT_FRIEND, new AcceptFriend());
         eaters.put(CWHRequest.RequestType.DENY_FRIEND, new DenyFriend());
         eaters.put(CWHRequest.RequestType.ACCEPT_GAME, new AcceptGame());
+        eaters.put(CWHRequest.RequestType.DENY_GAME, new DenyGame());
 
         System.out.print("DONE\n");
     }

@@ -10,6 +10,7 @@ public class MatchmakingPool extends FireEater{
 
     // Strings are the users UIDs
     public static  Queue<String> pool;
+
     public MatchmakingPool()
     {
         pool = new ConcurrentLinkedQueue<>();
@@ -21,7 +22,7 @@ public class MatchmakingPool extends FireEater{
         if(pool.isEmpty())
         {
             pool.offer(UID);
-            return new CWHResponse("Place in matchingmaking pool", true);
+            return new CWHResponse("Placed in matchingmaking pool", true);
         }
         else
         {

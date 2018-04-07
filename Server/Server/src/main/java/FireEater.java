@@ -1,8 +1,10 @@
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.ExportedUserRecord;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
+import com.google.firebase.auth.ListUsersPage;
 import com.google.firebase.database.*;
 
 import java.io.FileInputStream;
@@ -85,35 +87,18 @@ public abstract class FireEater {
     }
 
     /*
-        Give a username, looks up in Firebase the UID that belongs too.
+        Give a username, looks up in Firebase the UID that belongs too, or null if the uername is not taken.
      */
     protected static String usernameToUID(String username) throws Exception {
-        final Semaphore semaphore = new Semaphore(0);
-        StringBuilder result = new StringBuilder();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference valueRef = database.getReference().child("users");
-        Query myQuery = valueRef.orderByChild("username").equalTo(username);
-        myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                // Do not try to access what is not there!
-                if (snapshot.getChildrenCount() > 0) {
-                    result.append(snapshot.getChildren().iterator().next().getKey());
-                }
-                semaphore.release();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-        semaphore.tryAcquire(1000, TimeUnit.MILLISECONDS);
-        if (result.length() <= 0)
+        ListUsersPage page = FirebaseAuth.getInstance().listUsersAsync(null).get();
+        for (ExportedUserRecord user : page.iterateAll())
         {
-            throw new Exception("Username to UID took too long OR username didn't exist!");
+            if (user.getDisplayName().equals(username))
+            {
+                return user.getUid();
+            }
         }
-        return result.toString();
+        return null;
     }
 
 

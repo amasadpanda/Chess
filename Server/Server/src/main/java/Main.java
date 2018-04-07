@@ -18,8 +18,7 @@ public class Main {
         Validator.initialize();
         System.out.println("goodbye!");
 
-        //JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
-        //server.start();
+
         CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.GAME_CREATION);
         c.put("uid", "tim");
         c.put("friend", "philip1");
@@ -28,15 +27,8 @@ public class Main {
         new Scanner(System.in).next();
     }
 
-
-    private static class TestData
-    {
-        public String s1;
-        public String s2;
-        public TestData(String something1, String something2)
-        {
-            this.s1 = something1;
-            this.s2 = something2;
-        }
+    private void startServer() throws Exception {
+        JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
+        server.start();
     }
 }

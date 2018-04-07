@@ -1,4 +1,5 @@
 import com.google.gson.GsonBuilder;
+import io.netty.handler.logging.LogLevel;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -92,7 +93,6 @@ public class JettyServer {
                             // Sanity check the bytes read
                             if (numBytesRead == contentLength)
                             {
-                                //Everything is ok, so we may pass off the request to the producer...
                                 logger.log(Level.INFO,"Request acceptable.");
                                 String messageContents = new String(messageBytes, Charset.forName("UTF-8"));
                                 logger.log(Level.INFO,"Message contains: " + messageContents);
@@ -102,19 +102,9 @@ public class JettyServer {
                                 logger.log(Level.INFO, reconstructedRequest.getRequestType().toString());
                                 logger.log(Level.INFO, "Hashmap extras = " + reconstructedRequest.getExtras());
 
-                                logger.log(Level.INFO, "Validating the authID...");
-                                try {
-                                    logger.log(Level.INFO, FireEater.tokenToUID(reconstructedRequest.getAuthID()));
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+                                CWHResponse cwhResponse = Validator.processRequest(reconstructedRequest);
 
                                 httpServletResponse.setContentType("application/json; charset=utf-8");
-
-                                // Construct a CWHResponse and respond!
-                                CWHResponse cwhResponse = new CWHResponse("Request acceptable!!!", true);
                                 String response = cwhResponse.getJSON();
 
                                 httpServletResponse.setContentLength(response.getBytes(Charset.forName("UTF-8")).length);
@@ -151,12 +141,16 @@ public class JettyServer {
             server.setHandler(contextHandler);
 
             server.start();
-            server.dumpStdErr();
         }
         else
         {
             //Already started
         }
+    }
+
+    public void setLogLevel(Level level)
+    {
+        logger.setLevel(level);
     }
 
     public synchronized void stop() throws Exception {

@@ -13,19 +13,19 @@ public class Validator {
         //  bad vv should re-implement it later
         if(request.getAuthID().isEmpty() && request.getRequestType() != CWHRequest.RequestType.CREATE_ACCOUNT)
             return _BAD_AUTHID;
-        String UID  = getUID(request.getAuthID());
-        if(UID.equals(""))
-            return _BAD_AUTHID;
-        String username = FireEater.UIDToUsername(UID);
+        String UID  = "";//getUID(request.getAuthID());
+        //if(UID.equals(""))
+          //  return _BAD_AUTHID;
+        String username = "";//FireEater.UIDToUsername(UID);
         //should check the username to see if it exists ^^^^
         request.put("uid", UID);
         switch (request.getRequestType())
         {
             case CREATE_ACCOUNT:{
-                if(username != null && !request.getExtras().get("username").equals(username))
-                {
-                    return new CWHResponse("Username does not match with database records", false);
-                }
+               // if(username != null && !request.getExtras().get("username").equals(username))
+               // {
+               //     return new CWHResponse("Username does not match with database records", false);
+               // }
                 break;
             }
             case MATCHMAKING_REQUEST:{
@@ -52,7 +52,6 @@ public class Validator {
                 break;
             }
         }
-
         return eaters.get(request.getRequestType()).handle(request);
     }
 

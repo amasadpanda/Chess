@@ -1,4 +1,11 @@
+import com.google.api.core.ApiFuture;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserRecord;
 import com.google.firebase.database.*;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 
 /**
@@ -12,7 +19,22 @@ import com.google.firebase.database.*;
  *  - If user is not in the database, returns a message informing a new user was created and sets success flag to false.
  *  - If user is in the database, return a user is found message and sets success flag to true.
  */
-public class Login extends FireEater{
+public class CreateUser extends FireEater{
+
+    private static FirebaseAuth auth;
+    public CreateUser()
+    {
+        auth = FirebaseAuth.getInstance();
+    }
+
+    private void createUser(String email, String username, String password)
+    {
+        UserRecord.CreateRequest create = new UserRecord.CreateRequest();
+        create.setEmail(email);
+        create.setDisplayName(username);
+        create.setPassword(password);
+        auth.createUserAsync(create);
+    }
 
     @Override
     public CWHResponse handle(CWHRequest request) {
@@ -39,5 +61,23 @@ public class Login extends FireEater{
             System.out.println(userSnapshot.getKey() + " " +get.username);
         }
         return null;
+    }
+
+    public static void getUser(String UID)
+    {
+        try {
+            UserRecord user = auth.getUserAsync(UID).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Executor ex = new Executor() {
+            @Override
+            public void execute(Runnable command) {
+
+            }
+        };
+
     }
 }

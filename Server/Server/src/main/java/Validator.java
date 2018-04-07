@@ -10,15 +10,18 @@ public class Validator {
 
     public static CWHResponse processRequest(CWHRequest request)
     {
-        String UID = request.getExtras().get("uid");//<<< testing, actual >>>getUID(request.getAuthID());
+        //  bad vv should re-implement it later
+        if(request.getAuthID().isEmpty() && request.getRequestType() != CWHRequest.RequestType.CREATE_ACCOUNT)
+            return _BAD_AUTHID;
+        String UID  = getUID(request.getAuthID());
         if(UID.equals(""))
             return _BAD_AUTHID;
         String username = FireEater.UIDToUsername(UID);
         //should check the username to see if it exists ^^^^
-        //request.put("uid", UID);
+        request.put("uid", UID);
         switch (request.getRequestType())
         {
-            case LOGIN:{
+            case CREATE_ACCOUNT:{
                 if(username != null && !request.getExtras().get("username").equals(username))
                 {
                     return new CWHResponse("Username does not match with database records", false);
@@ -29,7 +32,6 @@ public class Validator {
                 break;
             }
             case ACCEPT_GAME:{
-                //String gameID = request.getExtras().get("game");
                 break;
             }
             case ACCEPT_FRIEND:
@@ -58,7 +60,7 @@ public class Validator {
     {
         System.out.print("[Initializing Request Handlers]...");
         eaters = new HashMap<>();
-        eaters.put(CWHRequest.RequestType.LOGIN, new Login());
+        eaters.put(CWHRequest.RequestType.CREATE_ACCOUNT, new CreateUser());
         eaters.put(CWHRequest.RequestType.FRIEND_REQUEST, new SocialNetworking());
         eaters.put(CWHRequest.RequestType.GAME_CREATION, new GameMaker());
         eaters.put(CWHRequest.RequestType.MATCHMAKING_REQUEST, new MatchmakingPool());

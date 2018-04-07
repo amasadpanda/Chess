@@ -18,6 +18,7 @@ public class SocialNetworking extends FireEater{
     public CWHResponse handle(CWHRequest request) {
         String sendTo = request.getExtras().get("frienduid");
         String UID = request.getExtras().get("uid");
+        String username = request.getExtras().get("username");
 
         final FirebaseDatabase database = getDatabase();
         DatabaseReference usersRef = database.getReference().child("users");
@@ -32,7 +33,7 @@ public class SocialNetworking extends FireEater{
         String friendsUsername = request.getExtras().get("friend");
         DatabaseReference friend = user.getRef().child("friend_invitations");
         Map<String, Object> updateFriendsInv = new HashMap<>();
-        updateFriendsInv.put(UID, friendsUsername);
+        updateFriendsInv.put(UID, username);
         friend.updateChildrenAsync(updateFriendsInv);
 
         return new CWHResponse("Request sent to " + friendsUsername, true);

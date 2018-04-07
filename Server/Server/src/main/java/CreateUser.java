@@ -36,12 +36,20 @@ public class CreateUser extends FireEater{
             create.setDisplayName(username);
             create.setPassword(password);
 
-            UserRecord r = auth.createUserAsync(create).get();
-            String doesExist = FireEater.usernameToUID();
+            String doesExist = FireEater.usernameToUID(username);
             if(doesExist != null)
-                return
+                return new CWHResponse("Username already taken", false);
 
-            return new CWHResponse("it worked!", true);
+            // this is a hacky check to see if the email is already taken
+            UserRecord r = auth.createUserAsync(create).get();
+            String UID = r.getUid();
+
+            // database below
+
+            DatabaseReference usersPath = getDatabase().getReference().child("users").child(UID);
+            SynchronousListener s = new SynchronousListener();
+            usersPath.setValueAsync(new User(username));
+            return new CWHResponse("Created new user: " + username, true);
         } catch (Exception e)
         {
             return new CWHResponse("Something went wrong when creating user!\n" + e.getMessage() , false);
@@ -53,6 +61,7 @@ public class CreateUser extends FireEater{
         String username = request.getExtras().get("username");
         String password = request.getExtras().get("password");
         String email = request.getExtras().get("email");
+        // this is for the FirebaseAuth
         return createUser(email, username, password);
     }
 

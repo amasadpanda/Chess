@@ -14,10 +14,17 @@ public class Mover extends FireEater{
 
         ChessLogic.Piece myPiece = boardstate[startingPlace][0];
         HashSet<Integer> moves = myPiece.getMoves(startingPlace, boardstate, true);
+        Boolean isValid = false;
         for(Integer i : moves)
         {
-
+            if(clientMove == i)
+            {
+                isValid = true;
+                break;
+            }
         }
+        if(!isValid)
+            return new CWHResponse("Invalid move", false);
         return null;
     }
 

@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.group8.chesswithhats.server.CWHRequest;
+import com.group8.chesswithhats.server.CWHResponse;
+import com.group8.chesswithhats.server.OnCWHResponseListener;
 
 /*
  * @author Philip Rodriguez
@@ -20,6 +24,7 @@ public class HomeActivity extends Activity {
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private TextView txtExampleText;
+    private Button btnSendTestRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,20 @@ public class HomeActivity extends Activity {
                 // sign them out
                 Toast.makeText(HomeActivity.this, "signing out...", Toast.LENGTH_SHORT).show();
                 firebaseAuth.signOut();
+            }
+        });
+
+        btnSendTestRequest = findViewById(R.id.home_btnSendTestRequest);
+        btnSendTestRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CWHRequest request = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.MATCHMAKING_REQUEST, new OnCWHResponseListener() {
+                    @Override
+                    public void onCWHResponse(CWHResponse response) {
+                        System.out.println(response);
+                    }
+                });
+                request.sendRequest(HomeActivity.this);
             }
         });
     }

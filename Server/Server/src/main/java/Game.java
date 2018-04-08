@@ -12,7 +12,7 @@ public class Game {
 
     public Game()
     {
-        initStartState();
+
     }
 
     public Game(String UID)
@@ -39,11 +39,51 @@ public class Game {
             black = user2;
             white = user1;
         }
-        initStartState();
     }
 
-    private void initStartState()
-    {
 
+    public static ChessLogic.Piece[][] toPieceArray(Map<String, String> map)
+    {
+        ChessLogic.Piece[][] board = new ChessLogic.Piece[8][8];
+        for(String key : map.keySet())
+        {
+            String piece = map.get(key);
+            Integer loc = Integer.parseInt(key.substring(1));
+            int r = getR(loc);
+            int c = getC(loc);
+            board[r][c] = getPiece(map.get(key));
+        }
+        return board;
+    }
+
+    public static ChessLogic.Piece getPiece(String s)
+    {
+        boolean b = (s.charAt(0) == 'w');
+        switch(s.charAt(1))
+        {
+            case 'P': {
+                boolean move = (s.charAt(2) == '1');
+                return new ChessLogic.Pawn(b, move);
+            }
+            case 'N': return new ChessLogic.Knight(b);
+            case 'B': return new ChessLogic.Bishop(b);
+            case 'R': return new ChessLogic.Rook(b);
+            case 'Q': return new ChessLogic.Queen(b);
+            case 'K': {
+                boolean move = (s.charAt(2) == '1');
+                return new ChessLogic.King(b, move);
+            }
+        }
+        return null;
+    }
+
+    private static int getR(int loc)
+    {
+        return loc/8;
+    }
+
+    private static int getC(int loc)
+    {
+        return loc%8;
     }
 }

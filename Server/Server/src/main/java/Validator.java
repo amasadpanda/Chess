@@ -32,6 +32,7 @@ public class Validator {
                 return _BAD_AUTHID;
             request.put("uid", UID);
             request.put("username", username);
+
             if(type == CWHRequest.RequestType.ACCEPT_FRIEND || type == CWHRequest.RequestType.DENY_FRIEND ||
                     type == CWHRequest.RequestType.GAME_CREATION || type == CWHRequest.RequestType.FRIEND_REQUEST)
             {
@@ -125,6 +126,7 @@ public class Validator {
         eaters.put(CWHRequest.RequestType.ACCEPT_FRIEND,        new AcceptFriend());
         eaters.put(CWHRequest.RequestType.DENY_FRIEND,          new DenyFriend());
         eaters.put(CWHRequest.RequestType.ACCEPT_GAME,          new AcceptGame());
+        eaters.put(CWHRequest.RequestType.MAKE_MOVE,            new Mover());
 
         System.out.print("DONE\n");
     }

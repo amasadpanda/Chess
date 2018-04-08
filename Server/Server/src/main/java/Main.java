@@ -23,8 +23,8 @@ public class Main {
 
         CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);
         c.put("gameid", "-L9QYy3Fc9De6RnhgVCE");
-        c.put("start", "0");
-        c.put("end", "1");
+        c.put("start", "1");
+        c.put("end", "2");
         Mover m = new Mover();
         System.out.println(m.handle(c));
 

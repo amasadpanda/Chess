@@ -17,8 +17,7 @@ public class Mover extends FireEater{
         gameRef.addListenerForSingleValueEvent(getGame);
         Game game = getGame.getSnapshot().getValue(Game.class);
 
-
-        ChessLogic.Piece[][] boardstate = toPieceArray(game.board);
+        ChessLogic.Piece[][] boardstate = Game.toPieceArray(game.board);
         int r = getR(startingPlace);
         int c = getC(startingPlace);
         ChessLogic.Piece myPiece = boardstate[r][c];
@@ -36,8 +35,9 @@ public class Mover extends FireEater{
             return new CWHResponse("Invalid move", false);
 
         String moves = game.moves + (startingPlace+clientMove+" ");
-        game.board.remove(startingPlace);
-        game.board.put(Integer.toString(clientMove), myPiece.toString() );
+
+        game.board.remove("x" + startingPlace);
+        game.board.put("x"+(clientMove), myPiece.toString() );
 
         Map<String, Object> updateGame = new HashMap<>();
         updateGame.put("board", game.board);
@@ -50,45 +50,6 @@ public class Mover extends FireEater{
         return null;
     }
 
-    private static ChessLogic.Piece[][] toPieceArray(Map<String, String> map)
-    {
-        ChessLogic.Piece[][] board = new ChessLogic.Piece[8][8];
-        for(String key : map.keySet())
-        {
-            String piece = map.get(key);
-            Integer loc = Integer.parseInt(key);
-            int r = getR(loc);
-            int c = getC(loc);
-            board[r][c] = getPiece(map.get(key));
-        }
-        return board;
-    }
-
-    private static ChessLogic.Piece getPiece(String s)
-    {
-        boolean b = (s.charAt(0) == 'w');
-        switch(s.charAt(1))
-        {
-            case 'P': {
-                boolean move = (s.charAt(2) == '1');
-                return new ChessLogic.Pawn(b, move);
-            }
-            case 'N': return new ChessLogic.Knight(b);
-            case 'B': return new ChessLogic.Bishop(b);
-            case 'R': return new ChessLogic.Rook(b);
-            case 'Q': return new ChessLogic.Queen(b);
-            case 'K': {
-                boolean move = (s.charAt(2) == '1');
-                return new ChessLogic.King(b, move);
-            }
-        }
-        return null;
-    }
-
-    private static ChessLogic.Piece[][] listToArray(List<List<ChessLogic.Piece>> l)
-    {
-        return new ChessLogic.Piece[8][8];
-    }
 
     private static int getR(int loc)
     {

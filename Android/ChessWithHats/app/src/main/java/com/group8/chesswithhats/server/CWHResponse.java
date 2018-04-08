@@ -20,6 +20,11 @@ public class CWHResponse {
         this.isSuccess = isSuccess;
     }
 
+    public String toString()
+    {
+        return "CWHRequest:\n\tisSuccess = " + isSuccess + "\n\tmessage = " + message;
+    }
+
     public String getMessage() {
         return message;
     }

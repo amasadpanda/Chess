@@ -3,6 +3,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -18,11 +19,6 @@ public class Main {
         Validator.initialize();
         System.out.println("goodbye!");
 
-
-        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.GAME_CREATION);
-        c.put("uid", "tim");
-        c.put("friend", "philip1");
-        System.out.println(Validator.processRequest(c));
 
         new Scanner(System.in).next();
     }

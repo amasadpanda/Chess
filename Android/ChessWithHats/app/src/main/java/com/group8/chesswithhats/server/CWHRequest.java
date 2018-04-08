@@ -36,7 +36,7 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
 
     public enum RequestType {
-        MAKE_MOVE, LOGIN, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,
+        MAKE_MOVE, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,
         MATCHMAKING_REQUEST, LEAVE_GAME, CREATE_ACCOUNT
     }
 
@@ -161,7 +161,6 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
             }
             inputStream.close();
             String response = new String(byteArrayOutputStream.toByteArray(), Charset.forName("UTF-8"));
-            System.out.println("Got response from server: " + response);
             CWHResponse cwhResponse = new GsonBuilder().create().fromJson(response, CWHResponse.class);
             return cwhResponse;
         } catch (Exception exc) {

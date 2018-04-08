@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.HashSet;
 
 public class ChessLogic {
@@ -6,10 +7,18 @@ public class ChessLogic {
     //ChessLogic.Piece piece; import static whatever.something.ChessLogic.*;
     //This is a Christian logic class, so please, NO swearing!
     public static abstract class Piece {
-        boolean white;
+
+        public boolean white;
+
         public Piece(boolean isWhite) {
             white=isWhite;
         }
+
+        public Piece()
+        {
+            this(true);
+        }
+
         abstract HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal);
         boolean inBounds(int r,int c) {
             return r>=0&&r<8&&c>=0&&c<8;
@@ -75,6 +84,12 @@ public class ChessLogic {
         public Pawn(boolean isWhite) {
             super(isWhite);
         }
+
+        public Pawn(boolean isWhite, boolean moved)
+        {
+            super(isWhite);
+            movedTwiceLastTurn = moved;
+        }
         HashSet<Integer> getMoves(int loc, Piece[][] board,boolean forReal){
             HashSet<Integer> moves=new HashSet<Integer>();
             int r=loc/8,c=loc%8;
@@ -126,6 +141,12 @@ public class ChessLogic {
 
             return moves;
         }
+
+        @Override
+        public String toString()
+        {
+            return ((white)?"w":"b")+"P"+((movedTwiceLastTurn)?"1":"0");
+        }
     }
 
     //King
@@ -133,6 +154,12 @@ public class ChessLogic {
         boolean moved;
         public King(boolean isWhite) {
             super(isWhite);
+        }
+
+        public King(boolean isWhite, boolean move)
+        {
+            super(isWhite);
+            moved = move;
         }
         HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal) {
             int r=loc/8,c=loc%8;
@@ -148,6 +175,12 @@ public class ChessLogic {
                 }
             }
             return moves;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ((white)?"w":"b")+"K"+((moved)?"1":"0");
         }
     }
 
@@ -168,6 +201,12 @@ public class ChessLogic {
                 }
             }
             return moves;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ((white)?"w":"b")+"N";
         }
     }
 
@@ -222,6 +261,12 @@ public class ChessLogic {
             }
             return moves;
         }
+
+        @Override
+        public String toString()
+        {
+            return ((white)?"w":"b")+"R";
+        }
     }
 
     //Bishop
@@ -257,6 +302,12 @@ public class ChessLogic {
             }
             return moves;
         }
+
+        @Override
+        public String toString()
+        {
+            return ((white)?"w":"b")+"B";
+        }
     }
 
     //Queen
@@ -291,6 +342,12 @@ public class ChessLogic {
                 }
             }
             return moves;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ((white)?"w":"b")+"Q";
         }
     }
 

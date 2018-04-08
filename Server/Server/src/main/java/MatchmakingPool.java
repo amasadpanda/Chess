@@ -17,7 +17,9 @@ public class MatchmakingPool extends FireEater{
 
     @Override
     public CWHResponse handle(CWHRequest request) {
+
         String UID = request.getExtras().get("uid");
+
         if(pool.isEmpty())
         {
             pool.offer(UID);

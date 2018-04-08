@@ -21,10 +21,12 @@ public class Main {
         System.out.println("goodbye!");
 
 
-        //CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.GAME_CREATION);
-        //c.put("uid", "tim");
-        //c.put("friend", "philip1");
-        //System.out.println(Validator.processRequest(c));
+        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);
+        c.put("gameid", "-L9QYy3Fc9De6RnhgVCE");
+        c.put("start", "0");
+        c.put("end", "1");
+        Mover m = new Mover();
+        System.out.println(m.handle(c));
 
         new Scanner(System.in).next();
     }

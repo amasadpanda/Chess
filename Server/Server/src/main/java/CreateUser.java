@@ -27,40 +27,42 @@ public class CreateUser extends FireEater{
         auth = FirebaseAuth.getInstance();
     }
 
-    private void createUser(String email, String username, String password)
+    private CWHResponse createUser(String email, String username, String password)
     {
-        UserRecord.CreateRequest create = new UserRecord.CreateRequest();
-        create.setEmail(email);
-        create.setDisplayName(username);
-        create.setPassword(password);
-        auth.createUserAsync(create);
+        try{
+
+            UserRecord.CreateRequest create = new UserRecord.CreateRequest();
+            create.setEmail(email);
+            create.setDisplayName(username);
+            create.setPassword(password);
+
+            String doesExist = FireEater.usernameToUID(username);
+            if(doesExist != null)
+                return new CWHResponse("Username already taken", false);
+
+            // this is a hacky check to see if the email is already taken
+            UserRecord r = auth.createUserAsync(create).get();
+            String UID = r.getUid();
+
+            // database below
+
+            DatabaseReference usersPath = getDatabase().getReference().child("users").child(UID);
+            SynchronousListener s = new SynchronousListener();
+            usersPath.setValueAsync(new User(username));
+            return new CWHResponse("Created new user: " + username, true);
+        } catch (Exception e)
+        {
+            return new CWHResponse("Something went wrong when creating user!\n" + e.getMessage() , false);
+        }
     }
 
     @Override
     public CWHResponse handle(CWHRequest request) {
-        FirebaseDatabase database = getDatabase();
-        DatabaseReference usersRef = database.getReference().child("users");
-
-        String uid = request.getExtras().get("uid");
-        // set this .child() parameter to the desired user's UID
-        DatabaseReference usersPath = usersRef.child(uid);
-        SynchronousListener s = new SynchronousListener();
-        usersPath.addListenerForSingleValueEvent(s);
-
-        DataSnapshot userSnapshot = s.getSnapshot();
-        User get = userSnapshot.getValue(User.class);
-        if(get == null)
-        {
-            String username = request.getExtras().get("username");
-            usersPath.setValueAsync(new User(username));
-            System.out.println("created new users");
-            return new CWHResponse("Created new user: " + username, false);
-        }
-        else
-        {
-            System.out.println(userSnapshot.getKey() + " " +get.username);
-        }
-        return null;
+        String username = request.getExtras().get("username");
+        String password = request.getExtras().get("password");
+        String email = request.getExtras().get("email");
+        // this is for the FirebaseAuth
+        return createUser(email, username, password);
     }
 
     public static void getUser(String UID)

@@ -11,19 +11,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
         Validator.initialize();
+        startServer();
         System.out.println("goodbye!");
 
+
+        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);
+        c.put("gameid", "-L9QYy3Fc9De6RnhgVCE");
+        c.put("start", "0");
+        c.put("end", "1");
+        Mover m = new Mover();
+        System.out.println(m.handle(c));
 
         new Scanner(System.in).next();
     }
 
-    private void startServer() throws Exception {
+    private static void startServer() throws Exception {
         JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
         server.start();
     }

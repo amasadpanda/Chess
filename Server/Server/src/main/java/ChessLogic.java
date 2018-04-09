@@ -23,6 +23,7 @@ public class ChessLogic {
         boolean inBounds(int r,int c) {
             return r>=0&&r<8&&c>=0&&c<8;
         }
+		abstract Piece copy();
     }
 
     public static void movePiece(int r1,int c1,int r2,int c2,Piece[][] board) {
@@ -84,7 +85,11 @@ public class ChessLogic {
         public Pawn(boolean isWhite) {
             super(isWhite);
         }
-
+		public Piece copy() {
+			Pawn cpy = new Pawn(this.white);
+			cpy.movedTwiceLastTurn = this.movedTwiceLastTurn;
+			return cpy;
+		}
         public Pawn(boolean isWhite, boolean moved)
         {
             super(isWhite);
@@ -155,7 +160,11 @@ public class ChessLogic {
         public King(boolean isWhite) {
             super(isWhite);
         }
-
+        public Piece copy() {
+            King cpy = new King(this.white);
+            cpy.moved = this.moved;
+            return cpy;
+        }
         public King(boolean isWhite, boolean move)
         {
             super(isWhite);
@@ -189,6 +198,9 @@ public class ChessLogic {
         public Knight(boolean isWhite) {
             super(isWhite);
         }
+        public Piece copy() {
+            return new Knight(this.white);
+        }
         HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
             int r=loc/8,c=loc%8;
             int[] dr= {-2,-1,1,2,2,1,-1,-2}, dc= {1,2,2,1,-1,-2,-2,-1};
@@ -215,6 +227,11 @@ public class ChessLogic {
         boolean moved;
         public Rook(boolean isWhite) {
             super(isWhite);
+        }
+        public Piece copy() {
+            Rook cpy = new Rook(this.white);
+            cpy.moved = this.moved;
+            return cpy;
         }
         HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal) {
             int r=loc/8,c=loc%8;
@@ -274,6 +291,9 @@ public class ChessLogic {
         public Bishop(boolean isWhite) {
             super(isWhite);
         }
+        public Piece copy() {
+            return new Bishop(this.white);
+        }
         HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
             int r=loc/8,c=loc%8;
             int[] dr= {-1,1,1,-1},dc= {1,1,-1,-1};
@@ -315,7 +335,9 @@ public class ChessLogic {
         public Queen(boolean isWhite) {
             super(isWhite);
         }
-
+        public Piece copy() {
+           return new Queen(this.white);
+        }
         //This is basically a rook with a king's dr/dc array.
         HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
             int r=loc/8,c=loc%8;

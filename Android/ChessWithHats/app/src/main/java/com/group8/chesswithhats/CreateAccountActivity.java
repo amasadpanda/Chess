@@ -2,6 +2,7 @@ package com.group8.chesswithhats;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +16,7 @@ import com.group8.chesswithhats.util.LoadingDialog;
 /*
  * @author Philip Rodriguez
  */
-public class CreateAccountActivity extends Activity {
+public class CreateAccountActivity extends AppCompatActivity {
 
     private EditText edtEmailAddress;
     private EditText edtUsername;

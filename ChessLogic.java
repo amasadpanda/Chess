@@ -9,13 +9,15 @@ public class ChessLogic {
     public static abstract class Piece {
 
         public boolean white;
+		protected int drawableID;
 
         public Piece(boolean isWhite) {
             white=isWhite;
+	    	drawableID = white ? R.drawable.white_default : R.drawable.black_default;
+			//This can be removed once all drawables have been added.
         }
 
-        public Piece()
-        {
+        public Piece() {
             this(true);
         }
 
@@ -84,6 +86,7 @@ public class ChessLogic {
         boolean movedTwiceLastTurn;
         public Pawn(boolean isWhite) {
             super(isWhite);
+			drawableID = white ? R.drawable.white_pawn : R.drawable.black_pawn;
         }
 		public Piece copy() {
 			Pawn cpy = new Pawn(this.white);
@@ -159,6 +162,7 @@ public class ChessLogic {
         boolean moved;
         public King(boolean isWhite) {
             super(isWhite);
+			drawableID = white ? R.drawable.white_king : R.drawable.black_king;
         }
         public Piece copy() {
             King cpy = new King(this.white);
@@ -197,6 +201,7 @@ public class ChessLogic {
     public static class Knight extends Piece {
         public Knight(boolean isWhite) {
             super(isWhite);
+			drawableID = white ? R.drawable.white_knight : R.drawable.black_knight;
         }
         public Piece copy() {
             return new Knight(this.white);
@@ -290,6 +295,7 @@ public class ChessLogic {
     public static class Bishop extends Piece {
         public Bishop(boolean isWhite) {
             super(isWhite);
+			drawableID = white ? R.drawable.white_bishop : R.drawable.black_bishop;
         }
         public Piece copy() {
             return new Bishop(this.white);
@@ -334,6 +340,7 @@ public class ChessLogic {
     public static class Queen extends Piece {
         public Queen(boolean isWhite) {
             super(isWhite);
+			drawableID = white ? R.drawable.white_queen : R.drawable.black_queen;
         }
         public Piece copy() {
            return new Queen(this.white);

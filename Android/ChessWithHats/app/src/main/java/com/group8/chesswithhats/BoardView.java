@@ -1,4 +1,4 @@
-package cop.poop.cwh;
+package com.group8.chesswithhats;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,14 +12,7 @@ import android.view.View;
 
 import java.util.HashSet;
 
-//import static cop.poop.cwh.ChessLogic.Bishop;
-//import static cop.poop.cwh.ChessLogic.King;
-//import static cop.poop.cwh.ChessLogic.Knight;
-//import static cop.poop.cwh.ChessLogic.Pawn;
-//import static cop.poop.cwh.ChessLogic.Piece;
-//import static cop.poop.cwh.ChessLogic.Queen;
-//import static cop.poop.cwh.ChessLogic.Rook;
-//FIXME: ChessLogic.java has no home!! Give it a home and then fix these.
+import static com.group8.chesswithhats.ChessLogic.*;
 
 /**
  * TODO: document your custom view class.

@@ -109,7 +109,7 @@ public class ChessLogic {
             super(isWhite);
             movedTwiceLastTurn = moved;
         }
-        HashSet<Integer> getMoves(int loc, Piece[][] board,boolean forReal){
+        public HashSet<Integer> getMoves(int loc, Piece[][] board,boolean forReal){
             HashSet<Integer> moves=new HashSet<Integer>();
             int r=loc/8,c=loc%8;
 
@@ -185,7 +185,7 @@ public class ChessLogic {
             super(isWhite);
             moved = move;
         }
-        HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal) {
+        public HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal) {
             int r=loc/8,c=loc%8;
             int[] dr= {-1,-1,0,1,1,1,0,-1},dc= {0,1,1,1,0,-1,-1,-1};
             HashSet<Integer> moves=new HashSet<Integer>();
@@ -217,7 +217,7 @@ public class ChessLogic {
         public Piece copy() {
             return new Knight(this.white);
         }
-        HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
+        public HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
             int r=loc/8,c=loc%8;
             int[] dr= {-2,-1,1,2,2,1,-1,-2}, dc= {1,2,2,1,-1,-2,-2,-1};
             HashSet<Integer> moves=new HashSet<Integer>();
@@ -249,7 +249,7 @@ public class ChessLogic {
             cpy.moved = this.moved;
             return cpy;
         }
-        HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal) {
+        public HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal) {
             int r=loc/8,c=loc%8;
             int[] dr= {-1,0,1,0},dc= {0,1,0,-1};
             HashSet<Integer> moves=new HashSet<Integer>();
@@ -311,7 +311,7 @@ public class ChessLogic {
         public Piece copy() {
             return new Bishop(this.white);
         }
-        HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
+        public HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
             int r=loc/8,c=loc%8;
             int[] dr= {-1,1,1,-1},dc= {1,1,-1,-1};
             HashSet<Integer> moves=new HashSet<Integer>();
@@ -357,7 +357,7 @@ public class ChessLogic {
            return new Queen(this.white);
         }
         //This is basically a rook with a king's dr/dc array.
-        HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
+        public HashSet<Integer> getMoves(int loc,Piece[][] board,boolean forReal){
             int r=loc/8,c=loc%8;
             int[] dr= {-1,-1,0,1,1,1,0,-1},dc= {0,1,1,1,0,-1,-1,-1};
             HashSet<Integer> moves=new HashSet<Integer>();

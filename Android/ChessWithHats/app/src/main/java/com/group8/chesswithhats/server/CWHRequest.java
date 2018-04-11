@@ -33,7 +33,8 @@ import javax.net.ssl.TrustManagerFactory;
  * @author Philip Rodriguez
  */
 public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
-    public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
+    //public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
+    public static final String serverURL = "https://192.168.43.184:1235/chessWithHats/";
 
     public enum RequestType {
         MAKE_MOVE, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,
@@ -57,7 +58,7 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     {
         authIDSet = new Semaphore(0);
         if (user != null) {
-            user.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            user.getIdToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                 @Override
                 public void onComplete(@NonNull Task<GetTokenResult> task) {
                     authID = task.getResult().getToken();

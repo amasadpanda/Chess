@@ -27,7 +27,12 @@ public class ChessLogic {
             return drawableID;
         }
 
-        abstract HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal);
+        public abstract HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal);
+        
+        public HashSet<Integer> getMoves(int loc, Piece[][] board){
+            return getMoves(loc,board,true);
+        }
+	    
         boolean inBounds(int r,int c) {
             return r>=0&&r<8&&c>=0&&c<8;
         }

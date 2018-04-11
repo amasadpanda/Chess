@@ -1,3 +1,5 @@
+package com.group8.chesswithhats;
+
 import java.io.Serializable;
 import java.util.HashSet;
 

@@ -11,7 +11,7 @@ public class ChessLogic {
     public static abstract class Piece {
 
         public boolean white;
-		protected int drawableID;
+        protected int drawableID;
 
         public Piece(boolean isWhite) {
             white=isWhite;
@@ -21,6 +21,10 @@ public class ChessLogic {
 
         public Piece() {
             this(true);
+        }
+        
+        public int getDrawableID(){
+            return drawableID;
         }
 
         abstract HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal);

@@ -35,6 +35,11 @@ public class Mover extends FireEater{
             return new CWHResponse("Invalid move", false);
 
         String moves = game.moves + (startingPlace+clientMove+" ");
+        String turn = game.turn;
+        if(turn.equals("white"))
+            turn = "black";
+        else
+            turn = "white";
 
         game.board.remove("x" + startingPlace);
         game.board.put("x"+(clientMove), myPiece.toString() );
@@ -44,6 +49,7 @@ public class Mover extends FireEater{
         updateGame.put("moves", moves);
         updateGame.put("black", game.black);
         updateGame.put("white", game.white);
+        updateGame.put("turn", turn);
 
         gameRef.setValueAsync(updateGame);
 

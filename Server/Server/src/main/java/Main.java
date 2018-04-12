@@ -34,5 +34,6 @@ public class Main {
     private static void startServer() throws Exception {
         JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
         server.start();
+        server.setLogLevel(Level.WARNING);
     }
 }

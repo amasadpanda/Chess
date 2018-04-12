@@ -8,6 +8,7 @@ public class Game {
     // these are set as UIDs
     public String  black, white;
     public String moves;
+    public String turn = "white";
     public Map<String, String> board;
 
     public Game()
@@ -17,7 +18,6 @@ public class Game {
 
     public Game(String UID)
     {
-        this();
         int coinToss = (int)Math.random()*2;
         if(coinToss == 1)
             black = UID;
@@ -27,7 +27,6 @@ public class Game {
 
     public Game(String user1, String user2)
     {
-        this();
         int coinToss = (int)Math.random()*2;
         if(coinToss == 1)
         {

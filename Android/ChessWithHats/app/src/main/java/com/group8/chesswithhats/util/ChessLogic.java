@@ -99,6 +99,8 @@ public class ChessLogic {
     	board[7][spotsLeft.get(0)]=new Rook(true);
     	board[7][spotsLeft.get(1)]=new King(true);
     	board[7][spotsLeft.get(2)]=new Rook(true);
+        
+        return board;
     }
     
     //Base Piece Class

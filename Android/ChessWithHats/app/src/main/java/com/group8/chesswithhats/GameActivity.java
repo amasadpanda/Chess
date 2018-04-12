@@ -59,13 +59,12 @@ public class GameActivity extends AppCompatActivity {
                 CWHRequest request = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.MAKE_MOVE, new OnCWHResponseListener() {
                     @Override
                     public void onCWHResponse(CWHResponse response) {
+                        loading.dismiss();
                         if (response.isSuccess()) {
                             System.out.println("Move successfully sent.");
-                            loading.dismiss();
                             board.invalidate();
                         } else {
                             System.out.println("Something's wrong...");
-                            loading.dismiss();
                             GameActivity.this.finish();
                             Toast.makeText(GameActivity.this, "Something's wrong...",Toast.LENGTH_SHORT).show();
                         }
@@ -84,7 +83,7 @@ public class GameActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 loading.show();
                 try {
-                    game = dataSnapshot.getValue(Game.class);
+                    game = dataSnapshot.getValue(Game.class); //This is so cool
                     board.setStateFromGame(game, auth.getCurrentUser().getUid());
                 }catch(Exception e){
                     Log.e("GameActivity", "Unable to load game", e);
@@ -105,8 +104,7 @@ public class GameActivity extends AppCompatActivity {
     // Check if the user is signed in. If not, close the activity
     private void checkLoginStatus() {
         FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser == null) {
-            // We are not signed in!
+        if (currentUser == null) { // We are not signed in!
             finish();
         }
     }

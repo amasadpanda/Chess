@@ -17,8 +17,6 @@ public class ChessLogic {
 
         public Piece(boolean isWhite) {
             white=isWhite;
-	    	drawableID = white ? R.drawable.white_default : R.drawable.black_default;
-			//This can be removed once all drawables have been added.
         }
 
         public Piece() {
@@ -245,6 +243,7 @@ public class ChessLogic {
         boolean moved;
         public Rook(boolean isWhite) {
             super(isWhite);
+			drawableID = white ? R.drawable.white_rook : R.drawable.black_rook;
         }
         public Piece copy() {
             Rook cpy = new Rook(this.white);

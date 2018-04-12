@@ -208,8 +208,8 @@ public class HomeActivity extends AppCompatActivity {
                     String gameID = dataSnapshot.getKey();
                     for (int v = 0; v < llCurrentGames.getChildCount(); v++)
                     {
-                        GameInviteView view = (GameInviteView) llCurrentGames.getChildAt(v);
-                        if (view.getCorrespondingGameID().equals(gameID))
+                        CurrentGameView view = (CurrentGameView) llCurrentGames.getChildAt(v);
+                        if (view.getGameID().equals(gameID))
                         {
                             // This is the one to remove!
                             llCurrentGames.removeView(view);

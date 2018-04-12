@@ -5,6 +5,9 @@ public class PoolSelector extends FireEater{
     HashMap<String, FireEater> pool;
 
     public PoolSelector(){
+
+        pool = new HashMap<>();
+
         pool.put("rankedchess", new MatchmakingPool());
         pool.put("ranked960", new MatchmakingPool());
         pool.put("rankedpeasant", new MatchmakingPool());

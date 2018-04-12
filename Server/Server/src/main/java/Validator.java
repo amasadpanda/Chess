@@ -15,8 +15,8 @@ public class Validator {
         CWHRequest.RequestType type = request.getRequestType();
         if(type == CWHRequest.RequestType.CREATE_ACCOUNT)
         {
-            if(request.getAuthID() != null || !request.getAuthID().isEmpty())
-                return _BAD_AUTHID;
+            if(!request.getAuthID().isEmpty())
+                return new CWHResponse("The AuthID is not empty", false);
             if(!request.getExtras().containsKey("email"))
                 return new CWHResponse("Supply an email", false);
             if(!request.getExtras().containsKey("username"))
@@ -41,21 +41,29 @@ public class Validator {
                     return _BAD_FRIEND;
                 try {
                     String friendUID = FireEater.usernameToUID(friendUsername);
+                    if(friendUID == null)
+                        return _BAD_FRIEND;
                     request.put("frienduid", friendUID);
                 } catch (Exception e) {
                     return _BAD_FRIEND;
                 }
+                if(type == CWHRequest.RequestType.GAME_CREATION)
+                {
+                    if(request.getExtras().get("gametype") == null)
+                        return new CWHResponse("No gametype specified", false);
+                }
             }
-            if(type == CWHRequest.RequestType.ACCEPT_GAME || type == CWHRequest.RequestType.DENY_GAME || type == CWHRequest.RequestType.MAKE_MOVE)
+            if(type == CWHRequest.RequestType.ACCEPT_GAME || type == CWHRequest.RequestType.DENY_GAME
+                    || type == CWHRequest.RequestType.MAKE_MOVE)
             {
                 String gameID = request.getExtras().get("gameid");
                 if(gameID == null)
-                    return new CWHResponse("Game not found", false);
+                    return new CWHResponse("No gameid specified", false);
                 DatabaseReference ref = FireEater.getDatabase().getReference().child("games").child(gameID);
                 SynchronousListener checkValidGame = new SynchronousListener();
                 ref.addListenerForSingleValueEvent(checkValidGame);
-                if(!checkValidGame.getSnapshot().exists())
-                    return new CWHResponse("Game not found", false);
+              //  if(!checkValidGame.getSnapshot().exists())
+              //      return new CWHResponse("Game not found", false);
             }
             if(type == CWHRequest.RequestType.MAKE_MOVE)
             {
@@ -67,53 +75,6 @@ public class Validator {
         return eaters.get(request.getRequestType()).handle(request);
     }
 
-    public static CWHResponse processRequest1(CWHRequest request)
-    {
-        String UID, username;
-
-        switch (request.getRequestType())
-        {
-            case CREATE_ACCOUNT:{
-                if(request.getAuthID() != null || !request.getAuthID().isEmpty())
-                    return _BAD_AUTHID;
-                if(!request.getExtras().containsKey("email"))
-                    return new CWHResponse("Supply an email", false);
-                if(!request.getExtras().containsKey("username"))
-                    return new CWHResponse("Supply an username", false);
-                if(!request.getExtras().containsKey("password"))
-                    return new CWHResponse("Supply a password", false);
-                break;
-            }
-            case MATCHMAKING_REQUEST:{
-                break;
-            }
-            case ACCEPT_GAME:{
-                break;
-            }
-            case ACCEPT_FRIEND:
-            case DENY_FRIEND:
-            case GAME_CREATION:
-            case FRIEND_REQUEST:{
-                String friendUsername = request.getExtras().get("friend");
-                if(friendUsername == null || friendUsername.isEmpty() || !friendUsername.matches("([A-Z|a-z|0-9])*"))
-                    return _BAD_FRIEND;
-                try {
-                    String friendUID = FireEater.usernameToUID(friendUsername);
-                    request.put("frienduid", friendUID);
-                } catch (Exception e) {
-                    return _BAD_FRIEND;
-                }
-                break;
-            }
-
-        }
-
-        UID = getUID(request.getAuthID());
-        username = FireEater.UIDToUsername(UID);
-        request.put("uid", UID);
-        request.put("username", username);
-        return eaters.get(request.getRequestType()).handle(request);
-    }
 
     public static void initialize()
     {
@@ -126,6 +87,7 @@ public class Validator {
         eaters.put(CWHRequest.RequestType.ACCEPT_FRIEND,        new AcceptFriend());
         eaters.put(CWHRequest.RequestType.DENY_FRIEND,          new DenyFriend());
         eaters.put(CWHRequest.RequestType.ACCEPT_GAME,          new AcceptGame());
+        eaters.put(CWHRequest.RequestType.DENY_GAME,            new DenyGame());
         eaters.put(CWHRequest.RequestType.MAKE_MOVE,            new Mover());
 
         System.out.print("DONE\n");

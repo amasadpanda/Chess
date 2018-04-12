@@ -19,15 +19,14 @@ public class Main {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
         Validator.initialize();
         startServer();
-        System.out.println("goodbye!");
+        System.out.println("ALL SYSTEMS ONLINE!");
 
-
-        CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);
-        c.put("gameid", "-L9QYy3Fc9De6RnhgVCE");
-        c.put("start", "1");
-        c.put("end", "2");
-        Mover m = new Mover();
-        System.out.println(m.handle(c));
+        //CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);
+       // c.put("gameid", "-L9QYy3Fc9De6RnhgVCE");
+        //c.put("start", "1");
+       // c.put("end", "2");
+      //  Mover m = new Mover();
+       // System.out.println(m.handle(c));
 
         new Scanner(System.in).next();
     }

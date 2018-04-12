@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.group8.chesswithhats.GameActivity;
 import com.group8.chesswithhats.R;
 
+
 public class CurrentGameView extends FrameLayout {
 
     private final String gameID;
@@ -21,6 +22,7 @@ public class CurrentGameView extends FrameLayout {
     private View subView;
 
     public CurrentGameView(final Context context, final String gameID, final String opponent) {
+
         super(context);
         this.gameID = gameID;
         this.opponent = opponent;

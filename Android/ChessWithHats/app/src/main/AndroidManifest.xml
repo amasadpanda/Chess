@@ -22,6 +22,7 @@
         <activity android:name=".HomeActivity" android:theme="@style/HomeTheme"/>
         <activity android:name=".GameActivity" />
         <activity android:name=".NewGameActivity" />
+
     </application>
 
 </manifest>

@@ -7,6 +7,33 @@ import java.util.HashSet;
 
 public class ChessLogic {
 
+    public static Piece[][] makeBasicChessBoard(){
+        Piece[][] board=new Piece[8][8];
+        for(int 0;i<8;i++){
+            board[1][i]=new Pawn(false);
+            board[6][i]=new Pawn(true);
+        }
+        //Black
+        board[0][0]=new Rook(false);
+        board[0][1]=new Knight(false);
+        board[0][2]=new Bishop(false);
+        board[0][3]=new Queen(false);
+        board[0][4]=new King(false);
+        board[0][5]=new Bishop(false);
+        board[0][6]=new Knight(false);
+        board[0][7]=new Rook(false);
+        
+        //White
+        board[7][0]=new Rook(true);
+        board[7][1]=new Knight(true);
+        board[7][2]=new Bishop(true);
+        board[7][3]=new Queen(true);
+        board[7][4]=new King(true);
+        board[7][5]=new Bishop(true);
+        board[7][6]=new Knight(true);
+        board[7][7]=new Rook(true);
+    }
+    
     //Base Piece Class
     //ChessLogic.Piece piece; import static whatever.something.ChessLogic.*;
     //This is a Christian logic class, so please, NO swearing!

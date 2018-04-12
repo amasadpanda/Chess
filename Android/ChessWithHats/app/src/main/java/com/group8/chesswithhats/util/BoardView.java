@@ -10,6 +10,13 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.HashSet;
 
 import static com.group8.chesswithhats.util.ChessLogic.*;
@@ -27,54 +34,47 @@ public class BoardView extends View {
 //    private float mTextWidth;
 //    private float mTextHeight;
 
-    private int sideLen,sqLen,contentWidth,contentHeight;
-    private Piece[][] board;
-    private int active = -1;
-    private HashSet<Integer> highlighted;
     private static final HashSet<Integer> EMPTY = new HashSet<>();
-    //private TextView status = findViewById(R.id.statusMessage);
 
+    private int sideLen,sqLen,contentWidth,contentHeight,active = -1;
+    private Piece[][] board = new Piece[8][8]; //start w/ empty board
+    private HashSet<Integer> highlighted = EMPTY;
+    private MakeMoveListener makeMoveListener;
+    private boolean myTurn, white;
+
+    //I genuinely don't know what these constructors take in or do.
     public BoardView(Context context) {
         super(context);
-        init(null, 0);
+        System.out.println("Constructor 1");
+        //init(null, 0);
     }
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs, 0);
+        System.out.println("Constructor 2");
+       //init(attrs, 0);
     }
 
     public BoardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(attrs, defStyle);
+        System.out.println("Constructor 3");
+        //init(attrs, defStyle);
     }
 
-    private void init(AttributeSet attrs, int defStyle) {
-
-        //TODO: This should read board state from the server.
-        //Move this initial state creation to, say, ChessLogic?
-
-        board = new Piece[8][8];
-        for(int j=0;j<8;j++){
-            board[1][j] = new Pawn(false);
-            board[6][j] = new Pawn(true);
+    public void setStateFromGame(Game game, String user){
+        board = Game.toPieceArray(game.board);
+        if(game.black.equals(user)) {
+            myTurn = game.turn.equals("black");
+            white = false;
+        }else {
+            myTurn = game.turn.equals("white");
+            white = true;
         }
-
-        board[0] = new Piece[]{new Rook(false), new Knight(false), new Bishop(false), new Queen(false), new King(false), new Bishop(false), new Knight(false), new Rook(false)};
-        board[7] = new Piece[]{new Rook(true), new Knight(true), new Bishop(true), new Queen(true), new King(true), new Bishop(true), new Knight(true), new Rook(true)};
-
-        highlighted = new HashSet<>();
-
     }
 
-//    private void invalidateTextPaintAndMeasurements() {
-//        mTextPaint.setTextSize(mExampleDimension);
-//        mTextPaint.setColor(mExampleColor);
-//        mTextWidth = mTextPaint.measureText(mExampleString);
-//
-//        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-//        mTextHeight = fontMetrics.bottom;
-//    }
+    public void setMakeMoveListener(MakeMoveListener listener){
+        makeMoveListener = listener;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -125,27 +125,26 @@ public class BoardView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         int x = (int)event.getX();
         int y = (int)event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
+            if(event.getAction()==MotionEvent.ACTION_DOWN) {
                 //System.out.printf("The user tapped (%d,%d)\n",x,y);
                 x -= getPaddingLeft();
-                x/=sqLen;
+                x /= sqLen;
                 y -= getPaddingTop();
-                y/=sqLen;
+                y /= sqLen;
 
-                int index = y*8 + x;
+                int index = y * 8 + x;
 
-                System.out.printf("(%d,%d): Square %d\n",y,x,index);
+                System.out.printf("(%d,%d): Square %d\n", y, x, index);
 
-                if(index<0 || index>63) {
+                if (index < 0 || index > 63) {
                     System.out.println("Out of bounds tap");
                     active = -1;
                     highlighted = EMPTY;
-                    return false;
+                    return true;
                 }
 
-                if(active==-1){ //nothing selected
-                    if (board[y][x] != null) {
+                if (active == -1) { //nothing selected
+                    if (board[y][x] != null && board[y][x].white==white) {
                         System.out.printf("Getting valid moves for %s...\n", board[y][x].getClass().getSimpleName());
                         highlighted = board[y][x].getMoves(index, board);
                         System.out.printf("%d valid moves.\n", highlighted.size());
@@ -154,23 +153,28 @@ public class BoardView extends View {
                         performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                         invalidate(); //haha ironic
                     }
-                }else{ //something selected!
-                    //TODO: should this shit go in ChessLogic? So it can account for castling, etc.?
-                    if(highlighted.contains(index)){
-                        int py = active/8, px = active%8;
-                        board[y][x] = board[py][px];
-                        board[py][px] = null;
+                } else { //something selected!
+                    if (highlighted.contains(index)) {
+                        int py = active / 8, px = active % 8;
+                        //board[y][x] = board[py][px];
+                        //board[py][px] = null;
+                        if(makeMoveListener==null)
+                            throw new NullPointerException("No make move listener in this board view!! Why.....");
+                        if(makeMoveListener.makeMove(active,index)){
+                            //do nothing? The firebase callback from GameActivity should work things out...?
+                        }
                         performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                        highlighted = EMPTY;
+                        active = -1;
                         //status.setText("Solid move, dude!");
+                    }else{
+                        highlighted = EMPTY;
+                        active = -1;
+                        invalidate();
                     }
-                    highlighted = EMPTY;
-                    active = -1;
-                    invalidate();
+                    //invalidate();
                 }
-
                 return true;
-            case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_UP:
         }
         return false;
     }

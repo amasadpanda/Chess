@@ -55,7 +55,7 @@ public class Mover extends FireEater{
 
         gameRef.setValueAsync(updateGame);
 
-        return null;
+        return new CWHResponse("Move made", true);
     }
 
 

@@ -47,11 +47,11 @@ public class Game {
         // set starting board config here
         if(game.contains("960"))
         {
-
+            board = toHashMap(makeRandomizedBoardThatIsAValidChess960Board());
         }
         else if(game.contains("Revolt"))
         {
-
+            board = toHashMap(makePeasantRevoltBoard());
         }
         else
         {
@@ -90,6 +90,73 @@ public class Game {
         return board;
     }
 
+    public static ChessLogic.Piece[][] makePeasantRevoltBoard(){
+        ChessLogic.Piece[][] board=new ChessLogic.Piece[8][8];
+        for(int i=0;i<8;i++)
+            board[6][i]=new ChessLogic.Pawn(true);
+        board[7][4]=new ChessLogic.King(true);
+
+        board[0][1]=new ChessLogic.Knight(false);
+        board[0][2]=new ChessLogic.Knight(false);
+        board[0][4]=new ChessLogic.King(false);
+        board[0][6]=new ChessLogic.Knight(false);
+        board[1][4]=new ChessLogic.Pawn(false);
+
+        return board;
+    }
+
+    public static ChessLogic.Piece[][] makeRandomizedBoardThatIsAValidChess960Board(){
+        ChessLogic.Piece[][] board=new ChessLogic.Piece[8][8];
+        for(int i=0;i<8;i++) {
+            board[1][i]=new ChessLogic.Pawn(false);
+            board[6][i]=new ChessLogic.Pawn(true);
+        }
+        ArrayList<Integer> spotsLeft=new ArrayList<Integer>();
+        for(int i=0;i<8;i++)
+            spotsLeft.add(i);
+
+        //Bishop on even
+        int index=(int)(Math.random()*4)*2;
+        board[0][index]=new ChessLogic.Bishop(false);
+        board[7][index]=new ChessLogic.Bishop(true);
+        spotsLeft.remove((Object)new Integer(index));
+
+        //Bishop on odd
+        index=(int)(Math.random()*4)*2+1;
+        board[0][index]=new ChessLogic.Bishop(false);
+        board[7][index]=new ChessLogic.Bishop(true);
+        spotsLeft.remove((Object)new Integer(index));
+
+        //Queen
+        index=(int)(Math.random()*6);
+        index=spotsLeft.get(index);
+        board[0][index]=new ChessLogic.Queen(false);
+        board[7][index]=new ChessLogic.Queen(true);
+        spotsLeft.remove((Object)new Integer(index));
+
+        //Knights
+        index=(int)(Math.random()*5);
+        index=spotsLeft.get(index);
+        board[0][index]=new ChessLogic.Knight(false);
+        board[7][index]=new ChessLogic.Knight(true);
+        spotsLeft.remove((Object)new Integer(index));
+        index=(int)(Math.random()*4);
+        index=spotsLeft.get(index);
+        board[0][index]=new ChessLogic.Knight(false);
+        board[7][index]=new ChessLogic.Knight(true);
+        spotsLeft.remove((Object)new Integer(index));
+
+        //Everything else
+        board[0][spotsLeft.get(0)]=new ChessLogic.Rook(false);
+        board[0][spotsLeft.get(1)]=new ChessLogic.King(false);
+        board[0][spotsLeft.get(2)]=new ChessLogic.Rook(false);
+        board[7][spotsLeft.get(0)]=new ChessLogic.Rook(true);
+        board[7][spotsLeft.get(1)]=new ChessLogic.King(true);
+        board[7][spotsLeft.get(2)]=new ChessLogic.Rook(true);
+
+        return board;
+    }
+
     public static HashMap<String, String> toHashMap(ChessLogic.Piece[][] board)
     {
         HashMap<String, String> map = new HashMap<>();
@@ -98,7 +165,7 @@ public class Game {
             for(int c = 0; c < board[0].length; c++)
             {
                 if(board[r][c] != null)
-                    map.put(""+(r*8+c), board[r][c].toString());
+                    map.put("x"+(r*8+c), board[r][c].toString());
             }
         }
         return map;

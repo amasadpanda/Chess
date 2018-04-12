@@ -19,6 +19,10 @@ public class ComputerGame extends FireEater{
         Game g = new Game(UID, "COMPUTER");
         g.setGametype(gametype);
 
+        Map<String, Object> map = new HashMap<>();
+        map.put(gameID, "COMPUTER");
+        ref.child("users").child(UID).child("current_games").updateChildrenAsync(map);
+
         newGame.setValueAsync(g);
         return new CWHResponse("Invitation sent", true);
     }

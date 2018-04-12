@@ -18,6 +18,8 @@ public class MatchmakingPool extends FireEater{
     @Override
     public CWHResponse handle(CWHRequest request) {
         String UID = request.getExtras().get("uid");
+        String gametype = request.getExtras().get("gametype");
+        String username = request.getExtras().get("username");
 
         if(pool.isEmpty())
         {
@@ -26,7 +28,9 @@ public class MatchmakingPool extends FireEater{
         }
         else
         {
-            String pooledUser = pool.remove();
+            String pooledUser = pool.peek();
+            if(pooledUser.equals(UID))
+                return new CWHResponse("You are already in this matchmaking pool", false);
 
             DatabaseReference ref = FireEater.getDatabase().getReference();
             DatabaseReference newGame = ref.child("games").push();
@@ -38,11 +42,16 @@ public class MatchmakingPool extends FireEater{
             Game g = new Game(UID, pooledUser);
             newGame.setValueAsync(g);
 
-            // update user information
-            Map<String, String> updateGameList = new HashMap<>();
-            updateGameList.put(gameID, "random");
-            user1Path.setValueAsync(updateGameList);
-            user2Path.setValueAsync(updateGameList);
+            // update requested user's list
+            String otherUserName = FireEater.UIDToUsername(pooledUser);
+            Map<String, Object> updateGameList = new HashMap<>();
+            updateGameList.put(gameID, otherUserName);
+            user1Path.updateChildrenAsync(updateGameList);
+
+            //update pooled user's list
+            updateGameList.put(gameID, username);
+            user2Path.updateChildrenAsync(updateGameList);
+
 
             return new CWHResponse("Matched with user", true);
         }

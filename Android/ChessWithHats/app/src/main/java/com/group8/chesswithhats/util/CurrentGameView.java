@@ -1,10 +1,12 @@
 package com.group8.chesswithhats.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.group8.chesswithhats.GameActivity;
 import com.group8.chesswithhats.R;
 
 public class CurrentGameView extends FrameLayout {
@@ -15,7 +17,7 @@ public class CurrentGameView extends FrameLayout {
 
     private View subView;
 
-    public CurrentGameView(Context context, String gameID, final String opponent, String gameType) {
+    public CurrentGameView(final Context context, final String gameID, final String opponent, String gameType) {
         super(context);
         this.gameID = gameID;
         this.opponent = opponent;
@@ -31,7 +33,10 @@ public class CurrentGameView extends FrameLayout {
         this.subView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("CLICK DETECTED FOR " + opponent);
+                // We need to open the relevant game activity
+                Intent gameActivityIntent = new Intent(context, GameActivity.class);
+                gameActivityIntent.putExtra("gameid", gameID);
+                context.startActivity(gameActivityIntent);
             }
         });
 

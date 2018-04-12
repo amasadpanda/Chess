@@ -1,4 +1,4 @@
-package com.group8.chesswithhats;
+package com.group8.chesswithhats.util;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,7 +12,7 @@ import android.view.View;
 
 import java.util.HashSet;
 
-import static com.group8.chesswithhats.ChessLogic.*;
+import static com.group8.chesswithhats.util.ChessLogic.*;
 
 /**
  * TODO: document your custom view class.

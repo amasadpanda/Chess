@@ -206,7 +206,7 @@ public class ChessLogic {
         }
 
         public Pawn(boolean isWhite, boolean moved) {
-            super(isWhite);
+            this(isWhite);
             movedTwiceLastTurn = moved;
         }
 
@@ -284,7 +284,7 @@ public class ChessLogic {
         }
 
         public King(boolean isWhite, boolean move) {
-            super(isWhite);
+            this(isWhite);
             moved = move;
         }
 

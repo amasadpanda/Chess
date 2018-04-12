@@ -37,7 +37,7 @@ public class GameActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        loading = new LoadingDialog(this,"The emporer has no clothes!!","Please wait while he puts something on...");
+        loading = new LoadingDialog(this, "The emporer has no clothes!!", "Please wait while he puts something on...");
         loading.show();
 
         gameID = getIntent().getStringExtra("gameid");
@@ -51,7 +51,7 @@ public class GameActivity extends AppCompatActivity {
         });
 
         setContentView(R.layout.activity_game);
-        board = (BoardView)findViewById(R.id.boardView);
+        board = (BoardView) findViewById(R.id.boardView);
         board.setMakeMoveListener(new MakeMoveListener() {
             @Override
             public boolean makeMove(int start, int end) {
@@ -64,9 +64,9 @@ public class GameActivity extends AppCompatActivity {
                             System.out.println("Move successfully sent.");
                             board.invalidate();
                         } else {
-                            System.out.println("Something's wrong...");
+                            Log.e("GameActivity","Something's wrong...");
                             GameActivity.this.finish();
-                            Toast.makeText(GameActivity.this, "Something's wrong...",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GameActivity.this, "Something's wrong...", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -82,7 +82,7 @@ public class GameActivity extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 loading.show();
-                try {
+                try{
                     game = dataSnapshot.getValue(Game.class); //This is so cool
                     board.setStateFromGame(game, auth.getCurrentUser().getUid());
                 }catch(Exception e){
@@ -92,11 +92,11 @@ public class GameActivity extends AppCompatActivity {
                 }
                 loading.dismiss();
             }
+
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
 
 
     }
@@ -113,5 +113,10 @@ public class GameActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         checkLoginStatus();
+    }
+
+    protected void onDestroy(){
+        super.onDestroy();
+        //OHHHH boy...We need to manually keep track of and kill all the listeners.
     }
 }

@@ -13,8 +13,10 @@ public class GameMaker extends FireEater {
     public CWHResponse handle(CWHRequest request) {
         DatabaseReference ref = FireEater.getDatabase().getReference();
         String UID = request.getExtras().get("uid");
+        String username = request.getExtras().get("username");
         String invitee = request.getExtras().get("friend");
         String inviteeUID = request.getExtras().get("frienduid");
+        String gameType = request.getExtras().get("gametype");
 
         DatabaseReference inviteeRef = ref.child("users").child(inviteeUID);
 
@@ -25,7 +27,7 @@ public class GameMaker extends FireEater {
         // Adds the game invitation to the invetee's list
         inviteeRef = inviteeRef.child("game_invitations");
         Map<String, Object > addGameInv = new HashMap<>();
-        addGameInv.put(gameID, UID);
+        addGameInv.put(gameID, username+";"+gameType);
         inviteeRef.updateChildrenAsync(addGameInv);
 
         // Adds the game object to the game lists

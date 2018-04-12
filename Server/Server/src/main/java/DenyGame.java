@@ -5,7 +5,7 @@ public class DenyGame extends FireEater {
     @Override
     public CWHResponse handle(CWHRequest request) {
         String UID = request.getExtras().get("uid");
-        String gameID = request.getExtras().get("game");
+        String gameID = request.getExtras().get("gameid");
 
         DatabaseReference ref = FireEater.getDatabase().getReference();
         DatabaseReference userRef = ref.child("users").child(UID).child("game_invitations").child(gameID);
@@ -16,6 +16,10 @@ public class DenyGame extends FireEater {
         if(validGame.getValue() == null)
             return new CWHResponse("No game invitation to reject", false);
         userRef.removeValueAsync();
+
+        DatabaseReference gameRef = ref.child("games").child(gameID);
+        gameRef.removeValueAsync();
+
         return new CWHResponse("Rejected game request" , true); //validGame.getValue() return friends uid string?
     }
 }

@@ -77,7 +77,8 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getTitle().equals(getResources().getString(R.string.home_newGame)))
                 {
-                    CWHRequest request = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.GAME_CREATION, new OnCWHResponseListener() {
+
+                    /*CWHRequest request = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.GAME_CREATION, new OnCWHResponseListener() {
                         @Override
                         public void onCWHResponse(CWHResponse response) {
                             System.out.println(response);
@@ -85,7 +86,10 @@ public class HomeActivity extends AppCompatActivity {
                     });
                     request.getExtras().put("friend", "timothy94");
                     request.getExtras().put("gametype", "Chess960");
-                    request.sendRequest(HomeActivity.this);
+                    request.sendRequest(HomeActivity.this);*/
+
+                    Intent newGameIntent = new Intent(HomeActivity.this, NewGameActivity.class);
+                    startActivity(newGameIntent);
                 }
                 else if (item.getTitle().equals(getResources().getString(R.string.home_manageFriends)))
                 {
@@ -182,9 +186,8 @@ public class HomeActivity extends AppCompatActivity {
                         // We need to add to our linear layout!
                         final String gameID = dataSnapshot.getKey();
                         final String opponent = dataSnapshot.getValue(String.class);
-                        final String gameType = "NOT YET IMPLEMENTED";
 
-                        CurrentGameView newChild = new CurrentGameView(HomeActivity.this, gameID, opponent, gameType);
+                        CurrentGameView newChild = new CurrentGameView(HomeActivity.this, gameID, opponent);
                         llCurrentGames.addView(newChild);
                     }
                     catch (Exception exc)

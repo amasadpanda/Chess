@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.group8.chesswithhats.GameActivity;
 import com.group8.chesswithhats.R;
 
@@ -13,22 +17,34 @@ public class CurrentGameView extends FrameLayout {
 
     private final String gameID;
     private final String opponent;
-    private final String gameType;
 
     private View subView;
 
-    public CurrentGameView(final Context context, final String gameID, final String opponent, String gameType) {
+    public CurrentGameView(final Context context, final String gameID, final String opponent) {
         super(context);
         this.gameID = gameID;
         this.opponent = opponent;
-        this.gameType = gameType;
         this.subView = inflate(context, R.layout.current_game_list_item, null);
 
         TextView txtOpponent = this.subView.findViewById(R.id.cg_txtOpponent);
-        TextView txtGameType = this.subView.findViewById(R.id.cg_txtGameType);
+        final TextView txtGameType = this.subView.findViewById(R.id.cg_txtGameType);
 
+        // Set opponent text
         txtOpponent.setText(opponent);
-        txtGameType.setText(gameType);
+
+        // Set the game type text
+        FirebaseDatabase.getInstance().getReference().child("games").child(gameID).child("gametype").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                txtGameType.setText(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Failed to fetch game type
+                txtGameType.setText(" ");
+            }
+        });
 
         this.subView.setOnClickListener(new OnClickListener() {
             @Override
@@ -49,9 +65,5 @@ public class CurrentGameView extends FrameLayout {
 
     public String getOpponent() {
         return opponent;
-    }
-
-    public String getGameType() {
-        return gameType;
     }
 }

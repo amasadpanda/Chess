@@ -19,4 +19,18 @@
     <string name="home_manageFriends">Manage Friends</string>
     <string name="home_manageAccount">Manage Account</string>
     <string name="home_signOut">Sign Out</string>
+
+    <!-- New Game Activity Strings -->
+    <string-array name="newgame_gameTypes">
+        <item>Chess</item>
+        <item>Chess960</item>
+        <item>Peasants' Revolt</item>
+    </string-array>
+
+    <string-array name="newgame_opponentTypes">
+        <item>Friend</item>
+        <item>Computer</item>
+        <item>Random Opponent</item>
+        <item>Ranked Opponent</item>
+    </string-array>
 </resources>

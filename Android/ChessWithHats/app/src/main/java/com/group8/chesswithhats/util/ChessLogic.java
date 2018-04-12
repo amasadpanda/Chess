@@ -18,8 +18,6 @@ public class ChessLogic {
         public Piece(boolean isWhite) {
 
             white = isWhite;
-            drawableID = white ? R.drawable.white_default : R.drawable.black_default;
-            //This can be removed once all drawables have been added.
 
         }
 

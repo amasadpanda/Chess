@@ -38,7 +38,7 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
 
     public enum RequestType {
         MAKE_MOVE, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,
-        MATCHMAKING_REQUEST, LEAVE_GAME, CREATE_ACCOUNT
+        MATCHMAKING_REQUEST, LEAVE_GAME, CREATE_ACCOUNT, COMPUTER_GAME
     }
 
     private Semaphore authIDSet;

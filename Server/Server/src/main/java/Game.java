@@ -9,6 +9,7 @@ public class Game {
     public String  black, white;
     public String moves;
     public String turn = "white";
+    public String gametype;
     public Map<String, String> board;
 
     public Game()
@@ -38,6 +39,14 @@ public class Game {
             black = user2;
             white = user1;
         }
+    }
+
+    public void setGametype(String game)
+    {
+        gametype = game;
+        // set starting board config here
+
+
     }
 
 

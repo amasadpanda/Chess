@@ -47,11 +47,13 @@ public class Validator {
                 } catch (Exception e) {
                     return _BAD_FRIEND;
                 }
-                if(type == CWHRequest.RequestType.GAME_CREATION)
-                {
-                    if(request.getExtras().get("gametype") == null)
-                        return new CWHResponse("No gametype specified", false);
-                }
+
+            }
+            if(type == CWHRequest.RequestType.GAME_CREATION || type == CWHRequest.RequestType.MATCHMAKING_REQUEST
+                    || type == CWHRequest.RequestType.COMPUTER_GAME)
+            {
+                if(request.getExtras().get("gametype") == null)
+                    return new CWHResponse("No gametype specified", false);
             }
             if(type == CWHRequest.RequestType.ACCEPT_GAME || type == CWHRequest.RequestType.DENY_GAME
                     || type == CWHRequest.RequestType.MAKE_MOVE)
@@ -62,8 +64,8 @@ public class Validator {
                 DatabaseReference ref = FireEater.getDatabase().getReference().child("games").child(gameID);
                 SynchronousListener checkValidGame = new SynchronousListener();
                 ref.addListenerForSingleValueEvent(checkValidGame);
-              //  if(!checkValidGame.getSnapshot().exists())
-              //      return new CWHResponse("Game not found", false);
+                if(!checkValidGame.getSnapshot().exists())
+                    return new CWHResponse("Game not found", false);
             }
             if(type == CWHRequest.RequestType.MAKE_MOVE)
             {
@@ -83,13 +85,12 @@ public class Validator {
         eaters.put(CWHRequest.RequestType.CREATE_ACCOUNT,       new CreateUser());
         eaters.put(CWHRequest.RequestType.FRIEND_REQUEST,       new SocialNetworking());
         eaters.put(CWHRequest.RequestType.GAME_CREATION,        new GameMaker());
-        eaters.put(CWHRequest.RequestType.MATCHMAKING_REQUEST,  new MatchmakingPool());
+        eaters.put(CWHRequest.RequestType.MATCHMAKING_REQUEST,  new PoolSelector());
         eaters.put(CWHRequest.RequestType.ACCEPT_FRIEND,        new AcceptFriend());
         eaters.put(CWHRequest.RequestType.DENY_FRIEND,          new DenyFriend());
         eaters.put(CWHRequest.RequestType.ACCEPT_GAME,          new AcceptGame());
         eaters.put(CWHRequest.RequestType.DENY_GAME,            new DenyGame());
         eaters.put(CWHRequest.RequestType.MAKE_MOVE,            new Mover());
-
         System.out.print("DONE\n");
     }
 

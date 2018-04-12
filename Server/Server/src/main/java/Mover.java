@@ -34,6 +34,8 @@ public class Mover extends FireEater{
         if(!isValid)
             return new CWHResponse("Invalid move", false);
 
+        ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate);
+
         String moves = game.moves + (startingPlace+clientMove+" ");
         String turn = game.turn;
         if(turn.equals("white"))

@@ -32,6 +32,7 @@ public class GameMaker extends FireEater {
 
         // Adds the game object to the game lists
         Game g = new Game(UID, inviteeUID);
+        g.setGametype(gameType);
         newGame.setValueAsync(g);
         return new CWHResponse("Invitation sent", true);
     }

@@ -45,10 +45,64 @@ public class Game {
     {
         gametype = game;
         // set starting board config here
+        if(game.contains("960"))
+        {
+
+        }
+        else if(game.contains("Revolt"))
+        {
+
+        }
+        else
+        {
+            board = toHashMap(makeBasicChessBoard());
+        }
 
 
     }
 
+    public static ChessLogic.Piece[][] makeBasicChessBoard(){
+        ChessLogic.Piece[][] board=new ChessLogic.Piece[8][8];
+        for(int i = 0;i<8;i++){
+            board[1][i]=new ChessLogic.Pawn(false);
+            board[6][i]=new ChessLogic.Pawn(true);
+        }
+        //Black
+        board[0][0]=new ChessLogic.Rook(false);
+        board[0][1]=new ChessLogic.Knight(false);
+        board[0][2]=new ChessLogic.Bishop(false);
+        board[0][3]=new ChessLogic.Queen(false);
+        board[0][4]=new ChessLogic.King(false);
+        board[0][5]=new ChessLogic.Bishop(false);
+        board[0][6]=new ChessLogic.Knight(false);
+        board[0][7]=new ChessLogic.Rook(false);
+
+        //White
+        board[7][0]=new ChessLogic.Rook(true);
+        board[7][1]=new ChessLogic.Knight(true);
+        board[7][2]=new ChessLogic.Bishop(true);
+        board[7][3]=new ChessLogic.Queen(true);
+        board[7][4]=new ChessLogic.King(true);
+        board[7][5]=new ChessLogic.Bishop(true);
+        board[7][6]=new ChessLogic.Knight(true);
+        board[7][7]=new ChessLogic.Rook(true);
+
+        return board;
+    }
+
+    public static HashMap<String, String> toHashMap(ChessLogic.Piece[][] board)
+    {
+        HashMap<String, String> map = new HashMap<>();
+        for(int r = 0; r < board.length; r++)
+        {
+            for(int c = 0; c < board[0].length; c++)
+            {
+                if(board[r][c] != null)
+                    map.put(""+(r*8+c), board[r][c].toString());
+            }
+        }
+        return map;
+    }
 
     public static ChessLogic.Piece[][] toPieceArray(Map<String, String> map)
     {

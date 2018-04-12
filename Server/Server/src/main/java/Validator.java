@@ -91,6 +91,7 @@ public class Validator {
         eaters.put(CWHRequest.RequestType.ACCEPT_GAME,          new AcceptGame());
         eaters.put(CWHRequest.RequestType.DENY_GAME,            new DenyGame());
         eaters.put(CWHRequest.RequestType.MAKE_MOVE,            new Mover());
+        eaters.put(CWHRequest.RequestType.COMPUTER_GAME,        new ComputerGame());
         System.out.print("DONE\n");
     }
 

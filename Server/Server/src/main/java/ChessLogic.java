@@ -24,6 +24,7 @@ public class ChessLogic {
             return r>=0&&r<8&&c>=0&&c<8;
         }
 		abstract Piece copy();
+
     }
 
     public static void movePiece(int r1,int c1,int r2,int c2,Piece[][] board) {

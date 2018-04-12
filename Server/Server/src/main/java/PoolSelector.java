@@ -8,13 +8,13 @@ public class PoolSelector extends FireEater{
 
         pool = new HashMap<>();
 
-        pool.put("rankedchess", new MatchmakingPool());
-        pool.put("ranked960", new MatchmakingPool());
-        pool.put("rankedpeasant", new MatchmakingPool());
+        pool.put("Ranked Chess", new MatchmakingPool());
+        pool.put("Ranked Chess960", new MatchmakingPool());
+        pool.put("Ranked Peasants' Revolt", new MatchmakingPool());
 
-        pool.put("chess", new MatchmakingPool());
-        pool.put("960", new MatchmakingPool());
-        pool.put("peasant", new MatchmakingPool());
+        pool.put("Chess", new MatchmakingPool());
+        pool.put("Chess960", new MatchmakingPool());
+        pool.put("Peasants' Revolt", new MatchmakingPool());
 
     }
 

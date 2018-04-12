@@ -9,7 +9,7 @@ public class ChessLogic {
 
     public static Piece[][] makeBasicChessBoard(){
         Piece[][] board=new Piece[8][8];
-        for(int 0;i<8;i++){
+        for(int i = 0;i<8;i++){
             board[1][i]=new Pawn(false);
             board[6][i]=new Pawn(true);
         }

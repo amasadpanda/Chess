@@ -13,4 +13,10 @@
     <string name="createaccount_txtUsernameHint">Username</string>
     <string name="createaccount_txtPasswordHint">Password</string>
     <string name="createaccount_btnCreateAccount">Create Account</string>
+
+    <!-- Home Activity Strings -->
+    <string name="home_newGame">New Game</string>
+    <string name="home_manageFriends">Manage Friends</string>
+    <string name="home_manageAccount">Manage Account</string>
+    <string name="home_signOut">Sign Out</string>
 </resources>

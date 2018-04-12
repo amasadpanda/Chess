@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".HomeActivity" android:theme="@style/HomeTheme"/>
+        <activity android:name=".GameActivity" />
     </application>
 
 </manifest>

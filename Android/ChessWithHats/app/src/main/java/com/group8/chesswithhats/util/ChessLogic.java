@@ -9,7 +9,7 @@ public class ChessLogic {
 
     public static Piece[][] makeBasicChessBoard(){
         Piece[][] board=new Piece[8][8];
-        for(int i = 0;i<8;i++){
+        for(int i=0;i<8;i++){
             board[1][i]=new Pawn(false);
             board[6][i]=new Pawn(true);
         }
@@ -32,6 +32,23 @@ public class ChessLogic {
         board[7][5]=new Bishop(true);
         board[7][6]=new Knight(true);
         board[7][7]=new Rook(true);
+        
+        return board;
+    }
+    
+    public static Piece[][] makePeasantRevoltBoard(){
+        Piece[][] board=new Piece[8][8];
+        for(int i=0;i<8;i++)
+            board[6][i]=new Pawn(true);
+        board[7][4]=new King(true);
+        
+        board[0][1]=new Knight(false);
+        board[0][2]=new Knight(false);
+        board[0][4]=new King(false);
+        board[0][6]=new Knight(false);
+        board[1][4]=new Pawn(false);
+        
+        return board;
     }
     
     //Base Piece Class

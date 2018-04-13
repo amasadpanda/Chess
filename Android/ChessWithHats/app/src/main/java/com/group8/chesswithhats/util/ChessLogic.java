@@ -99,6 +99,8 @@ public class ChessLogic {
     	board[7][spotsLeft.get(0)]=new Rook(true);
     	board[7][spotsLeft.get(1)]=new King(true);
     	board[7][spotsLeft.get(2)]=new Rook(true);
+        
+        return board;
     }
     
     //Base Piece Class
@@ -136,7 +138,8 @@ public class ChessLogic {
         abstract Piece copy();
     }
 
-    public static void movePiece(int r1, int c1, int r2, int c2, Piece[][] board) {
+    public static boolean movePiece(int r1, int c1, int r2, int c2, Piece[][] board) {
+        boolean ret=false;
         //All pawns that moved twice last turn, didn't move twice this turn.
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -155,6 +158,7 @@ public class ChessLogic {
 
         //Castling
         if (board[r2][c2] != null && board[r1][c1].white == board[r2][c2].white) {
+            ret=true;
             Rook rook = (Rook) (board[r1][c1]);
             King king = (King) (board[r2][c2]);
             board[r1][c1] = null;
@@ -168,12 +172,14 @@ public class ChessLogic {
                 board[r2][6] = king;
                 board[r2][5] = rook;
             }
-            return;
+            return ret; //TODO: Ethan review this, it was just "return;" and i made it "return ret;"
         }
 
         //en Passant
-        if (board[r1][c1] instanceof Pawn && board[r2][c2] == null && c2 != c1)
+        if (board[r1][c1] instanceof Pawn && board[r2][c2] == null && c2 != c1){
+            ret=true;
             board[r1][c2] = null;
+        }
 
         board[r2][c2] = board[r1][c1];
         board[r1][c1] = null;
@@ -186,6 +192,8 @@ public class ChessLogic {
             Rook rook = (Rook) (board[r2][c2]);
             rook.moved = true;
         }
+        
+        return ret;
     }
 
     //Pawn
@@ -204,7 +212,7 @@ public class ChessLogic {
         }
 
         public Pawn(boolean isWhite, boolean moved) {
-            super(isWhite);
+            this(isWhite);
             movedTwiceLastTurn = moved;
         }
 
@@ -282,7 +290,7 @@ public class ChessLogic {
         }
 
         public King(boolean isWhite, boolean move) {
-            super(isWhite);
+            this(isWhite);
             moved = move;
         }
 

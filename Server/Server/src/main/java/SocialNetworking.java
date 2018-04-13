@@ -20,7 +20,7 @@ public class SocialNetworking extends FireEater{
             String senderUsername = request.getExtras().get("username");
             String senderUID = request.getExtras().get("uid");
             String destUsername = request.getExtras().get("friend");
-            String destUID = FireEater.usernameToUID(destUsername);
+            String destUID = request.getExtras().get("frienduid");
 
             // Place the request into the destination's friend_invitations with format of UID:username
             FirebaseDatabase.getInstance().getReference().child("users").child(destUID).child("friend_invitations").child(senderUID).setValueAsync(senderUsername).get();

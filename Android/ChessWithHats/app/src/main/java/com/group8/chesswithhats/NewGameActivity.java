@@ -1,6 +1,7 @@
 package com.group8.chesswithhats;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,9 +13,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
 import com.group8.chesswithhats.server.OnCWHResponseListener;
+import com.group8.chesswithhats.util.LoadingDialog;
 
 /*
     @author Philip Rodriguez
@@ -22,6 +25,7 @@ import com.group8.chesswithhats.server.OnCWHResponseListener;
 public class NewGameActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private Spinner spnGameType;
     private Spinner spnOpponent;
@@ -29,12 +33,43 @@ public class NewGameActivity extends AppCompatActivity {
 
     private AutoCompleteTextView edtUsername;
 
+    private LoadingDialog loadingDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_game);
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                checkSignedInStatus();
+            }
+        };
+        firebaseAuth.addAuthStateListener(firebaseAuthListener);
         initComponents();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkSignedInStatus();
+    }
+
+    private void checkSignedInStatus()
+    {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser == null)
+        {
+            // Kick the user from this activity if they are not signed in.
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        firebaseAuth.removeAuthStateListener(firebaseAuthListener);
     }
 
     private void initComponents()
@@ -43,6 +78,7 @@ public class NewGameActivity extends AppCompatActivity {
         spnOpponent = findViewById(R.id.newgame_spnOpponent);
         btnCreateGame = findViewById(R.id.newgame_btnCreateGame);
         edtUsername = findViewById(R.id.newgame_edtUsername);
+        loadingDialog = new LoadingDialog(this, "Loading", "Handling game request...");
 
         ArrayAdapter<CharSequence> gameTypeAdapter = ArrayAdapter.createFromResource(this, R.array.newgame_gameTypes, android.R.layout.simple_spinner_item);
         gameTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -74,6 +110,7 @@ public class NewGameActivity extends AppCompatActivity {
         btnCreateGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingDialog.show();
                 if (spnOpponent.getSelectedItem().toString().equals(getResources().getStringArray(R.array.newgame_opponentTypes)[0]))
                 {
                     //another user
@@ -87,6 +124,7 @@ public class NewGameActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
                             }
+                            loadingDialog.dismiss();
                         }
                     });
                     cwhRequest.getExtras().put("friend", edtUsername.getText().toString());
@@ -104,6 +142,7 @@ public class NewGameActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
                             }
+                            loadingDialog.dismiss();
                         }
                     });
                     cwhRequest.getExtras().put("gametype", spnGameType.getSelectedItem().toString());
@@ -119,6 +158,7 @@ public class NewGameActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
                             }
+                            loadingDialog.dismiss();
                         }
                     });
                     cwhRequest.getExtras().put("gametype", spnGameType.getSelectedItem().toString());
@@ -134,6 +174,7 @@ public class NewGameActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
                             }
+                            loadingDialog.dismiss();
                         }
                     });
                     cwhRequest.getExtras().put("gametype", "Ranked " + spnGameType.getSelectedItem().toString());

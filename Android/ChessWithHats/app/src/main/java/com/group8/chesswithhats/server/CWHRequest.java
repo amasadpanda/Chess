@@ -177,7 +177,7 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     protected void onPostExecute(CWHResponse cwhResponse) {
         super.onPostExecute(cwhResponse);
         if (cwhResponse == null)
-            this.onCWHResponseListener.onCWHResponse(new CWHResponse("Connection Failure!", false));
+            this.onCWHResponseListener.onCWHResponse(new CWHResponse("Connection Failure! Are you connected to the internet?", false));
         else
             this.onCWHResponseListener.onCWHResponse(cwhResponse);
     }

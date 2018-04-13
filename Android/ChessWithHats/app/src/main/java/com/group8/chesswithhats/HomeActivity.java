@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,8 +34,11 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
 
+    private DrawerLayout drawerLayout;
     private LinearLayout llGameInvites;
+    private TextView txtNoCurrentGameInvites;
     private LinearLayout llCurrentGames;
+    private TextView txtNoCurrentGames;
     private NavigationView navigationView;
 
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
@@ -67,9 +74,15 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initComponents()
     {
+        drawerLayout = findViewById(R.id.home_drawerLayout);
         llGameInvites = findViewById(R.id.home_llGameInvites);
+        txtNoCurrentGameInvites = findViewById(R.id.home_txtNoCurrentGameInvites);
         llCurrentGames = findViewById(R.id.home_llCurrentGames);
+        txtNoCurrentGames = findViewById(R.id.home_txtNoCurrentGames);
         navigationView = findViewById(R.id.home_navigationView);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -81,11 +94,13 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 else if (item.getTitle().equals(getResources().getString(R.string.home_manageFriends)))
                 {
-
+                    Intent manageFriendsIntent = new Intent(HomeActivity.this, ManageFriendsActivity.class);
+                    startActivity(manageFriendsIntent);
                 }
                 else if (item.getTitle().equals(getResources().getString(R.string.home_manageAccount)))
                 {
-
+                    Intent manageAccountIntent = new Intent(HomeActivity.this, ManageAccountActivity.class);
+                    startActivity(manageAccountIntent);
                 }
                 else if (item.getTitle().equals(getResources().getString(R.string.home_signOut)))
                 {
@@ -128,6 +143,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         GameInviteView newChild = new GameInviteView(HomeActivity.this, gameID, inviterUsername, gameType, firebaseAuth);
                         llGameInvites.addView(newChild);
+                        txtNoCurrentGameInvites.setVisibility(View.GONE);
                     }
                     catch (Exception exc)
                     {
@@ -146,12 +162,19 @@ public class HomeActivity extends AppCompatActivity {
                     String gameID = dataSnapshot.getKey();
                     for (int v = 0; v < llGameInvites.getChildCount(); v++)
                     {
-                        GameInviteView view = (GameInviteView) llGameInvites.getChildAt(v);
-                        if (view.getCorrespondingGameID().equals(gameID))
-                        {
-                            // This is the one to remove!
-                            llGameInvites.removeView(view);
-                            break;
+                        if (llGameInvites.getChildAt(v) instanceof GameInviteView) {
+                            GameInviteView view = (GameInviteView) llGameInvites.getChildAt(v);
+                            if (view.getCorrespondingGameID().equals(gameID)) {
+                                // This is the one to remove!
+                                llGameInvites.removeView(view);
+
+                                // Should we display the empty text view?
+                                if (llGameInvites.getChildCount() == 1) {
+                                    txtNoCurrentGameInvites.setVisibility(View.VISIBLE);
+                                }
+
+                                break;
+                            }
                         }
                     }
                 }
@@ -180,6 +203,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         CurrentGameView newChild = new CurrentGameView(HomeActivity.this, gameID, opponent);
                         llCurrentGames.addView(newChild);
+                        txtNoCurrentGames.setVisibility(View.GONE);
                     }
                     catch (Exception exc)
                     {
@@ -199,12 +223,19 @@ public class HomeActivity extends AppCompatActivity {
                     String gameID = dataSnapshot.getKey();
                     for (int v = 0; v < llCurrentGames.getChildCount(); v++)
                     {
-                        CurrentGameView view = (CurrentGameView) llCurrentGames.getChildAt(v);
-                        if (view.getGameID().equals(gameID))
-                        {
-                            // This is the one to remove!
-                            llCurrentGames.removeView(view);
-                            break;
+                        if (llCurrentGames.getChildAt(v) instanceof CurrentGameView) {
+                            CurrentGameView view = (CurrentGameView) llCurrentGames.getChildAt(v);
+                            if (view.getGameID().equals(gameID)) {
+                                // This is the one to remove!
+                                llCurrentGames.removeView(view);
+
+                                // Should we show the empty text view?
+                                if (llCurrentGames.getChildCount() == 1) {
+                                    txtNoCurrentGames.setVisibility(View.VISIBLE);
+                                }
+
+                                break;
+                            }
                         }
                     }
                 }
@@ -222,6 +253,23 @@ public class HomeActivity extends AppCompatActivity {
             databaseReference.child("users").child(currentUser.getUid()).child("current_games").addChildEventListener(currentGamesListener);
             listeners.put(databaseReference.child("users").child(currentUser.getUid()).child("current_games"), currentGamesListener);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home)
+        {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.START))
+            {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+            else
+            {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -253,7 +301,7 @@ public class HomeActivity extends AppCompatActivity {
         else
         {
             // TODO: you could remove this else branch completely
-            Toast.makeText(this, "Signed in as " + firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Signed in as " + firebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
         }
     }
 

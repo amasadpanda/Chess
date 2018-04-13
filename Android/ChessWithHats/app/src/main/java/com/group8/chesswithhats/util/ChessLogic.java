@@ -172,7 +172,7 @@ public class ChessLogic {
                 board[r2][6] = king;
                 board[r2][5] = rook;
             }
-            return;
+            return ret; //TODO: Ethan review this, it was just "return;" and i made it "return ret;"
         }
 
         //en Passant

@@ -36,6 +36,7 @@ public class Mover extends FireEater{
 
         ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate);
 
+
         String moves = game.moves + (startingPlace+clientMove+" ");
         String turn = game.turn;
         if(turn.equals("white"))
@@ -43,8 +44,10 @@ public class Mover extends FireEater{
         else
             turn = "white";
 
-        game.board.remove("x" + startingPlace);
-        game.board.put("x"+(clientMove), myPiece.toString() );
+        game.board = Game.toHashMap(boardstate);
+
+       // game.board.remove("x" + startingPlace);
+       // game.board.put("x"+(clientMove), myPiece.toString() );
 
         Map<String, Object> updateGame = new HashMap<>();
         updateGame.put("board", game.board);

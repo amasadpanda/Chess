@@ -34,7 +34,7 @@ import javax.net.ssl.TrustManagerFactory;
  */
 public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     //public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
-    public static final String serverURL = "https://192.168.1.14:1235/chessWithHats/";
+    public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
 
     public enum RequestType {
         MAKE_MOVE, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,

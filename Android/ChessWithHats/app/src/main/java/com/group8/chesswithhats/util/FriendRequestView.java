@@ -39,7 +39,14 @@ public class FriendRequestView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 // Accept the friend request from user with uid UID.
-
+                CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.ACCEPT_FRIEND, new OnCWHResponseListener() {
+                    @Override
+                    public void onCWHResponse(CWHResponse response) {
+                        Toast.makeText(context, response.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                cwhRequest.getExtras().put("", "");
+                cwhRequest.sendRequest(context);
             }
         });
 

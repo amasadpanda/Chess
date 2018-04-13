@@ -70,6 +70,7 @@ public class BoardView extends View {
             myTurn = game.turn.equals("white");
             white = true;
         }
+        invalidate();
     }
 
     public void setMakeMoveListener(MakeMoveListener listener){
@@ -113,7 +114,7 @@ public class BoardView extends View {
                 }
                 if(board[i][j]!=null) {
                     Drawable img = res.getDrawable(board[i][j].getDrawableID());
-                    img.setBounds(j * sqLen, i * sqLen, j * sqLen + sqLen, i * sqLen + sqLen); //L T R B
+                    img.setBounds(j*sqLen, i*sqLen, j*sqLen + sqLen, i*sqLen + sqLen); //L T R B
                     img.draw(canvas);
                 }
             }
@@ -123,58 +124,64 @@ public class BoardView extends View {
     //TODO: use performContextClick? That may be more appropriate here, since we don't need swipes or anything.
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        //This is PROBABLY sufficient! BoardView contains the board EXCLUSIVELY.
+        //any extra stuff we add later would be in different views.
+        if(!myTurn)
+            return true;
+
         int x = (int)event.getX();
         int y = (int)event.getY();
-            if(event.getAction()==MotionEvent.ACTION_DOWN) {
-                //System.out.printf("The user tapped (%d,%d)\n",x,y);
-                x -= getPaddingLeft();
-                x /= sqLen;
-                y -= getPaddingTop();
-                y /= sqLen;
+        if(event.getAction()==MotionEvent.ACTION_DOWN) {
+            //System.out.printf("The user tapped (%d,%d)\n",x,y);
+            x -= getPaddingLeft();
+            x /= sqLen;
+            y -= getPaddingTop();
+            y /= sqLen;
 
-                int index = y * 8 + x;
+            int index = y * 8 + x;
 
-                System.out.printf("(%d,%d): Square %d\n", y, x, index);
+            System.out.printf("(%d,%d): Square %d\n", y, x, index);
 
-                if (index < 0 || index > 63) {
-                    System.out.println("Out of bounds tap");
-                    active = -1;
-                    highlighted = EMPTY;
-                    return true;
-                }
-
-                if (active == -1) { //nothing selected
-                    if (board[y][x] != null && board[y][x].white==white) {
-                        System.out.printf("Getting valid moves for %s...\n", board[y][x].getClass().getSimpleName());
-                        highlighted = board[y][x].getMoves(index, board);
-                        System.out.printf("%d valid moves.\n", highlighted.size());
-                        //status.setText(String.format("%d valid moves",highlighted.size()));
-                        active = index;
-                        performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                        invalidate(); //haha ironic
-                    }
-                } else { //something selected!
-                    if (highlighted.contains(index)) {
-                        int py = active / 8, px = active % 8;
-                        //board[y][x] = board[py][px];
-                        //board[py][px] = null;
-                        if(makeMoveListener==null)
-                            throw new NullPointerException("No make move listener in this board view!! Why.....");
-                        if(makeMoveListener.makeMove(active,index)){
-                            //do nothing? The firebase callback from GameActivity should work things out...?
-                        }
-                        performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                        highlighted = EMPTY;
-                        active = -1;
-                        //status.setText("Solid move, dude!");
-                    }else{
-                        highlighted = EMPTY;
-                        active = -1;
-                        invalidate();
-                    }
-                    //invalidate();
-                }
+            if (index < 0 || index > 63) {
+                System.out.println("Out of bounds tap");
+                active = -1;
+                highlighted = EMPTY;
                 return true;
+            }
+
+            if (active == -1) { //nothing selected
+                if (board[y][x] != null && board[y][x].white==white) {
+                    System.out.printf("Getting valid moves for %s...\n", board[y][x].getClass().getSimpleName());
+                    highlighted = board[y][x].getMoves(index, board);
+                    System.out.printf("%d valid moves.\n", highlighted.size());
+                    //status.setText(String.format("%d valid moves",highlighted.size()));
+                    active = index;
+                    performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                    invalidate(); //haha ironic
+                }
+            } else { //something selected!
+                if (highlighted.contains(index)) {
+                    int py = active / 8, px = active % 8;
+                    //board[y][x] = board[py][px];
+                    //board[py][px] = null;
+                    if(makeMoveListener==null)
+                        throw new NullPointerException("No make move listener in this board view!! Why.....");
+                    if(makeMoveListener.makeMove(active,index)){
+                        //do nothing? The firebase callback from GameActivity should work things out...?
+                    }
+                    performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                    highlighted = EMPTY;
+                    active = -1;
+                    //status.setText("Solid move, dude!");
+                }else{
+                    highlighted = EMPTY;
+                    active = -1;
+                    invalidate();
+                }
+                //invalidate();
+            }
+            return true;
         }
         return false;
     }

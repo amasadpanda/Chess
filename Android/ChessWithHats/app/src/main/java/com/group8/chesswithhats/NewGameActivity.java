@@ -16,6 +16,9 @@ import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
 import com.group8.chesswithhats.server.OnCWHResponseListener;
 
+/*
+    @author Philip Rodriguez
+ */
 public class NewGameActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;

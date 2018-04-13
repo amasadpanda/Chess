@@ -1,17 +1,12 @@
 package com.group8.chesswithhats;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,11 +16,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.group8.chesswithhats.server.CWHRequest;
-import com.group8.chesswithhats.server.CWHResponse;
-import com.group8.chesswithhats.server.OnCWHResponseListener;
+import com.google.firebase.database.ValueEventListener;
 import com.group8.chesswithhats.util.CurrentGameView;
 import com.group8.chesswithhats.util.GameInviteView;
+
+import java.util.HashMap;
 
 /*
  * @author Philip Rodriguez
@@ -35,12 +30,13 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
 
-    private FirebaseAuth.AuthStateListener firebaseAuthListener;
-
     private LinearLayout llGameInvites;
     private LinearLayout llCurrentGames;
     private NavigationView navigationView;
 
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
+
+    private HashMap<DatabaseReference, Object> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +54,9 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
+
+        // Initialize listeners hashmap
+        listeners = new HashMap<>();
 
         // Initialize GUI components
         initComponents();
@@ -77,17 +76,6 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getTitle().equals(getResources().getString(R.string.home_newGame)))
                 {
-
-                    /*CWHRequest request = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.GAME_CREATION, new OnCWHResponseListener() {
-                        @Override
-                        public void onCWHResponse(CWHResponse response) {
-                            System.out.println(response);
-                        }
-                    });
-                    request.getExtras().put("friend", "timothy94");
-                    request.getExtras().put("gametype", "Chess960");
-                    request.sendRequest(HomeActivity.this);*/
-
                     Intent newGameIntent = new Intent(HomeActivity.this, NewGameActivity.class);
                     startActivity(newGameIntent);
                 }
@@ -128,9 +116,10 @@ public class HomeActivity extends AppCompatActivity {
         }
         else
         {
-            databaseReference.child("users").child(currentUser.getUid()).child("game_invitations").addChildEventListener(new ChildEventListener() {
+            ChildEventListener gameInvitesListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    System.out.println("ON CHILD ADDED GAME INVITES: " + dataSnapshot);
                     try {
                         // We need to add to our linear layout!
                         final String gameID = dataSnapshot.getKey();
@@ -176,12 +165,14 @@ public class HomeActivity extends AppCompatActivity {
                 public void onCancelled(DatabaseError databaseError) {
                     // also shouldn't happen
                 }
-            });
+            };
+            databaseReference.child("users").child(currentUser.getUid()).child("game_invitations").addChildEventListener(gameInvitesListener);
+            listeners.put(databaseReference.child("users").child(currentUser.getUid()).child("game_invitations"), gameInvitesListener);
 
-            databaseReference.child("users").child(currentUser.getUid()).child("current_games").addChildEventListener(new ChildEventListener() {
+            ChildEventListener currentGamesListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    System.out.println("ON CHILD ADDED CALLED: " + dataSnapshot);
+                    System.out.println("ON CHILD ADDED CURRENT GAMES: " + dataSnapshot);
                     try {
                         // We need to add to our linear layout!
                         final String gameID = dataSnapshot.getKey();
@@ -227,7 +218,9 @@ public class HomeActivity extends AppCompatActivity {
                 public void onCancelled(DatabaseError databaseError) {
                     // also shouldn't happen
                 }
-            });
+            };
+            databaseReference.child("users").child(currentUser.getUid()).child("current_games").addChildEventListener(currentGamesListener);
+            listeners.put(databaseReference.child("users").child(currentUser.getUid()).child("current_games"), currentGamesListener);
         }
     }
 
@@ -261,6 +254,24 @@ public class HomeActivity extends AppCompatActivity {
         {
             // TODO: you could remove this else branch completely
             Toast.makeText(this, "Signed in as " + firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Remove all listeners!
+        firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+        for (DatabaseReference reference : listeners.keySet())
+        {
+            if (listeners.get(reference) instanceof ChildEventListener) {
+                reference.removeEventListener((ChildEventListener)listeners.get(reference));
+            }
+            else
+            {
+                reference.removeEventListener((ValueEventListener) listeners.get(reference));
+            }
         }
     }
 }

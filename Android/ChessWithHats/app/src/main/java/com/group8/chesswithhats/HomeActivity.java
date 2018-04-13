@@ -131,6 +131,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         else
         {
+            DatabaseReference gameInvitesReference = databaseReference.child("users").child(currentUser.getUid()).child("game_invitations");
             ChildEventListener gameInvitesListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -189,9 +190,10 @@ public class HomeActivity extends AppCompatActivity {
                     // also shouldn't happen
                 }
             };
-            databaseReference.child("users").child(currentUser.getUid()).child("game_invitations").addChildEventListener(gameInvitesListener);
-            listeners.put(databaseReference.child("users").child(currentUser.getUid()).child("game_invitations"), gameInvitesListener);
+            gameInvitesReference.addChildEventListener(gameInvitesListener);
+            listeners.put(gameInvitesReference, gameInvitesListener);
 
+            DatabaseReference currentGamesReference = databaseReference.child("users").child(currentUser.getUid()).child("current_games");
             ChildEventListener currentGamesListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -250,8 +252,8 @@ public class HomeActivity extends AppCompatActivity {
                     // also shouldn't happen
                 }
             };
-            databaseReference.child("users").child(currentUser.getUid()).child("current_games").addChildEventListener(currentGamesListener);
-            listeners.put(databaseReference.child("users").child(currentUser.getUid()).child("current_games"), currentGamesListener);
+            currentGamesReference.addChildEventListener(currentGamesListener);
+            listeners.put(currentGamesReference, currentGamesListener);
         }
     }
 

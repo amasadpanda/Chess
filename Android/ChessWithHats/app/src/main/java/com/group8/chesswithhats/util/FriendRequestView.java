@@ -49,6 +49,8 @@ public class FriendRequestView extends FrameLayout {
                 // Reject the friend request from user with uid UID.
             }
         });
+
+        addView(subView);
     }
 
     public String getUID() {

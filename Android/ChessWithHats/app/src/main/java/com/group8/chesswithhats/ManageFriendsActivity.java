@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
 import com.group8.chesswithhats.server.OnCWHResponseListener;
+import com.group8.chesswithhats.util.FriendRequestView;
 
 import java.util.HashMap;
 
@@ -59,6 +60,8 @@ public class ManageFriendsActivity extends AppCompatActivity {
             }
         };
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
+
+        listeners = new HashMap<>();
 
         initComponents();
     }
@@ -147,6 +150,13 @@ public class ManageFriendsActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 System.out.println("ON CHILD ADDED FRIEND INVITATIONS: " + dataSnapshot);
+
+                String senderUID = dataSnapshot.getKey();
+                String senderUsername = dataSnapshot.getValue(String.class);
+
+                FriendRequestView friendRequestView = new FriendRequestView(ManageFriendsActivity.this, senderUID, senderUsername, firebaseAuth);
+                llFriendRequests.addView(friendRequestView);
+                txtNoCurrentFriendRequests.setVisibility(View.GONE);
             }
 
             @Override
@@ -157,6 +167,29 @@ public class ManageFriendsActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println("ON CHILD REMOVED FRIEND INVITATIONS: " + dataSnapshot);
+
+                String senderUID = dataSnapshot.getKey();
+                String senderUsername = dataSnapshot.getValue(String.class);
+
+                for (int v = 0; v < llFriendRequests.getChildCount(); v++)
+                {
+                    if (llFriendRequests.getChildAt(v) instanceof FriendRequestView)
+                    {
+                        FriendRequestView friendRequestView = (FriendRequestView)llFriendRequests.getChildAt(v);
+                        if (friendRequestView.getUID().equals(senderUID))
+                        {
+                            // Remove this one!
+                            llFriendRequests.removeView(friendRequestView);
+
+                            if (llFriendRequests.getChildCount() == 1)
+                            {
+                                txtNoCurrentFriendRequests.setVisibility(View.VISIBLE);
+                            }
+
+                            break;
+                        }
+                    }
+                }
             }
 
             @Override

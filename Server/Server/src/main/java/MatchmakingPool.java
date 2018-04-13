@@ -5,14 +5,22 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MatchmakingPool extends FireEater{
 
+    private static final Logger logger = Logger.getLogger(MatchmakingPool.class.getName());
+
+
     // Strings are the users UIDs
-    public static  Queue<String> pool;
-    public MatchmakingPool()
+    public Queue<String> pool;
+    private String poolName;
+
+    public MatchmakingPool(String name)
     {
         pool = new ConcurrentLinkedQueue<>();
+        poolName = name;
     }
 
     @Override
@@ -24,6 +32,7 @@ public class MatchmakingPool extends FireEater{
         if(pool.isEmpty())
         {
             pool.offer(UID);
+            logger.log(Level.INFO, poolName + " added " + UID);
             return new CWHResponse("Place in matchingmaking pool", true);
         }
         else

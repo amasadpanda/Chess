@@ -78,13 +78,13 @@ public class JettyServer {
             contextHandler.setHandler(new AbstractHandler() {
                 @Override
                 public void handle(String target, Request baseRequest, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-                        logger.log(Level.INFO, "Handling request from " + baseRequest.getRemoteAddr());
+                        logger.log(Level.FINE, "Handling request from " + baseRequest.getRemoteAddr());
 
                         int contentLength = baseRequest.getContentLength();
                         if (contentLength > 0)
                         {
                             //Load request content!
-                            logger.log(Level.INFO, "Request content length is " + contentLength);
+                            logger.log(Level.FINEST, "Request content length is " + contentLength);
 
                             byte[] messageBytes = new byte[contentLength];
                             BufferedInputStream bufferedInputStream = new BufferedInputStream(httpServletRequest.getInputStream());
@@ -93,12 +93,12 @@ public class JettyServer {
                             // Sanity check the bytes read
                             if (numBytesRead == contentLength)
                             {
-                                logger.log(Level.INFO,"Request acceptable.");
+                                logger.log(Level.FINEST,"Request acceptable.");
                                 String messageContents = new String(messageBytes, Charset.forName("UTF-8"));
                                 logger.log(Level.INFO,"Message contains: " + messageContents);
 
                                 CWHRequest reconstructedRequest = new GsonBuilder().create().fromJson(messageContents, CWHRequest.class);
-                                logger.log(Level.INFO, reconstructedRequest.getAuthID());
+                                logger.log(Level.FINE, reconstructedRequest.getAuthID());
                                 logger.log(Level.INFO, reconstructedRequest.getRequestType().toString());
                                 logger.log(Level.INFO, "Hashmap extras = " + reconstructedRequest.getExtras());
 

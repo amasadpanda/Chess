@@ -34,20 +34,22 @@ public class Mover extends FireEater{
         if(!isValid)
             return new CWHResponse("Invalid move", false);
 
-        ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate);
+        // moving the actual board
+        if(ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate))
+            game.board = Game.toHashMap(boardstate);
+        else
+        {
+            game.board.remove("x" + startingPlace);
+            game.board.put("x"+(clientMove), myPiece.toString() );
+        }
 
 
-        String moves = game.moves + (startingPlace+clientMove+" ");
+        String moves = game.moves + (startingPlace+">"+clientMove+" ");
         String turn = game.turn;
         if(turn.equals("white"))
             turn = "black";
         else
             turn = "white";
-
-        game.board = Game.toHashMap(boardstate);
-
-       // game.board.remove("x" + startingPlace);
-       // game.board.put("x"+(clientMove), myPiece.toString() );
 
         Map<String, Object> updateGame = new HashMap<>();
         updateGame.put("board", game.board);

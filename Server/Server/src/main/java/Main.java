@@ -19,7 +19,6 @@ public class Main {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
         Validator.initialize();
         startServer();
-        System.out.println("ALL SYSTEMS ONLINE!");
 
         //CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);
        // c.put("gameid", "-L9QYy3Fc9De6RnhgVCE");
@@ -34,5 +33,6 @@ public class Main {
     private static void startServer() throws Exception {
         JettyServer server = new JettyServer("chessWithHats", -1, 1235, "resources/jetty/ChessWithHats.jks", "hhdus84hg61ghd7", "ldiif0746sk7aq9");
         server.start();
+        server.setLogLevel(Level.INFO);
     }
 }

@@ -16,6 +16,9 @@ import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
 import com.group8.chesswithhats.server.OnCWHResponseListener;
 
+/*
+    @author Philip Rodriguez
+ */
 public class NewGameActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
@@ -25,8 +28,6 @@ public class NewGameActivity extends AppCompatActivity {
     private Button btnCreateGame;
 
     private AutoCompleteTextView edtUsername;
-
-    private OnCWHResponseListener generalListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,17 +71,6 @@ public class NewGameActivity extends AppCompatActivity {
             }
         });
 
-        generalListener = new OnCWHResponseListener() {
-            @Override
-            public void onCWHResponse(CWHResponse response) {
-                if (response.isSuccess()) {
-                    NewGameActivity.this.finish();
-                } else {
-                    Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
-                }
-            }
-        };
-
         btnCreateGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,24 +78,64 @@ public class NewGameActivity extends AppCompatActivity {
                 {
                     //another user
                     // Send the request and when it succeeds, close the activity
-                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.GAME_CREATION, generalListener);
+                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.GAME_CREATION, new OnCWHResponseListener() {
+                        @Override
+                        public void onCWHResponse(CWHResponse response) {
+                            if (response.isSuccess()) {
+                                NewGameActivity.this.finish();
+                                Toast.makeText(NewGameActivity.this, edtUsername.getText().toString() + " has been invited to play!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                     cwhRequest.getExtras().put("friend", edtUsername.getText().toString());
                     cwhRequest.getExtras().put("gametype", spnGameType.getSelectedItem().toString());
                     cwhRequest.sendRequest(NewGameActivity.this);
                 }
                 else if (spnOpponent.getSelectedItem().toString().equals(getResources().getStringArray(R.array.newgame_opponentTypes)[1])) {
                     //computer
-                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.COMPUTER_GAME, generalListener);
+                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.COMPUTER_GAME, new OnCWHResponseListener() {
+                        @Override
+                        public void onCWHResponse(CWHResponse response) {
+                            if (response.isSuccess()) {
+                                NewGameActivity.this.finish();
+                                Toast.makeText(NewGameActivity.this, "A game against the computer has been created!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                     cwhRequest.getExtras().put("gametype", spnGameType.getSelectedItem().toString());
                     cwhRequest.sendRequest(NewGameActivity.this);
                 } else if (spnOpponent.getSelectedItem().toString().equals(getResources().getStringArray(R.array.newgame_opponentTypes)[2])) {
                     //random
-                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.MATCHMAKING_REQUEST, generalListener);
+                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.MATCHMAKING_REQUEST, new OnCWHResponseListener() {
+                        @Override
+                        public void onCWHResponse(CWHResponse response) {
+                            if (response.isSuccess()) {
+                                NewGameActivity.this.finish();
+                                Toast.makeText(NewGameActivity.this, "You have been added to the matchmaking pool!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                     cwhRequest.getExtras().put("gametype", spnGameType.getSelectedItem().toString());
                     cwhRequest.sendRequest(NewGameActivity.this);
                 } else if (spnOpponent.getSelectedItem().toString().equals(getResources().getStringArray(R.array.newgame_opponentTypes)[3])) {
                     //ranked
-                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.MATCHMAKING_REQUEST, generalListener);
+                    CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.MATCHMAKING_REQUEST, new OnCWHResponseListener() {
+                        @Override
+                        public void onCWHResponse(CWHResponse response) {
+                            if (response.isSuccess()) {
+                                NewGameActivity.this.finish();
+                                Toast.makeText(NewGameActivity.this, "You have been added to the matchmaking pool!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(NewGameActivity.this, "Failed to create game! Are you connected to the internet?", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                     cwhRequest.getExtras().put("gametype", "Ranked " + spnGameType.getSelectedItem().toString());
                     cwhRequest.sendRequest(NewGameActivity.this);
                 }

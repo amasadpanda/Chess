@@ -11,18 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity"  android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".HomeActivity" android:theme="@style/HomeTheme"/>
-        <activity android:name=".GameActivity" />
-        <activity android:name=".NewGameActivity" />
-
+        <activity android:name=".CreateAccountActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".HomeActivity" android:theme="@style/HomeTheme" android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".GameActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".NewGameActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".ManageFriendsActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".ManageAccountActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
     </application>
 
 </manifest>

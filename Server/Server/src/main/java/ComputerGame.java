@@ -20,6 +20,13 @@ public class ComputerGame extends FireEater{
         g.setGametype(gametype);
 
         newGame.setValueAsync(g);
+
+        // Add the computer game to the user's current games list (added by Philip 4/12/2018 10:30PM)
+        Map<String, Object> updateGameList = new HashMap<>();
+        updateGameList.put(gameID, "COMPUTER");
+        DatabaseReference userRef = ref.child("users").child(UID).child("current_games");
+        userRef.updateChildrenAsync(updateGameList);
+
         return new CWHResponse("Invitation sent", true);
     }
 }

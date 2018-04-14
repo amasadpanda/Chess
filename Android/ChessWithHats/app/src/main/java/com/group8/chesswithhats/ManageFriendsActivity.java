@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
 import com.group8.chesswithhats.server.OnCWHResponseListener;
+import com.group8.chesswithhats.util.CurrentFriendView;
 import com.group8.chesswithhats.util.FriendRequestView;
 
 import java.util.HashMap;
@@ -210,6 +211,13 @@ public class ManageFriendsActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 System.out.println("ON CHILD ADDED FRIENDS: " + dataSnapshot);
+
+                String uid = dataSnapshot.getKey();
+                String username = dataSnapshot.getValue(String.class);
+
+                CurrentFriendView currentFriendView = new CurrentFriendView(ManageFriendsActivity.this, username, uid);
+                llCurrentFriends.addView(currentFriendView);
+                txtNoCurrentFriends.setVisibility(View.GONE);
             }
 
             @Override
@@ -220,6 +228,29 @@ public class ManageFriendsActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println("ON CHILD REMOVED FRIENDS: " + dataSnapshot);
+
+                String friendUID = dataSnapshot.getKey();
+                String friendUsername = dataSnapshot.getValue(String.class);
+
+                for (int v = 0; v < llCurrentFriends.getChildCount(); v++)
+                {
+                    if (llCurrentFriends.getChildAt(v) instanceof CurrentFriendView)
+                    {
+                        CurrentFriendView currentFriendView = (CurrentFriendView)llCurrentFriends.getChildAt(v);
+                        if (currentFriendView.getUid().equals(friendUID))
+                        {
+                            // Remove this one!
+                            llCurrentFriends.removeView(currentFriendView);
+
+                            if (llCurrentFriends.getChildCount() == 1)
+                            {
+                                txtNoCurrentFriends.setVisibility(View.VISIBLE);
+                            }
+
+                            break;
+                        }
+                    }
+                }
             }
 
             @Override

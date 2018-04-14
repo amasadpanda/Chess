@@ -22,7 +22,7 @@ public class FriendRequestView extends FrameLayout {
 
     private View subView;
 
-    public FriendRequestView(@NonNull final Context context, String UID, String username, final FirebaseAuth firebaseAuth) {
+    public FriendRequestView(@NonNull final Context context, String UID, final String username, final FirebaseAuth firebaseAuth) {
         super(context);
         this.context = context;
         this.UID = UID;
@@ -45,7 +45,7 @@ public class FriendRequestView extends FrameLayout {
                         Toast.makeText(context, response.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-                cwhRequest.getExtras().put("", "");
+                cwhRequest.getExtras().put("friend", username);
                 cwhRequest.sendRequest(context);
             }
         });
@@ -54,6 +54,14 @@ public class FriendRequestView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 // Reject the friend request from user with uid UID.
+                CWHRequest cwhRequest = new CWHRequest(firebaseAuth.getCurrentUser(), CWHRequest.RequestType.DENY_FRIEND, new OnCWHResponseListener() {
+                    @Override
+                    public void onCWHResponse(CWHResponse response) {
+                        Toast.makeText(context, response.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                cwhRequest.getExtras().put("friend", username);
+                cwhRequest.sendRequest(context);
             }
         });
 

@@ -14,10 +14,19 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
 import com.group8.chesswithhats.server.OnCWHResponseListener;
 import com.group8.chesswithhats.util.LoadingDialog;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
     @author Philip Rodriguez
@@ -26,6 +35,9 @@ public class NewGameActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+
+    private FirebaseDatabase firebaseDatabase;
+    private HashMap<DatabaseReference, Object> listeners;
 
     private Spinner spnGameType;
     private Spinner spnOpponent;
@@ -39,6 +51,8 @@ public class NewGameActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_game);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        listeners = new HashMap<>();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -70,6 +84,19 @@ public class NewGameActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+
+        for (DatabaseReference reference : listeners.keySet())
+        {
+            Object listener = listeners.get(reference);
+            if (listener instanceof ValueEventListener)
+            {
+                reference.removeEventListener((ValueEventListener)listener);
+            }
+            else if (listener instanceof ChildEventListener)
+            {
+                reference.removeEventListener((ChildEventListener) listener);
+            }
+        }
     }
 
     private void initComponents()
@@ -182,5 +209,40 @@ public class NewGameActivity extends AppCompatActivity {
                 }
             }
         });
+
+        final ArrayList<String> friends = new ArrayList<String>();
+        final ArrayAdapter<String> autocompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, friends);
+
+        DatabaseReference friendsReference = firebaseDatabase.getReference().child("users").child(firebaseAuth.getCurrentUser().getUid()).child("friends");
+        ChildEventListener friendsListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                autocompleteAdapter.add(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                autocompleteAdapter.remove(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        friendsReference.addChildEventListener(friendsListener);
+        listeners.put(friendsReference, friendsListener);
+        
+        edtUsername.setAdapter(autocompleteAdapter);
     }
 }

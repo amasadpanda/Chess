@@ -15,8 +15,8 @@ public class DenyFriend extends FireEater {
         userRef.addListenerForSingleValueEvent(s);
         DataSnapshot isFriendRequest = s.getSnapshot();
         if(isFriendRequest.getValue() == null)
-            return new CWHResponse("No friend invitation to reject", false);
+            return new CWHResponse("No friend invitation to reject!", false);
         userRef.removeValueAsync();
-        return new CWHResponse("Rejected friend request from " + friendUser, true);
+        return new CWHResponse("Rejected friend request from " + friendUser + ".", true);
     }
 }

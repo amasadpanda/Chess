@@ -126,6 +126,17 @@ public class NewGameActivity extends AppCompatActivity {
                 else {
                     edtUsername.setVisibility(View.GONE);
                 }
+
+                if (spnOpponent.getSelectedItem().toString().equals(getResources().getStringArray(R.array.newgame_opponentTypes)[3]))
+                {
+                    //another user selected
+                    spnGameType.setSelection(0);
+                    spnGameType.setEnabled(false);
+                }
+                else
+                {
+                    spnGameType.setEnabled(true);
+                }
             }
 
             @Override

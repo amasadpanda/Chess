@@ -19,7 +19,7 @@ public class PoolSelector extends FireEater{
     public CWHResponse handle(CWHRequest request) {
         String gametype = request.getExtras().get("gametype");
         if(gametype == null)
-            return new CWHResponse("Not a valid gametype", false);
+            return new CWHResponse("Not a valid gametype!", false);
         return pool.get(gametype).handle(request);
     }
 }

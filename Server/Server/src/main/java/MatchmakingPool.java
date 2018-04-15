@@ -49,6 +49,7 @@ public class MatchmakingPool extends FireEater{
             // makes the actual game in games database
             String gameID = newGame.getKey();
             Game g = new Game(UID, pooledUser);
+            g.setGametype(poolName);
             newGame.setValueAsync(g);
 
             // update requested user's list

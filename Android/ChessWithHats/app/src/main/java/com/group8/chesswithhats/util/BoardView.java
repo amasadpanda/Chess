@@ -115,7 +115,7 @@ public class BoardView extends View{
             for (int j=0;j<8;j++){
                 int c = white ? j : 7-j;
                 int L = c*sqLen, T = r*sqLen, R = c*sqLen + sqLen, B = r*sqLen + sqLen;
-                int index = r*8 + c;
+                int index = i*8 + j;
                 if ((r + c) % 2 == 0)
                     paint.setARGB(255, 255, 255, 255);
                 else

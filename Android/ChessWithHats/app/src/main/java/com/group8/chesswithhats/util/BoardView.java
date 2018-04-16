@@ -138,7 +138,7 @@ public class BoardView extends View{
 
     //TODO: use performContextClick? That may be more appropriate here, since we don't need swipes or anything.
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event){ //REEVALUTAE WHEN INVALIDATA LOL
 
         //This is PROBABLY sufficient! BoardView contains the board EXCLUSIVELY.
         //any extra stuff we add later would be in different views.

@@ -128,8 +128,8 @@ public class BoardView extends View{
                     paint.setARGB(200,255,255,224);
                     canvas.drawRect(L,T,R,B,paint);
                 }
-                if(board[r][c]!=null) {
-                    Drawable img = res.getDrawable(board[r][c].getDrawableID());
+                if(board[i][j]!=null) {
+                    Drawable img = res.getDrawable(board[i][j].getDrawableID());
                     img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);
                 }

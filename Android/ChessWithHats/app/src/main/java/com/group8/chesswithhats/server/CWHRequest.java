@@ -34,7 +34,7 @@ import javax.net.ssl.TrustManagerFactory;
  */
 public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     //public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
-    public static final String serverURL = "https://192.168.1.14:1235/chessWithHats/";
+    public static final String serverURL = "https://192.168.43.201:1235/chessWithHats/";
 
     public enum RequestType {
         MAKE_MOVE, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,
@@ -124,7 +124,10 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
             connection.setHostnameVerifier(new HostnameVerifier() {
                 @Override
                 public boolean verify(String s, SSLSession sslSession) {
-                    return true; //TODO: must change hostname verification! Only for testing...
+                    // Because we are using a self-signed certificate. If actually pushing this
+                    // product to a real launch, we'd want to use a CA and all. But, at least this
+                    // gives us encrypted channels between client and server.
+                    return true;
                 }
             });
 
@@ -177,7 +180,7 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     protected void onPostExecute(CWHResponse cwhResponse) {
         super.onPostExecute(cwhResponse);
         if (cwhResponse == null)
-            this.onCWHResponseListener.onCWHResponse(new CWHResponse("Connection Failure!", false));
+            this.onCWHResponseListener.onCWHResponse(new CWHResponse("Connection Failure! Are you connected to the internet?", false));
         else
             this.onCWHResponseListener.onCWHResponse(cwhResponse);
     }

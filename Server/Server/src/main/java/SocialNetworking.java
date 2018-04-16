@@ -16,7 +16,24 @@ public class SocialNetworking extends FireEater{
      */
     @Override
     public CWHResponse handle(CWHRequest request) {
-        String sendTo = request.getExtras().get("frienduid");
+        try {
+            String senderUsername = request.getExtras().get("username");
+            String senderUID = request.getExtras().get("uid");
+            String destUsername = request.getExtras().get("friend");
+            String destUID = request.getExtras().get("frienduid");
+
+            // Place the request into the destination's friend_invitations with format of UID:username
+            FirebaseDatabase.getInstance().getReference().child("users").child(destUID).child("friend_invitations").child(senderUID).setValueAsync(senderUsername).get();
+            return new CWHResponse("Friend request sent!", true);
+        }
+        catch (Exception exc)
+        {
+            return new CWHResponse("Failed to send friend request: " + exc.getMessage(), false);
+        }
+        /*
+            Old tim code, replaced 4/13/2018 by Philip
+
+            String sendTo = request.getExtras().get("frienduid");
         String UID = request.getExtras().get("uid");
         String username = request.getExtras().get("username");
 
@@ -37,6 +54,6 @@ public class SocialNetworking extends FireEater{
         friend.updateChildrenAsync(updateFriendsInv);
 
         return new CWHResponse("Request sent to " + friendsUsername, true);
-
+         */
     }
 }

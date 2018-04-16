@@ -36,7 +36,6 @@ public class AcceptGame extends FireEater {
         boolean whichPlayerIs = (whiteUID.equals(UID));
         String otherUserName = (whichPlayerIs)?FireEater.UIDToUsername(blackUID):FireEater.UIDToUsername(whiteUID);
 
-
         Map<String, Object> updateGameList = new HashMap<>();
         updateGameList.put(gameID, (whichPlayerIs)?otherUserName:username);
         userRef = ref.child("users").child(whiteUID).child("current_games");

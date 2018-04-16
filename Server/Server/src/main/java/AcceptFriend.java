@@ -14,6 +14,7 @@ public class AcceptFriend extends FireEater {
 
     @Override
     public CWHResponse handle(CWHRequest request) {
+        String username = request.getExtras().get("username");
         String UID = request.getExtras().get("uid");
         String friendUID = request.getExtras().get("frienduid");
         String friendUser = request.getExtras().get("friend");
@@ -21,17 +22,19 @@ public class AcceptFriend extends FireEater {
         DatabaseReference ref = FireEater.getDatabase().getReference();
         DatabaseReference userRef = ref.child("users").child(UID).child("friend_invitations").child(friendUID);
 
+        // Check to see if the friend request exists
         SynchronousListener s = new SynchronousListener();
         userRef.addListenerForSingleValueEvent(s);
         DataSnapshot isFriendRequest = s.getSnapshot();
         if(isFriendRequest.getValue() == null)
-            return new CWHResponse("No friend invitation to accept", false);
+            return new CWHResponse("No friend request to accept!", false);
+
+        // If we're here, it exists, and we can remove it!
         userRef.removeValueAsync();
 
-        userRef = ref.child("users").child(UID).child("friends");
-        Map<String, Object> updateFriendList = new HashMap<>();
-        updateFriendList.put(friendUID, friendUser);
-        userRef.updateChildrenAsync(updateFriendList);
-        return new CWHResponse("Accepted friend request from " + friendUser, true);
+        // Add the friend to BOTH users' friends lists. (Modified by Philip 4/13/2018 8:29 PM)
+        ref.child("users").child(UID).child("friends").child(friendUID).setValueAsync(friendUser);
+        ref.child("users").child(friendUID).child("friends").child(UID).setValueAsync(username);
+        return new CWHResponse("Accepted friend request from " + friendUser + ".", true);
     }
 }

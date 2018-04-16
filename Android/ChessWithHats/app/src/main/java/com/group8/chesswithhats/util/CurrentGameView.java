@@ -54,6 +54,7 @@ public class CurrentGameView extends FrameLayout {
                 // We need to open the relevant game activity
                 Intent gameActivityIntent = new Intent(context, GameActivity.class);
                 gameActivityIntent.putExtra("gameid", gameID);
+                gameActivityIntent.putExtra("opponent", opponent);
                 context.startActivity(gameActivityIntent);
             }
         });

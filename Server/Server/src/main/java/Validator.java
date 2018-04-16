@@ -5,8 +5,8 @@ import java.util.concurrent.ExecutionException;
 
 public class Validator {
 
-    private static final CWHResponse _BAD_AUTHID = new CWHResponse("Invalid credentials", false);
-    private static final CWHResponse _BAD_FRIEND = new CWHResponse("Cannot find friend's username", false);
+    private static final CWHResponse _BAD_AUTHID = new CWHResponse("Invalid credentials!", false);
+    private static final CWHResponse _BAD_FRIEND = new CWHResponse("Cannot find friend's username!", false);
 
     private static HashMap<CWHRequest.RequestType, FireEater> eaters;
 

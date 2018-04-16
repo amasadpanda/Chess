@@ -8,18 +8,18 @@ public class PoolSelector extends FireEater{
 
         pool = new HashMap<>();
 
-        pool.put("Ranked Chess", new MatchmakingPool());
-        pool.put("Ranked Chess960", new MatchmakingPool());
-        pool.put("Ranked Peasants' Revolt", new MatchmakingPool());
+        pool.put("Ranked Chess", new MatchmakingPool("Ranked Chess"));
 
-        pool.put("Chess", new MatchmakingPool());
-        pool.put("Chess960", new MatchmakingPool());
-        pool.put("Peasants' Revolt", new MatchmakingPool());
-
+        pool.put("Chess", new MatchmakingPool("Chess"));
+        pool.put("Chess960", new MatchmakingPool("Chess960"));
+        pool.put("Peasants' Revolt", new MatchmakingPool("Peasants' Revolt"));
     }
 
     @Override
     public CWHResponse handle(CWHRequest request) {
-        return pool.get(request.getExtras().get("gametype")).handle(request);
+        String gametype = request.getExtras().get("gametype");
+        if(gametype == null)
+            return new CWHResponse("Not a valid gametype!", false);
+        return pool.get(gametype).handle(request);
     }
 }

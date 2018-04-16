@@ -81,7 +81,7 @@ public class BoardView extends View {
     private void sendAIMove(boolean white){
         //the loading figet spinner can't be shown here. It gets shown
         //at the beginning of the makeMove call...
-        int move[] = ChessAI.getMove(board,white);
+        int move[] = ChessAI.getMove(board,white, 5);
         makeMoveListener.makeMove(move[0],move[1]);
     }
 

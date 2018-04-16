@@ -1,3 +1,4 @@
+//@formatter:off
 package com.group8.chesswithhats;
 
 import android.os.Bundle;

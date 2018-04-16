@@ -155,6 +155,7 @@ public class BoardView extends View {
                     System.out.printf("Getting valid moves for %s...\n", board[y][x].getClass().getSimpleName());
                     highlighted = board[y][x].getMoves(index, board);
                     System.out.printf("%d valid moves.\n", highlighted.size());
+                    //TODO: if highlighted.size()==0, don't actually select this piece. It's more intuitive.
                     //status.setText(String.format("%d valid moves",highlighted.size()));
                     active = index;
                     performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);

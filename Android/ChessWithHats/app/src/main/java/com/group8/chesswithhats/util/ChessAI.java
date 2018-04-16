@@ -2,9 +2,10 @@ package com.group8.chesswithhats.util;
 
 import static com.group8.chesswithhats.util.ChessLogic.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
-public class ChessAi {
+public class ChessAI {
     static boolean white;
     static int difficulty;
     public static int[] getMove(Piece[][] board, boolean w, int diff){
@@ -16,42 +17,47 @@ public class ChessAi {
 		int location = 0;
 		for(Piece[] row : board) {
 			for(Piece piece : row) {
-				if(piece != null && (whiteTurn == (piece.white))) {
+				if(piece != null && (w == (piece.white))) {
 					movingPeices.add(piece);
 					locations.add(location);
+					System.out.println("Piece at loc: " + location +" has moves: ");
+					for(int v : piece.getMoves(location, board, true))
+						System.out.print(v + " ");
+					System.out.println();
 				}
 				location++;
 			}
 		}
         int best = -Integer.MAX_VALUE/2;
+		int ans[] = new int[2];
+
         for(int i = 0; i < movingPeices.size(); i++) {
         	int r = locations.get(i)/8;
         	int c = locations.get(i)%8;
         	
-        	HashSet<Integer> peiceMoves = movingPeices.get(i).getMoves();
-        	int best = Integer.MIN_VALUE;
-        	int ans[] = new int[2];
-        	int bestMove 
-        	for(int move : peiceMoves) {
+        	HashSet<Integer> pieceMoves = movingPeices.get(i).getMoves(locations.get(i), board, true);
+        	for(int move : pieceMoves) {
         		int nr = move/8;
         		int nc = move%8;
-        		
+        		System.out.println("TRYING " + " row " + r +" : col " + c + " loc " + locations.get(i));
+        		System.out.println("Going to " + " row " + nr +" : col " + nc + " loc " + (nr * 8 + nc));
         		Piece newBoard[][] = new Piece[8][8];
 				for(int j = 0; j < 8; j++) {
 					for(int k = 0; k < 8; k++) {
-						newBoard[i][j] = board[i][j] == null ? null : board[i][j].copy();
+						newBoard[j][k] = board[j][k] == null ? null : board[j][k].copy();
 					}
 				}
 				
 				ChessLogic.movePiece(r, c, nr, nc, newBoard);
-				int score = alphaBetaPruning(Integer.MIN_VALUE/2, Integer.MAX_VALUE/2, board, !white, difficulty);
+				int score = alphaBetaPruning(Integer.MIN_VALUE/2, Integer.MAX_VALUE/2, board, !white, 0);
         		if(score > best) {
         			best = score;
         			ans[0] = r * 8 + c;
-        			ans[1] = nr * 8 + c;
+        			ans[1] = nr * 8 + nc;
         		}
         	}
         }
+        System.out.println("RES: " + best);
         return ans;
     }
 	
@@ -66,6 +72,7 @@ public class ChessAi {
 		int pieceValue = 0;
 		for(Piece[] row : board) {
 			for(Piece p : row) {
+				if(p == null) continue;
 				if(isWhite == p.white) {
 					pieceValue += getScore(p);
 				} else {
@@ -122,7 +129,7 @@ public class ChessAi {
 		}
 		
 		//check if we have reached the maximum depth
-		if(depth == dificulty) {
+		if(depth == difficulty) {
 			//Score the board
 			return heuristic(board, whiteTurn);
 		}
@@ -145,17 +152,17 @@ public class ChessAi {
 			// For every piece get all of its moves and we shall try them
 			Piece p = movingPeices.get(i);
 			HashSet<Integer> peiceMoves = p.getMoves(locations.get(i), board, true);
-			int originalRow = location/8;
-			int originalCol = location%8;
+			int originalRow = locations.get(i)/8;
+			int originalCol = locations.get(i)%8;
 			for(Integer move : peiceMoves) {
 				int newRow = move/8;
 				int newCol = move%8;
-				
+
 				// Create a copy of the board
 				Piece newBoard[][] = new Piece[8][8];
 				for(int j = 0; j < 8; j++) {
 					for(int k = 0; k < 8; k++) {
-						newBoard[i][j] = board[i][j] == null ? null : board[i][j].copy();
+						newBoard[j][k] = board[j][k] == null ? null : board[j][k].copy();
 					}
 				}
 				

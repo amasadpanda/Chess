@@ -108,11 +108,13 @@ public class BoardView extends View{
         sqLen = sideLen/8;
         Paint paint = new Paint();
 
-        for(int i=0;i<8;i++) {
-            for (int j = 0; j < 8; j++) {
-                int L = j*sqLen, T = i*sqLen, R = j*sqLen + sqLen, B = i*sqLen + sqLen;
-                int index = i*8 + j;
-                if ((i + j) % 2 == 0)
+        for(int i=0;i<8;i++){
+            int r = white ? i : 7-i;
+            for (int j=0;j<8;j++){
+                int c = white ? j : 7-j;
+                int L = c*sqLen, T = r*sqLen, R = c*sqLen + sqLen, B = r*sqLen + sqLen;
+                int index = r*8 + c;
+                if ((r + c) % 2 == 0)
                     paint.setARGB(255, 255, 255, 255);
                 else
                     paint.setARGB(255, 0, 0, 0);
@@ -124,9 +126,9 @@ public class BoardView extends View{
                     paint.setARGB(200,255,255,224);
                     canvas.drawRect(L,T,R,B,paint);
                 }
-                if(board[i][j]!=null) {
-                    Drawable img = res.getDrawable(board[i][j].getDrawableID());
-                    img.setBounds(j*sqLen, i*sqLen, j*sqLen + sqLen, i*sqLen + sqLen); //L T R B
+                if(board[r][c]!=null) {
+                    Drawable img = res.getDrawable(board[r][c].getDrawableID());
+                    img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);
                 }
             }
@@ -150,6 +152,11 @@ public class BoardView extends View{
             x /= sqLen;
             y -= getPaddingTop();
             y /= sqLen;
+
+            if(!white){
+                y = 7-y;
+                x = 7-x;
+            }
 
             int index = y * 8 + x;
 

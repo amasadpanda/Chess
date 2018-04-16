@@ -1,3 +1,4 @@
+//@formatter:off
 package com.group8.chesswithhats;
 
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.group8.chesswithhats.util.MakeMoveListener;
 
 import java.util.HashMap;
 
+//TODO: Option to forfeit!
 public class GameActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;

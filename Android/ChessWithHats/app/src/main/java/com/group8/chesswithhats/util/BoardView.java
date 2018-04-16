@@ -1,3 +1,4 @@
+//@formatter:off
 package com.group8.chesswithhats.util;
 
 import android.content.Context;
@@ -24,7 +25,7 @@ import static com.group8.chesswithhats.util.ChessLogic.*;
 /**
  * TODO: document your custom view class.
  */
-public class BoardView extends View {
+public class BoardView extends View{
 //    private String mExampleString; // TODO: use a default from R.string...
 //    private int mExampleColor = Color.RED; // TODO: use a default from R.color...
 //    private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -68,20 +69,19 @@ public class BoardView extends View {
             white = false;
             if(!myTurn && game.white.equals("COMPUTER"))
                 sendAIMove(true);
-        }else {
+        }else{
             myTurn = game.turn.equals("white");
             white = true;
             if(!myTurn && game.black.equals("COMPUTER"))
                 sendAIMove(false);
         }
-
         invalidate();
     }
 
     private void sendAIMove(boolean white){
         //the loading figet spinner can't be shown here. It gets shown
         //at the beginning of the makeMove call...
-        int move[] = ChessAI.getMove(board,white);
+        int move[] = ChessAI.getMove(board,white, 2);
         makeMoveListener.makeMove(move[0],move[1]);
     }
 

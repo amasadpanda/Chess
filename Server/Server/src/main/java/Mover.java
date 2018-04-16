@@ -22,15 +22,10 @@ public class Mover extends FireEater{
         int c = getC(startingPlace);
         ChessLogic.Piece myPiece = boardstate[r][c];
         HashSet<Integer> nextMoves = myPiece.getMoves(startingPlace, boardstate, true);
-        Boolean isValid = false;
-        for(Integer i : nextMoves)
-        {
-            if(clientMove == i)
-            {
-                isValid = true;
-                break;
-            }
-        }
+
+        // Changed by Philip 4/16/2018 1:56PM. Before you were looking throughe everything in nextMoves to get the same result...
+        Boolean isValid = nextMoves.contains(clientMove);
+
         if(!isValid)
             return new CWHResponse("Invalid move", false);
 
@@ -44,7 +39,8 @@ public class Mover extends FireEater{
         }
 
 
-        String moves = game.moves + (startingPlace+">"+clientMove+" ");
+        // Before game.move may have been null so null would be at the beginning of game moves.. fixed by PHilip 4/16/2018 1:40PM
+        String moves = (game.moves == null ? "" : game.moves) + (startingPlace+">"+clientMove+" ");
         String turn = game.turn;
         if(turn.equals("white"))
             turn = "black";
@@ -57,6 +53,7 @@ public class Mover extends FireEater{
         updateGame.put("black", game.black);
         updateGame.put("white", game.white);
         updateGame.put("turn", turn);
+        updateGame.put("gametype", game.gametype); // Line added by Philip 4/16/2018 1:37 PM
 
         gameRef.setValueAsync(updateGame);
 

@@ -115,6 +115,7 @@ public class GameActivity extends AppCompatActivity {
                     {
                         txtTurn.setText(getIntent().getStringExtra("opponent") + "'s turn!");
                     }
+                    txtGameType.setText(game.gametype);
                 }catch(Exception e){
                     Log.e("GameActivity", "Unable to load game", e);
                     GameActivity.this.finish();

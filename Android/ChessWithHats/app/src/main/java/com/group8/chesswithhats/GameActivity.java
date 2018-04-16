@@ -79,6 +79,7 @@ public class GameActivity extends AppCompatActivity {
                             board.invalidate();
                         } else {
                             Log.e("GameActivity","Something's wrong...");
+                            Log.e("GameActivity","It's this: "+response.getMessage());
                             GameActivity.this.finish();
                             Toast.makeText(GameActivity.this, "Something's wrong...", Toast.LENGTH_SHORT).show();
                             System.out.println(response.getMessage());

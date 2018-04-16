@@ -41,7 +41,7 @@ public class BoardView extends View{
     private Piece[][] board = new Piece[8][8]; //start w/ empty board
     private HashSet<Integer> highlighted = EMPTY;
     private MakeMoveListener makeMoveListener;
-    private boolean myTurn, white;
+    private boolean myTurn, white, ignore;
 
     //I genuinely don't know what these constructors take in or do.
     public BoardView(Context context) {
@@ -64,6 +64,7 @@ public class BoardView extends View{
 
     public void setStateFromGame(Game game, String user){
         board = Game.toPieceArray(game.board);
+        ignore = false;
         if(game.black.equals(user)) {
             myTurn = game.turn.equals("black");
             white = false;
@@ -108,8 +109,6 @@ public class BoardView extends View{
         sqLen = sideLen/8;
         Paint paint = new Paint();
 
-        Log.i("Game Activity","The player is "+(white?"white":"black")+".");
-
         for(int i=0;i<8;i++){
             int r = white ? i : 7-i;
             for (int j=0;j<8;j++){
@@ -128,7 +127,7 @@ public class BoardView extends View{
                     paint.setARGB(200,255,255,224);
                     canvas.drawRect(L,T,R,B,paint);
                 }
-                if(board[i][j]!=null) {
+                if(board[i][j]!=null){
                     Drawable img = res.getDrawable(board[i][j].getDrawableID());
                     img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);
@@ -143,7 +142,7 @@ public class BoardView extends View{
 
         //This is PROBABLY sufficient! BoardView contains the board EXCLUSIVELY.
         //any extra stuff we add later would be in different views.
-        if(!myTurn)
+        if(!myTurn || ignore)
             return true;
 
         int x = (int)event.getX();
@@ -189,9 +188,8 @@ public class BoardView extends View{
                     //board[py][px] = null;
                     if(makeMoveListener==null)
                         throw new NullPointerException("No make move listener in this board view!! Why.....");
-                    if(makeMoveListener.makeMove(active,index)){
-                        //do nothing? The firebase callback from GameActivity should work things out...?
-                    }
+                    ignore = true;
+                    makeMoveListener.makeMove(active,index);
                     performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                     highlighted = EMPTY;
                     active = -1;

@@ -250,14 +250,14 @@ public class ChessLogic {
             }
 
             //en Passant.
-            if (inBounds(r + dr, c - 1) && board[r + dr][c - 1] == null && board[r][c - 1] instanceof Pawn) {
+            if (inBounds(r + dr, c - 1) && board[r + dr][c - 1] == null && board[r][c - 1] instanceof Pawn && board[r][c - 1].white != board[r][c].white) {
                 Pawn p = (Pawn) (board[r][c - 1]);
                 if (p.movedTwiceLastTurn) {
                     if (!forReal || checkValidity(r, c, r + dr, c - 1, board))
                         moves.add((r + dr) * 8 + c - 1);
                 }
             }
-            if (inBounds(r + dr, c + 1) && board[r + dr][c + 1] == null && board[r][c + 1] instanceof Pawn) {
+            if (inBounds(r + dr, c + 1) && board[r + dr][c + 1] == null && board[r][c + 1] instanceof Pawn && board[r][c + 1].white != board[r][c].white) {
                 Pawn p = (Pawn) (board[r][c + 1]);
                 if (p.movedTwiceLastTurn) {
                     if (!forReal || checkValidity(r, c, r + dr, c + 1, board))

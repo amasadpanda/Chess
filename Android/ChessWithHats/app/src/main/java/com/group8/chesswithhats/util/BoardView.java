@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.HapticFeedbackConstants;
+import android.util.Log;import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -41,7 +41,7 @@ public class BoardView extends View{
     private Piece[][] board = new Piece[8][8]; //start w/ empty board
     private HashSet<Integer> highlighted = EMPTY;
     private MakeMoveListener makeMoveListener;
-    private boolean myTurn, white;
+    private boolean myTurn, white, ignore;
 
     //I genuinely don't know what these constructors take in or do.
     public BoardView(Context context) {
@@ -64,6 +64,7 @@ public class BoardView extends View{
 
     public void setStateFromGame(Game game, String user){
         board = Game.toPieceArray(game.board);
+        ignore = false;
         if(game.black.equals(user)) {
             myTurn = game.turn.equals("black");
             white = false;
@@ -108,11 +109,13 @@ public class BoardView extends View{
         sqLen = sideLen/8;
         Paint paint = new Paint();
 
-        for(int i=0;i<8;i++) {
-            for (int j = 0; j < 8; j++) {
-                int L = j*sqLen, T = i*sqLen, R = j*sqLen + sqLen, B = i*sqLen + sqLen;
+        for(int i=0;i<8;i++){
+            int r = white ? i : 7-i;
+            for (int j=0;j<8;j++){
+                int c = white ? j : 7-j;
+                int L = c*sqLen, T = r*sqLen, R = c*sqLen + sqLen, B = r*sqLen + sqLen;
                 int index = i*8 + j;
-                if ((i + j) % 2 == 0)
+                if ((r + c) % 2 == 0)
                     paint.setARGB(255, 255, 255, 255);
                 else
                     paint.setARGB(255, 0, 0, 0);
@@ -124,9 +127,9 @@ public class BoardView extends View{
                     paint.setARGB(200,255,255,224);
                     canvas.drawRect(L,T,R,B,paint);
                 }
-                if(board[i][j]!=null) {
+                if(board[i][j]!=null){
                     Drawable img = res.getDrawable(board[i][j].getDrawableID());
-                    img.setBounds(j*sqLen, i*sqLen, j*sqLen + sqLen, i*sqLen + sqLen); //L T R B
+                    img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);
                 }
             }
@@ -135,11 +138,11 @@ public class BoardView extends View{
 
     //TODO: use performContextClick? That may be more appropriate here, since we don't need swipes or anything.
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event){ //REEVALUTAE WHEN INVALIDATA LOL
 
         //This is PROBABLY sufficient! BoardView contains the board EXCLUSIVELY.
         //any extra stuff we add later would be in different views.
-        if(!myTurn)
+        if(!myTurn || ignore)
             return true;
 
         int x = (int)event.getX();
@@ -150,6 +153,11 @@ public class BoardView extends View{
             x /= sqLen;
             y -= getPaddingTop();
             y /= sqLen;
+
+            if(!white){
+                y = 7-y;
+                x = 7-x;
+            }
 
             int index = y * 8 + x;
 
@@ -180,9 +188,8 @@ public class BoardView extends View{
                     //board[py][px] = null;
                     if(makeMoveListener==null)
                         throw new NullPointerException("No make move listener in this board view!! Why.....");
-                    if(makeMoveListener.makeMove(active,index)){
-                        //do nothing? The firebase callback from GameActivity should work things out...?
-                    }
+                    ignore = true;
+                    makeMoveListener.makeMove(active,index);
                     performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                     highlighted = EMPTY;
                     active = -1;

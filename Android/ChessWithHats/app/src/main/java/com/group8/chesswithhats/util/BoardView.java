@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.HapticFeedbackConstants;
+import android.util.Log;import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -107,6 +107,8 @@ public class BoardView extends View{
         sideLen = Math.min(contentWidth,contentHeight);
         sqLen = sideLen/8;
         Paint paint = new Paint();
+
+        Log.i("Game Activity","The player is "+(white?"white":"black")+".");
 
         for(int i=0;i<8;i++){
             int r = white ? i : 7-i;

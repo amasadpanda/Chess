@@ -66,12 +66,23 @@ public class BoardView extends View {
         if(game.black.equals(user)) {
             myTurn = game.turn.equals("black");
             white = false;
+            if(!myTurn && game.white.equals("COMPUTER"))
+                sendAIMove(true);
         }else {
             myTurn = game.turn.equals("white");
             white = true;
+            if(!myTurn && game.black.equals("COMPUTER"))
+                sendAIMove(false);
         }
-        System.out.println("RAN SETSTATEFROMGAME(), myTurn = " + myTurn + ", white = " + white);
+
         invalidate();
+    }
+
+    private void sendAIMove(boolean white){
+        //the loading figet spinner can't be shown here. It gets shown
+        //at the beginning of the makeMove call...
+        int move[] = ChessAI.getMove(board,white);
+        makeMoveListener.makeMove(move[0],move[1]);
     }
 
     public void setMakeMoveListener(MakeMoveListener listener){

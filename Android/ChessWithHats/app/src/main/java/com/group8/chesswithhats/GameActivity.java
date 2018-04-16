@@ -73,7 +73,7 @@ public class GameActivity extends AppCompatActivity {
                     public void onCWHResponse(CWHResponse response) {
                         loading.dismiss();
                         if (response.isSuccess()) {
-                            System.out.println("Move successfully sent.");
+                            Log.i("GameActivity","Move successfully sent.");
                             board.invalidate();
                         } else {
                             Log.e("GameActivity","Something's wrong...");
@@ -95,6 +95,7 @@ public class GameActivity extends AppCompatActivity {
         txtVersus = findViewById(R.id.game_txtVersus);
         txtTurn = findViewById(R.id.game_txtTurn);
 
+        //TODO: make it so white always goes first here. For clarity!
         txtVersus.setText(auth.getCurrentUser().getDisplayName() + " vs. " + getIntent().getStringExtra("opponent"));
 
         DatabaseReference gameReference = database.getReference().child("games").child(gameID);
@@ -109,11 +110,11 @@ public class GameActivity extends AppCompatActivity {
                     if (game.black.equals(auth.getCurrentUser().getUid()) && game.turn.equals("black") ||
                             game.white.equals(auth.getCurrentUser().getUid()) && game.turn.equals("white"))
                     {
-                        txtTurn.setText("Your turn!");
+                        txtTurn.setText("Your move");
                     }
                     else
                     {
-                        txtTurn.setText(getIntent().getStringExtra("opponent") + "'s turn!");
+                        txtTurn.setText(getIntent().getStringExtra("opponent") + "'s move");
                     }
                 }catch(Exception e){
                     Log.e("GameActivity", "Unable to load game", e);

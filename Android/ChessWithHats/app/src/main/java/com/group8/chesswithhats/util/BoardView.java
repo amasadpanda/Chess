@@ -70,6 +70,7 @@ public class BoardView extends View {
             myTurn = game.turn.equals("white");
             white = true;
         }
+        System.out.println("RAN SETSTATEFROMGAME(), myTurn = " + myTurn + ", white = " + white);
         invalidate();
     }
 

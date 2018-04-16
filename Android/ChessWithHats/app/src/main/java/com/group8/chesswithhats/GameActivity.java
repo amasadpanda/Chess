@@ -95,6 +95,8 @@ public class GameActivity extends AppCompatActivity {
         txtVersus = findViewById(R.id.game_txtVersus);
         txtTurn = findViewById(R.id.game_txtTurn);
 
+        txtVersus.setText(auth.getCurrentUser().getDisplayName() + " vs. " + getIntent().getStringExtra("opponent"));
+
         DatabaseReference gameReference = database.getReference().child("games").child(gameID);
         ValueEventListener gameListener = new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -103,8 +105,16 @@ public class GameActivity extends AppCompatActivity {
                     game = dataSnapshot.getValue(Game.class); //This is so cool
                     board.setStateFromGame(game, auth.getCurrentUser().getUid());
 
-                    // Update the text views at the top...
-                    //TODO: Set the textviews here or similar...
+                    // Update the text view for turn...
+                    if (game.black.equals(auth.getCurrentUser().getUid()) && game.turn.equals("black") ||
+                            game.white.equals(auth.getCurrentUser().getUid()) && game.turn.equals("white"))
+                    {
+                        txtTurn.setText("Your turn!");
+                    }
+                    else
+                    {
+                        txtTurn.setText(getIntent().getStringExtra("opponent") + "'s turn!");
+                    }
                 }catch(Exception e){
                     Log.e("GameActivity", "Unable to load game", e);
                     GameActivity.this.finish();

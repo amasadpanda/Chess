@@ -13,6 +13,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 /*
     @author Philip Rodriguez
@@ -22,9 +30,13 @@ public class ManageAccountActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseAuth.AuthStateListener firebaseAuthListener;
 
+    FirebaseDatabase firebaseDatabase;
+    HashMap<DatabaseReference, Object> listeners;
+
     TextView txtEmail;
     TextView txtUsername;
     Button btnEditPassword;
+    TextView txtRank;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +51,9 @@ public class ManageAccountActivity extends AppCompatActivity {
             }
         };
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        listeners = new HashMap<>();
 
         initComponents();
     }
@@ -62,6 +77,19 @@ public class ManageAccountActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+
+        for (DatabaseReference reference : listeners.keySet())
+        {
+            Object listener = listeners.get(reference);
+            if (listener instanceof ValueEventListener)
+            {
+                reference.removeEventListener((ValueEventListener)listener);
+            }
+            else if (listener instanceof ChildEventListener)
+            {
+                reference.removeEventListener((ChildEventListener) listener);
+            }
+        }
     }
 
     private void initComponents()
@@ -69,6 +97,7 @@ public class ManageAccountActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.manageaccount_txtEmail);
         txtUsername = findViewById(R.id.manageaccount_txtUsername);
         btnEditPassword = findViewById(R.id.manageaccount_btnEditPassword);
+        txtRank = findViewById(R.id.manageaccount_txtRank);
 
         txtEmail.setText("Email: " + firebaseAuth.getCurrentUser().getEmail());
         txtUsername.setText("Username: " + firebaseAuth.getCurrentUser().getDisplayName());
@@ -91,5 +120,21 @@ public class ManageAccountActivity extends AppCompatActivity {
                 });
             }
         });
+
+        DatabaseReference rankReference = firebaseDatabase.getReference().child("users").child(firebaseAuth.getCurrentUser().getUid()).child("rank");
+        ValueEventListener rankListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Integer rank = dataSnapshot.getValue(Integer.class);
+                txtRank.setText("Rank: " + rank);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        rankReference.addValueEventListener(rankListener);
+        listeners.put(rankReference, rankListener);
     }
 }

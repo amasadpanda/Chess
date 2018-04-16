@@ -107,13 +107,13 @@ public class GameActivity extends AppCompatActivity {
                 loading.show();
                 try{
                     game = dataSnapshot.getValue(Game.class); //This is so cool
-                    board.setStateFromGame(game, auth.getCurrentUser().getUid());
+                    String userID = auth.getCurrentUser().getUid();
+                    board.setStateFromGame(game, userID);
 
                     // Update the text view for turn...
-                    if (game.black.equals(auth.getCurrentUser().getUid()) && game.turn.equals("black") ||
-                            game.white.equals(auth.getCurrentUser().getUid()) && game.turn.equals("white"))
-                    {
-                        txtTurn.setText("Your move");
+                    if (game.black.equals(userID) && game.turn.equals("black") ||
+                            game.white.equals(userID) && game.turn.equals("white")) {
+                        txtTurn.setText("Your move"); //This is where we need to do victory checks n shit
                     }
                     else
                     {

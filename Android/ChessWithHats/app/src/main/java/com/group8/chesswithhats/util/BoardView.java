@@ -22,6 +22,8 @@ import java.util.HashSet;
 
 import static com.group8.chesswithhats.util.ChessLogic.*;
 
+//TODO: make it highlight the opponent's last move?
+
 /**
  * TODO: document your custom view class.
  */
@@ -63,6 +65,7 @@ public class BoardView extends View{
     }
 
     public void setStateFromGame(Game game, String user){
+        //if(game.turn.contains("win_"))
         board = Game.toPieceArray(game.board);
         ignore = false;
         if(game.black.equals(user)) {

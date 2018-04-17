@@ -1,6 +1,7 @@
 package com.group8.chesswithhats.util;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
@@ -43,9 +44,11 @@ public class FriendRequestView extends FrameLayout {
                     @Override
                     public void onCWHResponse(CWHResponse response) {
                         Toast.makeText(context, response.getMessage(), Toast.LENGTH_LONG).show();
+                        setEnabled();
                     }
                 });
                 cwhRequest.getExtras().put("friend", username);
+                setDisabled();
                 cwhRequest.sendRequest(context);
             }
         });
@@ -58,14 +61,34 @@ public class FriendRequestView extends FrameLayout {
                     @Override
                     public void onCWHResponse(CWHResponse response) {
                         Toast.makeText(context, response.getMessage(), Toast.LENGTH_LONG).show();
+                        setEnabled();
                     }
                 });
                 cwhRequest.getExtras().put("friend", username);
+                setDisabled();
                 cwhRequest.sendRequest(context);
             }
         });
 
         addView(subView);
+    }
+
+    public void setDisabled()
+    {
+        subView.setBackgroundColor(context.getResources().getColor(R.color.colorBusyBackground));
+        Button btnAcceptInvite = subView.findViewById(R.id.fr_btnAccept);
+        Button btnRejectInvite = subView.findViewById(R.id.fr_btnReject);
+        btnAcceptInvite.setEnabled(false);
+        btnRejectInvite.setEnabled(false);
+    }
+
+    public void setEnabled()
+    {
+        subView.setBackgroundColor(Color.TRANSPARENT);
+        Button btnAcceptInvite = subView.findViewById(R.id.fr_btnAccept);
+        Button btnRejectInvite = subView.findViewById(R.id.fr_btnReject);
+        btnAcceptInvite.setEnabled(true);
+        btnRejectInvite.setEnabled(true);
     }
 
     public String getUID() {

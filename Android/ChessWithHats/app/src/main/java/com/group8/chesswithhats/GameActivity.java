@@ -21,7 +21,7 @@ import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
 import com.group8.chesswithhats.server.OnCWHResponseListener;
 import com.group8.chesswithhats.util.BoardView;
-import com.group8.chesswithhats.util.Game;
+import com.group8.chesswithhats.util.ChessLogic;import com.group8.chesswithhats.util.Game;
 import com.group8.chesswithhats.util.LoadingDialog;
 import com.group8.chesswithhats.util.MakeMoveListener;
 
@@ -70,7 +70,11 @@ public class GameActivity extends AppCompatActivity {
         board = (BoardView) findViewById(R.id.boardView);
         board.setMakeMoveListener(new MakeMoveListener() {
             @Override
-            public boolean makeMove(int start, int end) {
+            public boolean makeMove(int start, int end, boolean promotion, boolean white) {
+                String promote = null;
+                if(promotion){
+                    promote = getPromotion(white);
+                }
                 loading.show();
                 CWHRequest request = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.MAKE_MOVE, new OnCWHResponseListener() {
                     @Override
@@ -89,7 +93,7 @@ public class GameActivity extends AppCompatActivity {
                 request.put("start", ""+start);
                 request.put("end", ""+end);
                 request.put("gameid", gameID);
-                //request.put("promotion",whatever);
+                request.put("promote",promote);
                 request.sendRequest(GameActivity.this);
                 return true; //This nested chaos makes things so unwieldy that I pretty much treat this as void.
             }
@@ -109,21 +113,24 @@ public class GameActivity extends AppCompatActivity {
                 try{
                     game = dataSnapshot.getValue(Game.class); //This is so cool
                     String userID = auth.getCurrentUser().getUid();
+                    String opponent = getIntent().getStringExtra("opponent");
                     board.setStateFromGame(game, userID);
 
-                    // Update the text view for turn...
-                    if (game.black.equals(userID) && game.turn.equals("black") ||
-                            game.white.equals(userID) && game.turn.equals("white")){
-                        txtTurn.setText("Your move"); //This is where we need to do victory checks n shit
-                    }
-                    else if (game.turn.startsWith("winner="))
-                    {
-                        // Game is over!
+                    //Update the text view for whose turn it is
+                    if(game.turn.startsWith("winner=")){
+                        //Somebody has winned!
                         String winner = game.turn.substring(7);
-                        txtTurn.setText(winner + " wins!");
-                    }
-                    else{
-                        txtTurn.setText(getIntent().getStringExtra("opponent") + "'s move");
+                        if(winner.equals("Nobody!!!"))
+                            txtTurn.setText("Stalemate...");
+                        else if(winner.equals(opponent))
+                            txtTurn.setText("Better luck next time!");
+                        else
+                            txtTurn.setText("You won!");
+                    }else if (game.black.equals(userID) && game.turn.equals("black") ||
+                            game.white.equals(userID) && game.turn.equals("white")){
+                        txtTurn.setText("Your move");
+                    }else{
+                        txtTurn.setText(opponent + "'s move");
                     }
                     txtGameType.setText(game.gametype);
                 }catch(Exception e){
@@ -140,6 +147,11 @@ public class GameActivity extends AppCompatActivity {
         };
         gameReference.addValueEventListener(gameListener);
         listeners.put(gameReference, gameListener);
+    }
+
+    private String getPromotion(boolean white){
+        //TODO: use white to determine which color pieces to draw in the UI.
+        return new ChessLogic.Pawn(white).toString();
     }
 
     public void onBackPressed(){
@@ -165,7 +177,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         //OHHHH boy...We need to manually keep track of and kill all the listeners.
-        // Yeah. See below. Should remove all listeners that were properly inserted to the listeners hashmap.
+        //Yeah. See below. Should remove all listeners that were properly inserted to the listeners hashmap.
         for (DatabaseReference reference : listeners.keySet()){
             Object listener = listeners.get(reference);
             if (listener instanceof ValueEventListener || listener instanceof ChildEventListener)

@@ -4,11 +4,57 @@ import static com.group8.chesswithhats.util.ChessLogic.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Random;
 
 public class ChessAI {
     static boolean white;
     static int difficulty;
-    public static int[] getMove(Piece[][] board, boolean w, int diff){
+
+    // Written by Philip Rodriguez for testing purposes while Pablo works on the actual AI.
+	public static int[] getRandomMove(Piece[][] board, boolean w) {
+		System.out.println("Making a random computer move!");
+		ArrayList<Piece> computerPieces = new ArrayList<>();
+		ArrayList<Integer> positions = new ArrayList<>();
+		int loc = 0;
+		for (int r = 0; r < board.length; r++)
+		{
+			for (int c = 0; c < board[r].length; c++)
+			{
+				if (board[r][c] != null && board[r][c].white == w) {
+					computerPieces.add(board[r][c]);
+					positions.add(loc);
+				}
+				loc++;
+			}
+		}
+
+		// Select a random black piece and attempt to return a move for it!
+		Random random = new Random();
+		while (computerPieces.size() > 0) {
+			// Select piece at random
+			int pieceToMove = random.nextInt(computerPieces.size());
+
+			// Get valid next moves as list
+			ArrayList<Integer> validNextMoves = new ArrayList<>(computerPieces.get(pieceToMove).getMoves(positions.get(pieceToMove), board));
+
+			// There are no available moves for the selected piece!
+			if (validNextMoves.size() == 0)
+			{
+				// Remove this piece from the running.
+				computerPieces.remove(pieceToMove);
+				positions.remove(pieceToMove);
+			}
+			else {
+				// Move it!
+				return new int[]{positions.get(pieceToMove), validNextMoves.get(random.nextInt(validNextMoves.size()))};
+			}
+		}
+
+		// Absolutely no remaining moves available for the computer.
+		return null;
+	}
+
+    public static int[] getMove(Piece[][] board, boolean w, int diff) {
         // Create a list of all peices that may be moved
     	white = w;
     	difficulty = diff;

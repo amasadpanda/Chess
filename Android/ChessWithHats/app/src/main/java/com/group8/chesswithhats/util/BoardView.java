@@ -66,9 +66,15 @@ public class BoardView extends View{
     private void sendAIMove(boolean white){
         //the loading figet spinner can't be shown here. It gets shown
         //at the beginning of the makeMove call...
-        int move[] = ChessAI.getRandomMove(board,white); //TODO: switch back to pablo's code when he finishes that up.
+        //TODO: switch back to pablo's code when he finishes that up.
+        //TODO: also enable him to use pawn promotion.
+        int move[] = ChessAI.getRandomMove(board,white);
+        if(move==null){
+            Log.d(T,"No moves left, human player won :(");
+            return;
+        }
         Log.i(T,"Sending AI move to server...");
-        makeMoveListener.makeMove(move[0],move[1]); //server is OK with you making a move on behalf of the other team.
+        makeMoveListener.makeMove(move[0],move[1],white); //server is OK with you making a move on behalf of the other team.
     }
 
     public void setMakeMoveListener(MakeMoveListener listener){
@@ -178,8 +184,16 @@ public class BoardView extends View{
                     if(makeMoveListener==null)
                         throw new NullPointerException("No make move listener in this board view!! Why.....");
                     ignore = true; //ignore all future taps until response from database. This prevents double moves from getting sent.
-                    Log.i(T,"Sending move to server...");
-                    makeMoveListener.makeMove(active,index);
+                    int py = active/8, px = active%8;
+                    if(board[py][px] instanceof Pawn && ((white && y==0) || (!white && y==7))){
+                        //we got a promotion on our hands, everybody...
+                        Log.i(T,"Requesting and sending pawn promotion...");
+                        makeMoveListener.makeMove(active,index,true,white);
+                    }else{
+                        Log.i(T,"Sending move to server...");
+                        makeMoveListener.makeMove(active,index,white);
+                    }
+
                     performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                     highlighted = EMPTY;
                     active = -1;
@@ -195,6 +209,7 @@ public class BoardView extends View{
     }
 
     public void clearActive(){
+        ignore = false;
         highlighted = EMPTY;
         active = -1;
         invalidate();

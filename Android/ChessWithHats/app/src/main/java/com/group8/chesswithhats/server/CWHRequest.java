@@ -9,6 +9,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
@@ -34,7 +38,34 @@ import javax.net.ssl.TrustManagerFactory;
  */
 public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
     //public static final String serverURL = "https://philiprodriguez.ddns.net:1235/chessWithHats/";
-    public static final String serverURL = "https://192.168.43.184:1235/chessWithHats/";
+    public static String serverURL = null;
+
+    // Blocking call that ensures that we know the server URL!
+    public static void ensureServerURLSet()
+    {
+        // If already set,
+        if (serverURL != null)
+            return;
+
+        final Semaphore setMutex = new Semaphore(0);
+        FirebaseDatabase.getInstance().getReference().child("serverURL").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                serverURL = dataSnapshot.getValue(String.class);
+                setMutex.release();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        try {
+            setMutex.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     public enum RequestType {
         MAKE_MOVE, ACCEPT_FRIEND, DENY_FRIEND, ACCEPT_GAME, DENY_GAME, FRIEND_REQUEST, GAME_CREATION,
@@ -95,6 +126,9 @@ public class CWHRequest extends AsyncTask<Context, Void, CWHResponse> {
         HttpsURLConnection connection = null;
         try
         {
+            // Ensure server url exists
+            ensureServerURLSet();
+
             // Wait to ensure the authID is assigned
             if (authID == null) {
                 authIDSet.acquire();

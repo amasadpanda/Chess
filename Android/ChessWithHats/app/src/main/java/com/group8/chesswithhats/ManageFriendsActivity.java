@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.group8.chesswithhats.server.CWHRequest;
 import com.group8.chesswithhats.server.CWHResponse;
@@ -28,6 +31,7 @@ import com.group8.chesswithhats.server.OnCWHResponseListener;
 import com.group8.chesswithhats.util.CurrentFriendView;
 import com.group8.chesswithhats.util.FriendRequestView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
@@ -48,6 +52,12 @@ public class ManageFriendsActivity extends AppCompatActivity {
     private TextView txtNoCurrentFriends;
     private TextView txtNoCurrentFriendRequests;
 
+    private ArrayList<String> allUsernames;
+    private ArrayAdapter<String> autocompleteAdapter;
+    private Query usernameQuery;
+    private ChildEventListener usernameListener;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +73,9 @@ public class ManageFriendsActivity extends AppCompatActivity {
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
 
         listeners = new HashMap<>();
+
+        allUsernames = new ArrayList<String>();
+        autocompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, allUsernames);
 
         initComponents();
     }
@@ -101,6 +114,8 @@ public class ManageFriendsActivity extends AppCompatActivity {
                 reference.removeEventListener((ChildEventListener)listener);
             }
         }
+
+        usernameQuery.removeEventListener(usernameListener);
     }
 
     private void initComponents()
@@ -117,9 +132,10 @@ public class ManageFriendsActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ManageFriendsActivity.this);
                 AlertDialog dialog = builder.create();
                 dialog.setTitle("Add a Friend");
-                final EditText friendUsername = new EditText(ManageFriendsActivity.this);
+                final AutoCompleteTextView friendUsername = new AutoCompleteTextView(ManageFriendsActivity.this);
                 friendUsername.setInputType(InputType.TYPE_CLASS_TEXT);
                 friendUsername.setHint("Friend's Username");
+                friendUsername.setAdapter(autocompleteAdapter);
                 dialog.setView(friendUsername);
 
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Send Request", new DialogInterface.OnClickListener() {
@@ -265,5 +281,35 @@ public class ManageFriendsActivity extends AppCompatActivity {
         };
         friendsReference.addChildEventListener(friendsListener);
         listeners.put(friendsReference, friendsListener);
+
+        DatabaseReference usersReference = firebaseDatabase.getReference().child("users");
+        usernameQuery = usersReference.orderByChild("username");
+        usernameListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                autocompleteAdapter.add(dataSnapshot.child("username").getValue(String.class));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                autocompleteAdapter.remove(dataSnapshot.child("username").getValue(String.class));
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        usernameQuery.addChildEventListener(usernameListener);
     }
 }

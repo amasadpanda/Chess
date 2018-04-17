@@ -1,7 +1,7 @@
 //@formatter:off
 package com.group8.chesswithhats;
 
-import android.os.Bundle;
+import android.content.DialogInterface;import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;import android.support.v7.app.AppCompatActivity;
@@ -80,6 +80,10 @@ public class GameActivity extends AppCompatActivity {
                     selectorBuilder.setTitle("Promote your pawn");
                     final AlertDialog selectorDialog = selectorBuilder.create();
 
+                    //one of three things needs to happen:
+                    //1. This view cannot be backed out of
+                    //2. Backing out of THIS view will also back out of GameActivity
+                    //3. Backing out of THIS view will clear active in the board view
                     //Each button's callback sends an appropriately formatted request
                     selector.findViewById(R.id.btnQueen).setOnClickListener(new View.OnClickListener(){
                         @Override
@@ -109,6 +113,11 @@ public class GameActivity extends AppCompatActivity {
                             sendMoveToServer(start, end, new ChessLogic.Rook(white).toString());
                         }
                     });
+
+                    selectorDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {@Override
+                        public void onDismiss(DialogInterface dialog) {
+                            board.clearActive();
+                        }});
 
                     selectorDialog.show();
 

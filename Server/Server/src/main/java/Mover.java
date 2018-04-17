@@ -56,6 +56,9 @@ public class Mover extends FireEater{
 
             gameRef.setValueAsync(updateGame);
 
+            // Determine if there is someone in checkmate!
+
+
             return new CWHResponse("Move made!", true);
         }
         catch (Exception exc)

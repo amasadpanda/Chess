@@ -4,9 +4,9 @@ package com.group8.chesswithhats;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.LayoutInflater;import android.view.View;import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,31 +70,33 @@ public class GameActivity extends AppCompatActivity {
         board = (BoardView) findViewById(R.id.boardView);
         board.setMakeMoveListener(new MakeMoveListener() {
             @Override
-            public boolean makeMove(int start, int end, boolean promotion, boolean white) {
-                String promote = null;
+            public boolean makeMove(final int start, final int end, boolean promotion, final boolean white) {
                 if(promotion){
-                    promote = getPromotion(white);
-                }
-                loading.show();
-                CWHRequest request = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.MAKE_MOVE, new OnCWHResponseListener() {
-                    @Override
-                    public void onCWHResponse(CWHResponse response) {
-                        loading.dismiss();
-                        if (response.isSuccess()) {
-                            Log.i(T,"Move successfully sent.");
-                            board.invalidate();
-                        } else {
-                            Log.e(T,"Couldn't send move: "+response.getMessage());
-                            GameActivity.this.finish();
-                            Toast.makeText(GameActivity.this, "Couldn't send move. Try again later.", Toast.LENGTH_SHORT).show();
+                    // Get the promotion and then send it
+
+                    AlertDialog.Builder selectorBuilder = new AlertDialog.Builder(GameActivity.this);
+                    LayoutInflater inflater = getLayoutInflater();
+                    View selector = inflater.inflate(R.layout.promotion_selector, null);
+                    selectorBuilder.setView(selector);
+                    selectorBuilder.setTitle("Promotion Selector");
+                    final AlertDialog selectorDialog = selectorBuilder.create();
+
+                    // Depending on which button they press, do the thing!
+                    selector.findViewById(R.id.btnQueen).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sendMoveToServer(start, end, new ChessLogic.Queen(white).toString());
+                            selectorDialog.dismiss();
                         }
-                    }
-                });
-                request.put("start", ""+start);
-                request.put("end", ""+end);
-                request.put("gameid", gameID);
-                request.put("promote",promote);
-                request.sendRequest(GameActivity.this);
+                    });
+
+                    selectorDialog.show();
+                }
+                else
+                {
+                    // There is no promotion for this move, so set promote to null.
+                    sendMoveToServer(start, end, null);
+                }
                 return true; //This nested chaos makes things so unwieldy that I pretty much treat this as void.
             }
         });
@@ -149,9 +151,28 @@ public class GameActivity extends AppCompatActivity {
         listeners.put(gameReference, gameListener);
     }
 
-    private String getPromotion(boolean white){
-        //TODO: use white to determine which color pieces to draw in the UI.
-        return new ChessLogic.Pawn(white).toString();
+    private void sendMoveToServer(int start, int end, String promote)
+    {
+            loading.show();
+            CWHRequest request = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.MAKE_MOVE, new OnCWHResponseListener() {
+                @Override
+                public void onCWHResponse(CWHResponse response) {
+                    loading.dismiss();
+                    if (response.isSuccess()) {
+                        Log.i(T,"Move successfully sent.");
+                        board.invalidate();
+                    } else {
+                        Log.e(T,"Couldn't send move: "+response.getMessage());
+                        GameActivity.this.finish();
+                        Toast.makeText(GameActivity.this, "Couldn't send move. Try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            request.put("start", ""+start);
+            request.put("end", ""+end);
+            request.put("gameid", gameID);
+            request.put("promote",promote);
+            request.sendRequest(GameActivity.this);
     }
 
     public void onBackPressed(){

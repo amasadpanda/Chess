@@ -71,30 +71,48 @@ public class GameActivity extends AppCompatActivity {
         board.setMakeMoveListener(new MakeMoveListener() {
             @Override
             public boolean makeMove(final int start, final int end, boolean promotion, final boolean white) {
-                if(promotion){
-                    // Get the promotion and then send it
-
+                if(promotion){ //Present promotion selection dialogue
+                    Log.d(T,"Creating pawn promotion dialogue...");
                     AlertDialog.Builder selectorBuilder = new AlertDialog.Builder(GameActivity.this);
                     LayoutInflater inflater = getLayoutInflater();
                     View selector = inflater.inflate(R.layout.promotion_selector, null);
                     selectorBuilder.setView(selector);
-                    selectorBuilder.setTitle("Promotion Selector");
+                    selectorBuilder.setTitle("Promote your pawn");
                     final AlertDialog selectorDialog = selectorBuilder.create();
 
-                    // Depending on which button they press, do the thing!
-                    selector.findViewById(R.id.btnQueen).setOnClickListener(new View.OnClickListener() {
+                    //Each button's callback sends an appropriately formatted request
+                    selector.findViewById(R.id.btnQueen).setOnClickListener(new View.OnClickListener(){
                         @Override
                         public void onClick(View v) {
-                            sendMoveToServer(start, end, new ChessLogic.Queen(white).toString());
                             selectorDialog.dismiss();
+                            sendMoveToServer(start, end, new ChessLogic.Queen(white).toString());
+                        }
+                    });
+                    selector.findViewById(R.id.btnBishop).setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            selectorDialog.dismiss();
+                            sendMoveToServer(start, end, new ChessLogic.Bishop(white).toString());
+                        }
+                    });
+                    selector.findViewById(R.id.btnKnight).setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            selectorDialog.dismiss();
+                            sendMoveToServer(start, end, new ChessLogic.Knight(white).toString());
+                        }
+                    });
+                    selector.findViewById(R.id.btnRook).setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            selectorDialog.dismiss();
+                            sendMoveToServer(start, end, new ChessLogic.Rook(white).toString());
                         }
                     });
 
                     selectorDialog.show();
-                }
-                else
-                {
-                    // There is no promotion for this move, so set promote to null.
+
+                }else{ //There is no promotion for this move, so set promote to null.
                     sendMoveToServer(start, end, null);
                 }
                 return true; //This nested chaos makes things so unwieldy that I pretty much treat this as void.
@@ -124,10 +142,10 @@ public class GameActivity extends AppCompatActivity {
                         String winner = game.turn.substring(7);
                         if(winner.equals("Nobody!!!"))
                             txtTurn.setText("Stalemate...");
-                        else if(winner.equals(opponent))
-                            txtTurn.setText("Better luck next time!");
-                        else
+                        else if(winner.equals(userID))
                             txtTurn.setText("You won!");
+                        else
+                            txtTurn.setText("Better luck next time!");
                     }else if (game.black.equals(userID) && game.turn.equals("black") ||
                             game.white.equals(userID) && game.turn.equals("white")){
                         txtTurn.setText("Your move");
@@ -151,8 +169,7 @@ public class GameActivity extends AppCompatActivity {
         listeners.put(gameReference, gameListener);
     }
 
-    private void sendMoveToServer(int start, int end, String promote)
-    {
+    private void sendMoveToServer(int start, int end, String promote){
             loading.show();
             CWHRequest request = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.MAKE_MOVE, new OnCWHResponseListener() {
                 @Override
@@ -171,7 +188,8 @@ public class GameActivity extends AppCompatActivity {
             request.put("start", ""+start);
             request.put("end", ""+end);
             request.put("gameid", gameID);
-            request.put("promote",promote);
+            if(promote!=null)
+                request.put("promote",promote);
             request.sendRequest(GameActivity.this);
     }
 

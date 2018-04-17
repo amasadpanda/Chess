@@ -30,16 +30,18 @@ import java.util.HashMap;
 //TODO: Option to forfeit!
 public class GameActivity extends AppCompatActivity {
 
+    public static final String T = "GameActivity";
+
     private FirebaseDatabase database;
-    private HashMap<DatabaseReference, Object> listeners;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
+    private HashMap<DatabaseReference, Object> listeners;
 
     private String gameID;
     private LoadingDialog loading;
-    Game game;
-    BoardView board;
+    private Game game;
 
+    private BoardView board;
     private TextView txtGameType;
     private TextView txtVersus;
     private TextView txtTurn;
@@ -75,22 +77,21 @@ public class GameActivity extends AppCompatActivity {
                     public void onCWHResponse(CWHResponse response) {
                         loading.dismiss();
                         if (response.isSuccess()) {
-                            Log.i("GameActivity","Move successfully sent.");
+                            Log.i(T,"Move successfully sent.");
                             board.invalidate();
                         } else {
-                            Log.e("GameActivity","Something's wrong...");
-                            Log.e("GameActivity","It's this: "+response.getMessage());
+                            Log.e(T,"Couldn't send move: "+response.getMessage());
                             GameActivity.this.finish();
-                            Toast.makeText(GameActivity.this, "Something's wrong...", Toast.LENGTH_SHORT).show();
-                            System.out.println(response.getMessage());
+                            Toast.makeText(GameActivity.this, "Couldn't send move. Try again later.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 request.put("start", ""+start);
                 request.put("end", ""+end);
                 request.put("gameid", gameID);
+                //request.put("promotion",whatever);
                 request.sendRequest(GameActivity.this);
-                return true; //just always return true for now? This nested chaos makes things very unwieldy.
+                return true; //This nested chaos makes things so unwieldy that I pretty much treat this as void.
             }
         });
 
@@ -112,16 +113,15 @@ public class GameActivity extends AppCompatActivity {
 
                     // Update the text view for turn...
                     if (game.black.equals(userID) && game.turn.equals("black") ||
-                            game.white.equals(userID) && game.turn.equals("white")) {
+                            game.white.equals(userID) && game.turn.equals("white")){
                         txtTurn.setText("Your move"); //This is where we need to do victory checks n shit
                     }
-                    else
-                    {
+                    else{
                         txtTurn.setText(getIntent().getStringExtra("opponent") + "'s move");
                     }
                     txtGameType.setText(game.gametype);
                 }catch(Exception e){
-                    Log.e("GameActivity", "Unable to load game", e);
+                    Log.e(T, "Unable to load game", e);
                     GameActivity.this.finish();
                     Toast.makeText(GameActivity.this, "Unable to load game", Toast.LENGTH_SHORT).show();
                 }
@@ -136,9 +136,15 @@ public class GameActivity extends AppCompatActivity {
         listeners.put(gameReference, gameListener);
     }
 
+    public void onBackPressed(){
+        if(!board.onBackPressed())
+            super.onBackPressed();
+    }
+
     // Check if the user is signed in. If not, close the activity
     private void checkLoginStatus() {
         FirebaseUser currentUser = auth.getCurrentUser();
+        Log.w(T,"User is not signed in anymore!");
         if (currentUser == null) { // We are not signed in!
             finish();
         }
@@ -154,17 +160,10 @@ public class GameActivity extends AppCompatActivity {
         super.onDestroy();
         //OHHHH boy...We need to manually keep track of and kill all the listeners.
         // Yeah. See below. Should remove all listeners that were properly inserted to the listeners hashmap.
-        for (DatabaseReference reference : listeners.keySet())
-        {
+        for (DatabaseReference reference : listeners.keySet()){
             Object listener = listeners.get(reference);
-            if (listener instanceof ValueEventListener)
-            {
+            if (listener instanceof ValueEventListener || listener instanceof ChildEventListener)
                 reference.removeEventListener((ValueEventListener)listener);
-            }
-            else if (listener instanceof ChildEventListener)
-            {
-                reference.removeEventListener((ValueEventListener)listener);
-            }
         }
     }
 }

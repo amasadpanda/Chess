@@ -9,6 +9,7 @@ public class Mover extends FireEater{
     public CWHResponse handle(CWHRequest request) {
 
         String gameID = request.getExtras().get("gameid");
+        String UID = request.getExtras().get("white");
         int startingPlace = Integer.parseInt(request.getExtras().get("start"));
         int clientMove = Integer.parseInt(request.getExtras().get("end"));
 
@@ -43,7 +44,6 @@ public class Mover extends FireEater{
             game.board.put("x"+(clientMove), myPiece.toString() );
         }
 
-
         String moves = game.moves + (startingPlace+">"+clientMove+" ");
         String turn = game.turn;
         if(turn.equals("white"))
@@ -57,8 +57,13 @@ public class Mover extends FireEater{
         updateGame.put("black", game.black);
         updateGame.put("white", game.white);
         updateGame.put("turn", turn);
-
         gameRef.setValueAsync(updateGame);
+
+
+        if(ChessLogic.gameOver(game.white.equals(UID), boardstate) == 1)
+        {
+
+        }
 
         return new CWHResponse("Move made", true);
     }

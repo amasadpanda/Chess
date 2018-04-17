@@ -7,65 +7,80 @@ public class Mover extends FireEater{
 
     @Override
     public CWHResponse handle(CWHRequest request) {
+        try {
+            String gameID = request.getExtras().get("gameid");
+            int startingPlace = Integer.parseInt(request.getExtras().get("start"));
+            int clientMove = Integer.parseInt(request.getExtras().get("end"));
 
-        String gameID = request.getExtras().get("gameid");
-        String UID = request.getExtras().get("white");
-        int startingPlace = Integer.parseInt(request.getExtras().get("start"));
-        int clientMove = Integer.parseInt(request.getExtras().get("end"));
+            DatabaseReference gameRef = getDatabase().getReference().child("games").child(gameID);
+            SynchronousListener getGame = new SynchronousListener();
+            gameRef.addListenerForSingleValueEvent(getGame);
+            Game game = getGame.getSnapshot().getValue(Game.class);
 
-        DatabaseReference gameRef = getDatabase().getReference().child("games").child(gameID);
-        SynchronousListener getGame = new SynchronousListener();
-        gameRef.addListenerForSingleValueEvent(getGame);
-        Game game = getGame.getSnapshot().getValue(Game.class);
+            ChessLogic.Piece[][] boardstate = Game.toPieceArray(game.board);
+            int r = getR(startingPlace);
+            int c = getC(startingPlace);
+            ChessLogic.Piece myPiece = boardstate[r][c];
+            HashSet<Integer> nextMoves = myPiece.getMoves(startingPlace, boardstate, true);
 
-        ChessLogic.Piece[][] boardstate = Game.toPieceArray(game.board);
-        int r = getR(startingPlace);
-        int c = getC(startingPlace);
-        ChessLogic.Piece myPiece = boardstate[r][c];
-        HashSet<Integer> nextMoves = myPiece.getMoves(startingPlace, boardstate, true);
-        Boolean isValid = false;
-        for(Integer i : nextMoves)
-        {
-            if(clientMove == i)
-            {
-                isValid = true;
-                break;
+            // Changed by Philip 4/16/2018 1:56PM. Before you were looking throughe everything in nextMoves to get the same result...
+            Boolean isValid = nextMoves.contains(clientMove);
+
+            if (!isValid)
+                return new CWHResponse("Invalid move!", false);
+
+            // moving the actual board
+            if (ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate))
+                game.board = Game.toHashMap(boardstate);
+            else {
+                game.board.remove("x" + startingPlace);
+                game.board.put("x" + (clientMove), myPiece.toString());
             }
-        }
-        if(!isValid)
-            return new CWHResponse("Invalid move", false);
 
-        // moving the actual board
-        if(ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate))
-            game.board = Game.toHashMap(boardstate);
-        else
+
+            // Before game.move may have been null so null would be at the beginning of game moves.. fixed by PHilip 4/16/2018 1:40PM
+            String moves = (game.moves == null ? "" : game.moves) + (startingPlace + ">" + clientMove + " ");
+            String turn = game.turn;
+            if (turn.equals("white"))
+                turn = "black";
+            else
+                turn = "white";
+
+
+
+            Map<String, Object> updateGame = new HashMap<>();
+            updateGame.put("board", game.board);
+            updateGame.put("moves", moves);
+            updateGame.put("black", game.black);
+            updateGame.put("white", game.white);
+            updateGame.put("turn", turn);
+            updateGame.put("gametype", game.gametype); // Line added by Philip 4/16/2018 1:37 PM
+
+            // Determine if checkmate exists
+            if (ChessLogic.gameOver(false, boardstate) == 1)
+            {
+                // black is in checkmate, white wins
+                updateGame.put("turn", "winner=" + FireEater.UIDToUsername(game.white));
+            }
+            else if (ChessLogic.gameOver(true, boardstate) == 1)
+            {
+                // white is in checkmate, black wins
+                updateGame.put("turn", "winner=" + FireEater.UIDToUsername(game.black));
+            }
+            else if (ChessLogic.gameOver(true, boardstate) == 2 || ChessLogic.gameOver(false, boardstate) == 2)
+            {
+                // Stalemate
+                updateGame.put("turn", "winner=Nobody");
+            }
+
+            gameRef.setValueAsync(updateGame);
+
+            return new CWHResponse("Move made!", true);
+        }
+        catch (Exception exc)
         {
-            game.board.remove("x" + startingPlace);
-            game.board.put("x"+(clientMove), myPiece.toString() );
+            return new CWHResponse("Failed to make move!", true);
         }
-
-        String moves = game.moves + (startingPlace+">"+clientMove+" ");
-        String turn = game.turn;
-        if(turn.equals("white"))
-            turn = "black";
-        else
-            turn = "white";
-
-        Map<String, Object> updateGame = new HashMap<>();
-        updateGame.put("board", game.board);
-        updateGame.put("moves", moves);
-        updateGame.put("black", game.black);
-        updateGame.put("white", game.white);
-        updateGame.put("turn", turn);
-        gameRef.setValueAsync(updateGame);
-
-
-        if(ChessLogic.gameOver(game.white.equals(UID), boardstate) == 1)
-        {
-
-        }
-
-        return new CWHResponse("Move made", true);
     }
 
 

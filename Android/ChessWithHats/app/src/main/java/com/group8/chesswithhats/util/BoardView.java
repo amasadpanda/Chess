@@ -209,6 +209,7 @@ public class BoardView extends View{
     }
 
     public void clearActive(){
+        ignore = false;
         highlighted = EMPTY;
         active = -1;
         invalidate();

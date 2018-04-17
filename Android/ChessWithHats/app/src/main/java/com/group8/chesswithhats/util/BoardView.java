@@ -66,7 +66,7 @@ public class BoardView extends View{
     private void sendAIMove(boolean white){
         //the loading figet spinner can't be shown here. It gets shown
         //at the beginning of the makeMove call...
-        int move[] = ChessAI.getRandomMove(board,white);
+        int move[] = ChessAI.getRandomMove(board,white); //TODO: switch back to pablo's code when he finishes that up.
         Log.i(T,"Sending AI move to server...");
         makeMoveListener.makeMove(move[0],move[1]); //server is OK with you making a move on behalf of the other team.
     }

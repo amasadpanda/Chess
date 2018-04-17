@@ -116,6 +116,12 @@ public class GameActivity extends AppCompatActivity {
                             game.white.equals(userID) && game.turn.equals("white")){
                         txtTurn.setText("Your move"); //This is where we need to do victory checks n shit
                     }
+                    else if (game.turn.startsWith("winner="))
+                    {
+                        // Game is over!
+                        String winner = game.turn.substring(7);
+                        txtTurn.setText(winner + " wins!");
+                    }
                     else{
                         txtTurn.setText(getIntent().getStringExtra("opponent") + "'s move");
                     }

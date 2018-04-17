@@ -27,7 +27,7 @@ public class Mover extends FireEater{
             Boolean isValid = nextMoves.contains(clientMove);
 
             if (!isValid)
-                return new CWHResponse("Invalid move", false);
+                return new CWHResponse("Invalid move!", false);
 
             // moving the actual board
             if (ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate))
@@ -46,6 +46,8 @@ public class Mover extends FireEater{
             else
                 turn = "white";
 
+
+
             Map<String, Object> updateGame = new HashMap<>();
             updateGame.put("board", game.board);
             updateGame.put("moves", moves);
@@ -54,10 +56,24 @@ public class Mover extends FireEater{
             updateGame.put("turn", turn);
             updateGame.put("gametype", game.gametype); // Line added by Philip 4/16/2018 1:37 PM
 
+            // Determine if checkmate exists
+            if (ChessLogic.gameOver(false, boardstate) == 1)
+            {
+                // black is in checkmate, white wins
+                updateGame.put("turn", "winner=" + FireEater.UIDToUsername(game.white));
+            }
+            else if (ChessLogic.gameOver(true, boardstate) == 1)
+            {
+                // white is in checkmate, black wins
+                updateGame.put("turn", "winner=" + FireEater.UIDToUsername(game.black));
+            }
+            else if (ChessLogic.gameOver(true, boardstate) == 2 || ChessLogic.gameOver(false, boardstate) == 2)
+            {
+                // Stalemate
+                updateGame.put("turn", "winner=Nobody");
+            }
+
             gameRef.setValueAsync(updateGame);
-
-            // Determine if there is someone in checkmate!
-
 
             return new CWHResponse("Move made!", true);
         }

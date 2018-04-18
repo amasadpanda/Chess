@@ -53,13 +53,13 @@ public class BoardView extends View{
         Log.d(T,"Constructor 3");
     }
 
-    public void setBlackHat(String blackhat){
-        this.blackHat = (blackhat == null ? "none" : blackhat.toLowerCase());
+    public void setBlackHat(String hat){
+        this.blackHat = (hat == null ? "None" : hat);
         invalidate();
     }
 
-    public void setWhiteHat(String whitehat){
-        this.whiteHat = (whitehat == null ? "none" : whitehat.toLowerCase());
+    public void setWhiteHat(String hat){
+        this.whiteHat = (hat == null ? "None" : hat);
         invalidate();
     }
 

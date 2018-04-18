@@ -1,4 +1,6 @@
-import com.google.firebase.database.DataSnapshot;
+import Rulesets.Piece;
+import Rulesets.Ruleset;
+import Rulesets.StandardPieces.StandardPieces;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.*;
@@ -17,12 +19,12 @@ public class Mover extends FireEater{
             DatabaseReference gameRef = getDatabase().getReference().child("games").child(gameID);
             SynchronousListener getGame = new SynchronousListener();
             gameRef.addListenerForSingleValueEvent(getGame);
-            Game game = getGame.getSnapshot().getValue(Game.class);
 
-            ChessLogic.Piece[][] boardstate = Game.toPieceArray(game.board);
+            Game game = getGame.getSnapshot().getValue(Game.class);
+            Piece[][] boardstate = game.getBoard();
             int r = getR(startingPlace);
             int c = getC(startingPlace);
-            ChessLogic.Piece myPiece = boardstate[r][c];
+            Piece myPiece = boardstate[r][c];
             HashSet<Integer> nextMoves = myPiece.getMoves(startingPlace, boardstate, true);
 
             // Changed by Philip 4/16/2018 1:56PM. Before you were looking throughe everything in nextMoves to get the same result...
@@ -30,15 +32,10 @@ public class Mover extends FireEater{
                 return new CWHResponse("Invalid move!", false);
 
             //pawn promotion
-            if(myPiece instanceof ChessLogic.Pawn && promotion != null && (getR(clientMove) == 0 || getR(clientMove) == 7))
-            {
-                ChessLogic.Piece promo = Game.getPiece(promotion);
-                myPiece = promo;
-                boardstate[r][c] = promo;
-            }
 
-            ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate);
-            game.board = Game.toHashMap(boardstate);
+
+            game.movePiece(r,c, getR(clientMove), getC(clientMove), boardstate, game.getRuleset().getPiece(promotion));
+            game.updateHashMap(boardstate);
 
             // Before game.move may have been null so null would be at the beginning of game moves.. fixed by PHilip 4/16/2018 1:40PM
             String moves = (game.moves == null ? "" : game.moves) + (startingPlace + ">" + clientMove + " ");
@@ -54,10 +51,9 @@ public class Mover extends FireEater{
             updateGame.put("turn", turn);
             updateGame.put("gametype", game.gametype); // Line added by Philip 4/16/2018 1:37 PM
 
-            int whiteWins = ChessLogic.gameOver(false, boardstate);
-            int blackWins = ChessLogic.gameOver(true, boardstate);
+            int whoWins = game.gameOver( boardstate);
 
-            if(whiteWins + blackWins > 0)
+            if(whoWins > 0)
             {
                 if(game.gametype.equals("Ranked Chess"))
                 {
@@ -73,28 +69,21 @@ public class Mover extends FireEater{
                     Double white = getWhite.getSnapshot().getValue(Double.class);
                     Double black = getBlack.getSnapshot().getValue(Double.class);
 
-                    Double newElowhite = User.newElo(white, black, (whiteWins == 2)?(.5):whiteWins);
-                    Double newEloBlack = User.newElo(black, white, (blackWins == 2)?(.5):blackWins);
+                    Double newElowhite = User.newElo(white, black, (whoWins == 2)?(.5):whoWins);
+                    Double newEloBlack = User.newElo(black, white, (whoWins == 2)?(.5):whoWins*-1);
 
                     whiteRef.setValueAsync(newElowhite);
                     blackRef.setValueAsync(newEloBlack);
                 }
 
-                // Determine if checkmate exists
-                if (whiteWins == 1)
+                switch(whoWins)
                 {
-                    // black is in checkmate, white wins
-                    updateGame.put("turn", "winner=" + game.white);
-                }
-                else if (blackWins== 1)
-                {
-                    // white is in checkmate, black wins
-                    updateGame.put("turn", "winner=" + game.black);
-                }
-                else if (whiteWins == 2 || blackWins == 2)
-                {
-                    // Stalemate
-                    updateGame.put("turn", "winner=Nobody!!!");
+                    case 1: updateGame.put("turn", "winner="+game.white);
+                        break;
+                    case -1: updateGame.put("turn", "winner="+game.black);
+                        break;
+                    case 2: updateGame.put("turn", "winner=Nobody!!!");
+                        break;
                 }
             }
 

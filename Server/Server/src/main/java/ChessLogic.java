@@ -3,8 +3,8 @@ import java.util.HashSet;
 
 public class ChessLogic {
 
-    //Base Piece Class
-    //ChessLogic.Piece piece; import static whatever.something.ChessLogic.*;
+    //Base Rulesets.Piece Class
+    //ChessLogic.Rulesets.Piece piece; import static whatever.something.ChessLogic.*;
     //This is a Christian logic class, so please, NO swearing!
     public static abstract class Piece {
 
@@ -297,7 +297,7 @@ public class ChessLogic {
                         }
                     }
 
-                    //If there was a Piece here, the rook can't go any further in this direction.
+                    //If there was a Rulesets.Piece here, the rook can't go any further in this direction.
                     break;
                 }
             }

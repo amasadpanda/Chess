@@ -1,15 +1,8 @@
+package Rulesets;
+
 import java.util.HashSet;
 
-public abstract class Ruleset {
-
-    Piece[][] board;
-
-    public abstract Piece[][] getStartState();
-
-    public abstract int gameOver();
-}
-
-abstract class Piece {
+public abstract class Piece {
 
     public boolean white;
     protected int drawableID;
@@ -34,9 +27,9 @@ abstract class Piece {
         return getMoves(loc, board, true);
     }
 
-    boolean inBounds(int r, int c) {
+    public boolean inBounds(int r, int c) {
         return r >= 0 && r < 8 && c >= 0 && c < 8;
     }
 
-    abstract Piece copy();
+    public abstract Piece copy();
 }

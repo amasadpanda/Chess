@@ -169,7 +169,7 @@ public class GameActivity extends AppCompatActivity {
                     database.getReference().child("users").child(game.black).child("hat").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            System.out.println("Fetched black hat: " + dataSnapshot.getValue(String.class));
+                            Log.i(T,"Fetched black hat: \"" + dataSnapshot.getValue(String.class)+"\"");
                             board.setBlackHat(dataSnapshot.getValue(String.class));
                         }
 
@@ -182,7 +182,7 @@ public class GameActivity extends AppCompatActivity {
                     database.getReference().child("users").child(game.white).child("hat").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            System.out.println("Fetched white hat: " + dataSnapshot.getValue(String.class));
+                            Log.i(T,"Fetched white hat: \"" + dataSnapshot.getValue(String.class)+"\"");
                             board.setWhiteHat(dataSnapshot.getValue(String.class));
                         }
 
@@ -238,10 +238,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     // Check if the user is signed in. If not, close the activity
+    //FIXME: This gets called twice, for some reason?
     private void checkLoginStatus() {
+        Log.d(T,"Checking login status");
         FirebaseUser currentUser = auth.getCurrentUser();
-        Log.w(T,"User is not signed in anymore!");
         if (currentUser == null) { // We are not signed in!
+            Log.w(T,"User is not signed in anymore!");
             finish();
         }
     }

@@ -31,8 +31,8 @@ public class BoardView extends View{
     private Context context;
 
     // Hats default to none... only if they are explicitly set do they get hats.
-    private String blackHat = "none";
-    private String whiteHat = "none";
+    private String blackHat = "None";
+    private String whiteHat = "None";
 
     //I genuinely don't know what these constructors take in or do.
     public BoardView(Context context) {

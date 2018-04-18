@@ -8,14 +8,14 @@ public class User {
         public Map<String, String> friends;
         public Map<String, String> game_invitations;
         public Map<String, String> friend_invitations;
-        public Integer rank;
+        public Double rank;
 
         public User(String name) {
             username = name;
-            rank = 1200;
+            rank = 1200.0;
         }
 
-        public User(String name, Map<String, String> cg, Map<String, String> pg, Map<String, String> fri, Map<String, String> gi, Map<String, String> fi, Integer ra)
+        public User(String name, Map<String, String> cg, Map<String, String> pg, Map<String, String> fri, Map<String, String> gi, Map<String, String> fi, Double ra)
         {
             username = name;
             current_games = cg;
@@ -29,5 +29,26 @@ public class User {
         public User()
         {
 
+        }
+
+        /*
+        scores
+            win = 1
+            draw = .5
+            loss = 0
+         */
+        public static double newElo(double elo, double eloOther, double score)
+        {
+            double expected = 1/(1+Math.pow(10, (eloOther - elo)/400));
+            return elo + getKFactor(elo)*(score-expected);
+        }
+
+        private static double getKFactor(Double rank)
+        {
+            if(rank < 2100)
+                return 32;
+            if(rank < 2400)
+                return 24;
+            return 16;
         }
 }

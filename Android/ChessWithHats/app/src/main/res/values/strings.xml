@@ -27,6 +27,12 @@
         <item>Peasants\' Revolt</item>
     </string-array>
 
+    <string-array name="hatTypes">
+        <item>None</item>
+        <item>Fedora</item>
+        <item>Top Hat</item>
+    </string-array>
+
     <string-array name="newgame_opponentTypes">
         <item>Another User</item>
         <item>Computer</item>

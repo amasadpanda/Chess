@@ -28,20 +28,39 @@ public class BoardView extends View{
     private MakeMoveListener makeMoveListener;
     private boolean myTurn, white, ignore;
 
+    private Context context;
+
+    // Hats default to none... only if they are explicitly set do they get hats.
+    private String blackhat = "none";
+    private String whitehat = "none";
+
     //I genuinely don't know what these constructors take in or do.
     public BoardView(Context context) {
         super(context);
+        this.context = context;
         Log.d(T,"Constructor 1");
     }
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         Log.d(T,"Constructor 2");
     }
 
     public BoardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        this.context = context;
         Log.d(T,"Constructor 3");
+    }
+
+    public void setBlackHat(String blackhat) {
+        this.blackhat = (blackhat == null ? "none" : blackhat.toLowerCase());
+        invalidate();
+    }
+
+    public void setWhiteHat(String whitehat) {
+        this.whitehat = (whitehat == null ? "none" : whitehat.toLowerCase());
+        invalidate();
     }
 
     public void setStateFromGame(Game game, String user){
@@ -122,12 +141,36 @@ public class BoardView extends View{
                 //Note i,j and not r,c here. We're basically taking the pieces from each coordinate
                 //and drawing them at a different location.
                 if(board[i][j]!=null){
-                    Drawable img = res.getDrawable(board[i][j].getDrawableID());
+                    Drawable img;
+
+                    // Get the appropriate drawable for this position!
+                    String colorString;
+                    String hatString;
+                    if (board[i][j].white) {
+                        // White
+                        colorString = "white";
+                        hatString = whitehat;
+                    }
+                    else {
+                        // Black
+                        colorString = "black";
+                        hatString = blackhat;
+                    }
+
+                    // Yes I understand using the class name is potentially a bit hacky, but it prevents horribile if statements here...
+                    img = getImageFromString(hatString + "_" + colorString + "_" + board[i][j].getClass().getSimpleName().toLowerCase());
+
                     img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);
                 }
             }
         }
+    }
+
+    private Drawable getImageFromString(String drawableName)
+    {
+        System.out.println("Getting image " + drawableName);
+        return context.getResources().getDrawable(context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName()));
     }
 
     //TODO: use performContextClick? That may be more appropriate here, since we don't need swipes or anything.

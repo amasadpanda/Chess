@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ public class ManageAccountActivity extends AppCompatActivity {
     TextView txtUsername;
     Button btnEditPassword;
     TextView txtRank;
+    Spinner spnHat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,12 +95,14 @@ public class ManageAccountActivity extends AppCompatActivity {
         }
     }
 
+    boolean initialHappened = false;
     private void initComponents()
     {
         txtEmail = findViewById(R.id.manageaccount_txtEmail);
         txtUsername = findViewById(R.id.manageaccount_txtUsername);
         btnEditPassword = findViewById(R.id.manageaccount_btnEditPassword);
         txtRank = findViewById(R.id.manageaccount_txtRank);
+        spnHat = findViewById(R.id.manageaccount_spnHat);
 
         txtEmail.setText("Email: " + firebaseAuth.getCurrentUser().getEmail());
         txtUsername.setText("Username: " + firebaseAuth.getCurrentUser().getDisplayName());
@@ -136,5 +141,52 @@ public class ManageAccountActivity extends AppCompatActivity {
         };
         rankReference.addValueEventListener(rankListener);
         listeners.put(rankReference, rankListener);
+
+        DatabaseReference hatReference = firebaseDatabase.getReference().child("users").child(firebaseAuth.getCurrentUser().getUid()).child("hat");
+        ValueEventListener hatListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String hat = dataSnapshot.getValue(String.class);
+                if (hat == null)
+                    hat = "None";
+
+                String[] hatTypes = getResources().getStringArray(R.array.hatTypes);
+                for (int h = 0; h < hatTypes.length; h++)
+                {
+                    if (hat.equals(hatTypes[h]))
+                    {
+                        spnHat.setSelection(h);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        hatReference.addValueEventListener(hatListener);
+        listeners.put(hatReference, hatListener);
+
+        spnHat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Don't update the first time!
+                if (!initialHappened)
+                {
+                    initialHappened = true;
+                    return;
+                }
+
+                String[] hatTypes = getResources().getStringArray(R.array.hatTypes);
+                firebaseDatabase.getReference().child("users").child(firebaseAuth.getCurrentUser().getUid()).child("hat").setValue(hatTypes[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }

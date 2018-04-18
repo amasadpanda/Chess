@@ -162,6 +162,36 @@ public class GameActivity extends AppCompatActivity {
                         txtTurn.setText(opponent + "'s move");
                     }
                     txtGameType.setText(game.gametype);
+
+
+
+                    // Now, load hat information for black and white players!
+                    database.getReference().child("users").child(game.black).child("hat").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            System.out.println("Fetched black hat: " + dataSnapshot.getValue(String.class));
+                            board.setBlackHat(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    database.getReference().child("users").child(game.white).child("hat").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            System.out.println("Fetched white hat: " + dataSnapshot.getValue(String.class));
+                            board.setWhiteHat(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }catch(Exception e){
                     Log.e(T, "Unable to load game", e);
                     GameActivity.this.finish();

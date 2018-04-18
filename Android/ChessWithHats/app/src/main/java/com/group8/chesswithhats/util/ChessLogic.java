@@ -1,7 +1,7 @@
 package com.group8.chesswithhats.util;
 
 import com.group8.chesswithhats.R;
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -106,7 +106,7 @@ public class ChessLogic {
 
         public Pawn(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_pawn : R.drawable.black_pawn;
+            drawableID = white ? R.drawable.none_white_pawn : R.drawable.none_black_pawn;
         }
 
         public Piece copy() {
@@ -184,7 +184,7 @@ public class ChessLogic {
 
         public King(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_king : R.drawable.black_king;
+            drawableID = white ? R.drawable.none_white_king : R.drawable.none_black_king;
         }
 
         public Piece copy() {
@@ -224,7 +224,7 @@ public class ChessLogic {
     public static class Knight extends Piece {
         public Knight(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_knight : R.drawable.black_knight;
+            drawableID = white ? R.drawable.none_white_knight : R.drawable.none_black_knight;
         }
 
         public Piece copy() {
@@ -257,7 +257,7 @@ public class ChessLogic {
 
         public Rook(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_rook : R.drawable.black_rook;
+            drawableID = white ? R.drawable.none_white_rook : R.drawable.none_black_rook;
 
         }
 
@@ -322,7 +322,7 @@ public class ChessLogic {
     public static class Bishop extends Piece {
         public Bishop(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_bishop : R.drawable.black_bishop;
+            drawableID = white ? R.drawable.none_white_bishop : R.drawable.none_black_bishop;
         }
 
         public Piece copy() {
@@ -368,7 +368,7 @@ public class ChessLogic {
     public static class Queen extends Piece {
         public Queen(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_queen : R.drawable.black_queen;
+            drawableID = white ? R.drawable.none_white_queen : R.drawable.none_black_queen;
         }
 
         public Piece copy() {

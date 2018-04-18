@@ -12,7 +12,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.HashSet;
+import com.group8.chesswithhats.Hats;import java.util.HashSet;
 
 import static com.group8.chesswithhats.util.ChessLogic.*;
 
@@ -31,8 +31,8 @@ public class BoardView extends View{
     private Context context;
 
     // Hats default to none... only if they are explicitly set do they get hats.
-    private String blackhat = "none";
-    private String whitehat = "none";
+    private String blackHat = "none";
+    private String whiteHat = "none";
 
     //I genuinely don't know what these constructors take in or do.
     public BoardView(Context context) {
@@ -53,13 +53,13 @@ public class BoardView extends View{
         Log.d(T,"Constructor 3");
     }
 
-    public void setBlackHat(String blackhat) {
-        this.blackhat = (blackhat == null ? "none" : blackhat.toLowerCase());
+    public void setBlackHat(String blackhat){
+        this.blackHat = (blackhat == null ? "none" : blackhat.toLowerCase());
         invalidate();
     }
 
-    public void setWhiteHat(String whitehat) {
-        this.whitehat = (whitehat == null ? "none" : whitehat.toLowerCase());
+    public void setWhiteHat(String whitehat){
+        this.whiteHat = (whitehat == null ? "none" : whitehat.toLowerCase());
         invalidate();
     }
 
@@ -141,36 +141,19 @@ public class BoardView extends View{
                 //Note i,j and not r,c here. We're basically taking the pieces from each coordinate
                 //and drawing them at a different location.
                 if(board[i][j]!=null){
+
                     Drawable img;
 
-                    // Get the appropriate drawable for this position!
-                    String colorString;
-                    String hatString;
-                    if (board[i][j].white) {
-                        // White
-                        colorString = "white";
-                        hatString = whitehat;
-                    }
-                    else {
-                        // Black
-                        colorString = "black";
-                        hatString = blackhat;
-                    }
-
-                    // Yes I understand using the class name is potentially a bit hacky, but it prevents horribile if statements here...
-                    img = getImageFromString(hatString + "_" + colorString + "_" + board[i][j].getClass().getSimpleName().toLowerCase());
+                    if (board[i][j].white)
+                        img = res.getDrawable(Hats.getDrawable(board[i][j], whiteHat));
+                    else
+                        img = res.getDrawable(Hats.getDrawable(board[i][j], blackHat));
 
                     img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);
                 }
             }
         }
-    }
-
-    private Drawable getImageFromString(String drawableName)
-    {
-        System.out.println("Getting image " + drawableName);
-        return context.getResources().getDrawable(context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName()));
     }
 
     //TODO: use performContextClick? That may be more appropriate here, since we don't need swipes or anything.

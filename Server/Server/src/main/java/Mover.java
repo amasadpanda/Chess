@@ -8,7 +8,9 @@ public class Mover extends FireEater{
     @Override
     public CWHResponse handle(CWHRequest request) {
         try {
-            String gameID = request.getExtras().get("gameid");
+
+            String gameID = request.getExtras().get("gameid");;
+            String promotion = request.getExtras().get("promote");
             int startingPlace = Integer.parseInt(request.getExtras().get("start"));
             int clientMove = Integer.parseInt(request.getExtras().get("end"));
 
@@ -24,29 +26,25 @@ public class Mover extends FireEater{
             HashSet<Integer> nextMoves = myPiece.getMoves(startingPlace, boardstate, true);
 
             // Changed by Philip 4/16/2018 1:56PM. Before you were looking throughe everything in nextMoves to get the same result...
-            Boolean isValid = nextMoves.contains(clientMove);
-
-            if (!isValid)
+            if (!nextMoves.contains(clientMove))
                 return new CWHResponse("Invalid move!", false);
 
-            // moving the actual board
-            if (ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate))
-                game.board = Game.toHashMap(boardstate);
-            else {
-                game.board.remove("x" + startingPlace);
-                game.board.put("x" + (clientMove), myPiece.toString());
+            //pawn promotion
+            if(myPiece instanceof ChessLogic.Pawn && promotion != null && (getR(clientMove) == 0 || getR(clientMove) == 7))
+            {
+                ChessLogic.Piece promo = Game.getPiece(promotion);
+                myPiece = promo;
+                boardstate[r][c] = promo;
             }
 
+            ChessLogic.movePiece(r, c, getR(clientMove), getC(clientMove), boardstate);
+            game.board = Game.toHashMap(boardstate);
 
             // Before game.move may have been null so null would be at the beginning of game moves.. fixed by PHilip 4/16/2018 1:40PM
             String moves = (game.moves == null ? "" : game.moves) + (startingPlace + ">" + clientMove + " ");
+
             String turn = game.turn;
-            if (turn.equals("white"))
-                turn = "black";
-            else
-                turn = "white";
-
-
+            turn = (turn.equals("white")?"black":"white");
 
             Map<String, Object> updateGame = new HashMap<>();
             updateGame.put("board", game.board);
@@ -56,21 +54,48 @@ public class Mover extends FireEater{
             updateGame.put("turn", turn);
             updateGame.put("gametype", game.gametype); // Line added by Philip 4/16/2018 1:37 PM
 
-            // Determine if checkmate exists
-            if (ChessLogic.gameOver(false, boardstate) == 1)
+            int whiteWins = ChessLogic.gameOver(false, boardstate);
+            int blackWins = ChessLogic.gameOver(true, boardstate);
+
+            if(whiteWins + blackWins > 0)
             {
-                // black is in checkmate, white wins
-                updateGame.put("turn", "winner=" + FireEater.UIDToUsername(game.white));
-            }
-            else if (ChessLogic.gameOver(true, boardstate) == 1)
-            {
-                // white is in checkmate, black wins
-                updateGame.put("turn", "winner=" + FireEater.UIDToUsername(game.black));
-            }
-            else if (ChessLogic.gameOver(true, boardstate) == 2 || ChessLogic.gameOver(false, boardstate) == 2)
-            {
-                // Stalemate
-                updateGame.put("turn", "winner=Nobody");
+                if(game.gametype.equals("Ranked Chess"))
+                {
+                    SynchronousListener getWhite = new SynchronousListener();
+                    SynchronousListener getBlack = new SynchronousListener();
+
+                    DatabaseReference whiteRef = FireEater.getDatabase().getReference().child("users").child(game.white).child("rank");
+                    DatabaseReference blackRef = FireEater.getDatabase().getReference().child("users").child(game.black).child("rank");
+
+                    blackRef.addListenerForSingleValueEvent(getBlack);
+                    whiteRef.addListenerForSingleValueEvent(getWhite);
+
+                    Double white = getWhite.getSnapshot().getValue(Double.class);
+                    Double black = getBlack.getSnapshot().getValue(Double.class);
+
+                    Double newElowhite = User.newElo(white, black, (whiteWins == 2)?(.5):whiteWins);
+                    Double newEloBlack = User.newElo(black, white, (blackWins == 2)?(.5):blackWins);
+
+                    whiteRef.setValueAsync(newElowhite);
+                    blackRef.setValueAsync(newEloBlack);
+                }
+
+                // Determine if checkmate exists
+                if (whiteWins == 1)
+                {
+                    // black is in checkmate, white wins
+                    updateGame.put("turn", "winner=" + game.white);
+                }
+                else if (blackWins== 1)
+                {
+                    // white is in checkmate, black wins
+                    updateGame.put("turn", "winner=" + game.black);
+                }
+                else if (whiteWins == 2 || blackWins == 2)
+                {
+                    // Stalemate
+                    updateGame.put("turn", "winner=Nobody!!!");
+                }
             }
 
             gameRef.setValueAsync(updateGame);

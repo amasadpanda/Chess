@@ -3,6 +3,7 @@ package com.group8.chesswithhats;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -40,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
     private LinearLayout llCurrentGames;
     private TextView txtNoCurrentGames;
     private NavigationView navigationView;
+    private FloatingActionButton btnNewGame;
 
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
@@ -80,6 +82,7 @@ public class HomeActivity extends AppCompatActivity {
         llCurrentGames = findViewById(R.id.home_llCurrentGames);
         txtNoCurrentGames = findViewById(R.id.home_txtNoCurrentGames);
         navigationView = findViewById(R.id.home_navigationView);
+        btnNewGame = findViewById(R.id.home_btnNewGame);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
@@ -111,6 +114,14 @@ public class HomeActivity extends AppCompatActivity {
                     // Lol, shouldn't be possible
                 }
                 return true;
+            }
+        });
+
+        btnNewGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newGameIntent = new Intent(HomeActivity.this, NewGameActivity.class);
+                startActivity(newGameIntent);
             }
         });
     }
@@ -272,6 +283,13 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onBackPressed(){ //dank
+        if(drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
     }
 
     @Override

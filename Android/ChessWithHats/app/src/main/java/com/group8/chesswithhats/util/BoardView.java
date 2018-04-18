@@ -12,7 +12,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.HashSet;
+import com.group8.chesswithhats.Hats;import java.util.HashSet;
 
 import static com.group8.chesswithhats.util.ChessLogic.*;
 
@@ -28,20 +28,39 @@ public class BoardView extends View{
     private MakeMoveListener makeMoveListener;
     private boolean myTurn, white, ignore;
 
+    private Context context;
+
+    // Hats default to none... only if they are explicitly set do they get hats.
+    private String blackHat = "None";
+    private String whiteHat = "None";
+
     //I genuinely don't know what these constructors take in or do.
     public BoardView(Context context) {
         super(context);
+        this.context = context;
         Log.d(T,"Constructor 1");
     }
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         Log.d(T,"Constructor 2");
     }
 
     public BoardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        this.context = context;
         Log.d(T,"Constructor 3");
+    }
+
+    public void setBlackHat(String hat){
+        this.blackHat = (hat == null ? "None" : hat);
+        invalidate();
+    }
+
+    public void setWhiteHat(String hat){
+        this.whiteHat = (hat == null ? "None" : hat);
+        invalidate();
     }
 
     public void setStateFromGame(Game game, String user){
@@ -122,7 +141,14 @@ public class BoardView extends View{
                 //Note i,j and not r,c here. We're basically taking the pieces from each coordinate
                 //and drawing them at a different location.
                 if(board[i][j]!=null){
-                    Drawable img = res.getDrawable(board[i][j].getDrawableID());
+
+                    Drawable img;
+
+                    if (board[i][j].white)
+                        img = res.getDrawable(Hats.getDrawableID(board[i][j], whiteHat));
+                    else
+                        img = res.getDrawable(Hats.getDrawableID(board[i][j], blackHat));
+
                     img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);
                 }

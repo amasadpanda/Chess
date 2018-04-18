@@ -145,9 +145,9 @@ public class BoardView extends View{
                     Drawable img;
 
                     if (board[i][j].white)
-                        img = res.getDrawable(Hats.getDrawable(board[i][j], whiteHat));
+                        img = res.getDrawable(Hats.getDrawableID(board[i][j], whiteHat));
                     else
-                        img = res.getDrawable(Hats.getDrawable(board[i][j], blackHat));
+                        img = res.getDrawable(Hats.getDrawableID(board[i][j], blackHat));
 
                     img.setBounds(c*sqLen, r*sqLen, c*sqLen + sqLen, r*sqLen + sqLen); //L T R B
                     img.draw(canvas);

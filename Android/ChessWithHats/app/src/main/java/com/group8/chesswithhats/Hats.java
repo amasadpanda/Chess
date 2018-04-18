@@ -22,10 +22,10 @@ public class Hats{
 		});
     }
 
-    public static int getDrawable(Piece p, String hat){
+    public static int getDrawableID(Piece p, String hat){
         int[][] drawables = map.get(hat);
         if(drawables==null){
-            Log.w(T,"Invalid hat type "+hat+". Defaulting to no hat.");
+            Log.w(T,"Invalid hat type \""+hat+"\". Defaulting to no hat.");
             drawables = map.get("none");
         }
         return drawables[p.white?1:0][p.getType()]; //"static" value in each piece subclass.

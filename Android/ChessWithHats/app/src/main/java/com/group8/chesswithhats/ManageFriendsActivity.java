@@ -4,14 +4,17 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +49,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
     private HashMap<DatabaseReference, Object> listeners;
 
-    private Button btnAddAFriend;
+    private FloatingActionButton btnAddAFriend;
     private LinearLayout llFriendRequests;
     private LinearLayout llCurrentFriends;
     private TextView txtNoCurrentFriends;
@@ -120,7 +123,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
     private void initComponents()
     {
-        btnAddAFriend = findViewById(R.id.managefriends_btnAddAFriend);
+        btnAddAFriend = findViewById(R.id.managefriends_btnAddFriend);
         txtNoCurrentFriendRequests = findViewById(R.id.managefriends_txtNoCurrentFriendRequests);
         txtNoCurrentFriends = findViewById(R.id.managefriends_txtNoCurrentFriends);
         llCurrentFriends = findViewById(R.id.managefriends_llCurrentFriends);
@@ -132,11 +135,17 @@ public class ManageFriendsActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ManageFriendsActivity.this);
                 AlertDialog dialog = builder.create();
                 dialog.setTitle("Add a Friend");
+                LinearLayout container = new LinearLayout(ManageFriendsActivity.this);
+                container.setGravity(Gravity.CENTER);
+                container.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
                 final AutoCompleteTextView friendUsername = new AutoCompleteTextView(ManageFriendsActivity.this);
+                float density = ManageFriendsActivity.this.getResources().getDisplayMetrics().density;
+                friendUsername.setPadding((int)(density*10), (int)(density*10), (int)(density*10), (int)(density*10));
                 friendUsername.setInputType(InputType.TYPE_CLASS_TEXT);
                 friendUsername.setHint("Friend's Username");
                 friendUsername.setAdapter(autocompleteAdapter);
-                dialog.setView(friendUsername);
+                container.addView(friendUsername);
+                dialog.setView(container);
 
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Send Request", new DialogInterface.OnClickListener() {
                     @Override

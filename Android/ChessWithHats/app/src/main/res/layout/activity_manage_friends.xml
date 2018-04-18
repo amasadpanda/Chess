@@ -1,90 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/managefriends_txtFriendRequests"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="22sp"
-                android:text="Friend Requests"
-                />
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/managefriends_llFriendRequests"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:showDividers="middle"
-                android:divider="@drawable/divider">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/managefriends_txtNoCurrentFriendRequests"
+                    android:id="@+id/managefriends_txtFriendRequests"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:text="No Current Friend Requests"/>
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="22sp"
+                    android:text="Friend Requests"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/managefriends_llFriendRequests"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:showDividers="middle"
+                    android:divider="@drawable/divider">
+
+                    <TextView
+                        android:id="@+id/managefriends_txtNoCurrentFriendRequests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="No Current Friend Requests"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/managefriends_txtCurrentFriends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="22sp"
+                    android:text="Current Friends"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/managefriends_llCurrentFriends"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:showDividers="middle"
+                    android:divider="@drawable/divider">
+
+                    <TextView
+                        android:id="@+id/managefriends_txtNoCurrentFriends"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="No Current Friends"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/managefriends_txtCurrentFriends"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="22sp"
-                android:text="Current Friends"
-                />
+        </ScrollView>
 
-            <LinearLayout
-                android:id="@+id/managefriends_llCurrentFriends"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:showDividers="middle"
-                android:divider="@drawable/divider">
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/managefriends_txtNoCurrentFriends"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:text="No Current Friends"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/managefriends_btnAddFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:src="@drawable/ic_add_white_24dp"
+        app:backgroundTint="#999999" />
 
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/managefriends_btnAddAFriend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="end"
-                android:text="Add a Friend"/>
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+</RelativeLayout>

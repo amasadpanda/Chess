@@ -10,6 +10,11 @@ public class Chess extends Ruleset{
         super("Chess", 8, 8);
     }
 
+    public Chess(String name, int r, int c)
+    {
+        super(name, r, c);
+    }
+
     @Override
     public Piece[][] getStartState() {
         Piece[][] board=new Piece[8][8];

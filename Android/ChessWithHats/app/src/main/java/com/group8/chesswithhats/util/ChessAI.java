@@ -11,7 +11,6 @@ public class ChessAI {
 
 	// Written by Philip Rodriguez for testing purposes while Pablo works on the actual AI.
 	public static int[] getRandomMove(Piece[][] board, boolean w) {
-		System.out.println("Making a random computer move!");
 		ArrayList<Piece> computerPieces = new ArrayList<>();
 		ArrayList<Integer> positions = new ArrayList<>();
 		int loc = 0;
@@ -52,56 +51,14 @@ public class ChessAI {
 		// Absolutely no remaining moves available for the computer.
 		return null;
 	}
-
+	static int ans[];
 	public static int[] getMove(Piece[][] board, boolean w, int diff) {
 		// Create a list of all peices that may be moved
 		white = w;
 		difficulty = diff;
-		ArrayList<Piece> movingPeices = new ArrayList<>();
-		ArrayList<Integer> locations = new ArrayList<>();
-		int location = 0;
-		for(Piece[] row : board) {
-			for(Piece piece : row) {
-				if(piece != null && (w == (piece.white))) {
-					movingPeices.add(piece);
-					locations.add(location);
-				}
-				location++;
-			}
-		}
-		int best = -Integer.MAX_VALUE/2;
-		int ans[] = new int[2];
 
-		for(int i = 0; i < movingPeices.size(); i++) {
-			int r = locations.get(i)/8;
-			int c = locations.get(i)%8;
-
-			HashSet<Integer> pieceMoves = movingPeices.get(i).getMoves(locations.get(i), board, true);
-			for(int move : pieceMoves) {
-				int nr = move/8;
-				int nc = move%8;
-
-				Piece newBoard[][] = new Piece[8][8];
-				for(int j = 0; j < 8; j++) {
-					for(int k = 0; k < 8; k++) {
-						newBoard[j][k] = board[j][k] == null ? null : board[j][k].copy();
-					}
-				}
-
-				ChessLogic.movePiece(r, c, nr, nc, newBoard);
-
-				int score = alphaBetaPruning(Integer.MIN_VALUE/2, Integer.MAX_VALUE/2, newBoard, !white, 1);
-
-				System.out.println("MOVING " + r + " " + c  + " : to : " + nr + " " + nc);
-				System.out.println("RES : " +  score);
-				if(score > best) {
-					best = score;
-					ans[0] = r * 8 + c;
-					ans[1] = nr * 8 + nc;
-				}
-			}
-		}
-
+		ans = new int[2];
+		alphaBetaPruning(Integer.MIN_VALUE/2, Integer.MAX_VALUE/2, board, white, 0);
 		return ans;
 	}
 
@@ -175,7 +132,7 @@ public class ChessAI {
 		//check if we have reached the maximum depth
 		if(depth == difficulty) {
 			//Score the board
-			return -heuristic(board, whiteTurn);
+			return heuristic(board, !whiteTurn);
 		}
 
 		// Create a list of all peices that may be moved
@@ -214,9 +171,16 @@ public class ChessAI {
 				ChessLogic.movePiece(originalRow, originalCol, newRow, newCol, newBoard);
 
 				// If maximizing
+
 				if(whiteTurn == white) {
-					Integer val = alphaBetaPruning(a,b,newBoard,!whiteTurn,depth+1);
-					best = Math.max(best, val);
+				    Integer val = alphaBetaPruning(a,b,newBoard,!whiteTurn,depth+1);
+					if (best < val || (best == val && Math.random() < .5)) {
+						best = val;
+						if(depth == 0) {
+							ans[0] = originalRow * 8 + originalCol;
+							ans[1] = newRow * 8 + newCol;
+						}
+					}
 					a = Math.max(a, best);
 					if(b <= a)
 						return best;

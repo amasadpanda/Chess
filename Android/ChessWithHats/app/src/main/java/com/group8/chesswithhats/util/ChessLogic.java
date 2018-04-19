@@ -35,6 +35,7 @@ public class ChessLogic {
     }
 
     public static boolean movePiece(int r1, int c1, int r2, int c2, Piece[][] board) {
+        System.out.println("MOVE PIECE " + r1 + "," + c1 + "," + r2 + "," + c2);
         boolean ret=false;
         //All pawns that moved twice last turn, didn't move twice this turn.
         for (int i = 0; i < 8; i++) {
@@ -446,58 +447,61 @@ public class ChessLogic {
         Piece[][] boardClone = new Piece[board.length][board[0].length];
         for(int i = 0; i < board.length; i++)
             for(int j = 0; j < board[i].length; j++)
-                boardClone[i][j] = board[i][j];
+                boardClone[i][j] = board[i][j] == null ? null : board[i][j].copy();
         board = boardClone;
 
         boolean good = false;
-
+        boolean color=board[r][c].white;
+        movePiece(r,c,r2,c2,board);
+        if(!inCheck(color,board));
+            good=true;
         //Castling
-        if (board[r2][c2] != null && board[r][c].white == board[r2][c2].white) {
-            Rook rook = (Rook) (board[r][c]);
-            King king = (King) (board[r2][c2]);
-            rook.moved = true;
-            king.moved = true;
-            board[r][c] = null;
-            board[r2][c2] = null;
-            int nextc = 0, nextrc = 0;
-            if (c < c2) {
-                board[r2][2] = king;
-                board[r][3] = rook;
-                nextc = 2;
-                nextrc = 3;
-            } else {
-                board[r2][6] = king;
-                board[r2][5] = rook;
-                nextc = 6;
-                nextrc = 5;
-            }
-            if (!inCheck(board[r][nextrc].white, board))
-                good = true;
-            board[r2][nextc] = null;
-            board[r][nextrc] = null;
-            board[r][c] = rook;
-            board[r2][c2] = king;
-        }
-        //en Passant
-        else if (board[r][c] instanceof Pawn && board[r2][c2] == null && c != c2) {
-            Pawn temp = (Pawn) (board[r][c2]);
-            board[r2][c2] = board[r][c];
-            board[r][c2] = null;
-            board[r][c] = null;
-            if (!inCheck(board[r2][c2].white, board))
-                good = true;
-            board[r][c2] = temp;
-            board[r][c] = board[r2][c2];
-            board[r2][c2] = null;
-        } else {
-            Piece temp = board[r2][c2];
-            board[r2][c2] = board[r][c];
-            board[r][c] = null;
-            if (!inCheck(board[r2][c2].white, board))
-                good = true;
-            board[r][c] = board[r2][c2];
-            board[r2][c2] = temp;
-        }
+//        if (board[r2][c2] != null && board[r][c].white == board[r2][c2].white) {
+//            Rook rook = (Rook) (board[r][c]);
+//            King king = (King) (board[r2][c2]);
+//            rook.moved = true;
+//            king.moved = true;
+//            board[r][c] = null;
+//            board[r2][c2] = null;
+//            int nextc = 0, nextrc = 0;
+//            if (c < c2) {
+//                board[r2][2] = king;
+//                board[r][3] = rook;
+//                nextc = 2;
+//                nextrc = 3;
+//            } else {
+//                board[r2][6] = king;
+//                board[r2][5] = rook;
+//                nextc = 6;
+//                nextrc = 5;
+//            }
+//            if (!inCheck(board[r][nextrc].white, board))
+//                good = true;
+//            board[r2][nextc] = null;
+//            board[r][nextrc] = null;
+//            board[r][c] = rook;
+//            board[r2][c2] = king;
+//        }
+//        //en Passant
+//        else if (board[r][c] instanceof Pawn && board[r2][c2] == null && c != c2) {
+//            Pawn temp = (Pawn) (board[r][c2]);
+//            board[r2][c2] = board[r][c];
+//            board[r][c2] = null;
+//            board[r][c] = null;
+//            if (!inCheck(board[r2][c2].white, board))
+//                good = true;
+//            board[r][c2] = temp;
+//            board[r][c] = board[r2][c2];
+//            board[r2][c2] = null;
+//        } else {
+//            Piece temp = board[r2][c2];
+//            board[r2][c2] = board[r][c];
+//            board[r][c] = null;
+//            if (!inCheck(board[r2][c2].white, board))
+//                good = true;
+//            board[r][c] = board[r2][c2];
+//            board[r2][c2] = temp;
+//        }
         return good;
     }
 

@@ -1,9 +1,13 @@
 package com.group8.chesswithhats;
 
+import android.app.Application;
+import android.app.NotificationChannel;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -170,6 +174,19 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
                 String senderUID = dataSnapshot.getKey();
                 String senderUsername = dataSnapshot.getValue(String.class);
+
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ManageFriendsActivity.this, NotificationChannel.DEFAULT_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.launcher_icon)
+                        .setContentTitle("Friend Request!")
+                        .setContentText(senderUsername + " sent you a friend request!")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ManageFriendsActivity.this);
+
+// notificationId is a unique int for each notification that you must define
+                notificationManager.notify(senderUsername.hashCode(), mBuilder.build());
+
+
 
                 FriendRequestView friendRequestView = new FriendRequestView(ManageFriendsActivity.this, senderUID, senderUsername, firebaseAuth);
                 llFriendRequests.addView(friendRequestView);

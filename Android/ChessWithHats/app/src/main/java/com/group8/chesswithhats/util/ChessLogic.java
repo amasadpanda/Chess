@@ -35,7 +35,6 @@ public class ChessLogic {
     }
 
     public static boolean movePiece(int r1, int c1, int r2, int c2, Piece[][] board) {
-        System.out.println("MOVE PIECE " + r1 + "," + c1 + "," + r2 + "," + c2);
         boolean ret=false;
         //All pawns that moved twice last turn, didn't move twice this turn.
         for (int i = 0; i < 8; i++) {
@@ -199,6 +198,7 @@ public class ChessLogic {
         }
 
         public HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal) {
+            System.out.println("KING GET MOVES");
             int r = loc / 8, c = loc % 8;
             int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1}, dc = {0, 1, 1, 1, 0, -1, -1, -1};
             HashSet<Integer> moves = new HashSet<Integer>();
@@ -273,6 +273,7 @@ public class ChessLogic {
         }
 
         public HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal) {
+            System.out.println("ROOK GET MOVES");
             int r = loc / 8, c = loc % 8;
             int[] dr = {-1, 0, 1, 0}, dc = {0, 1, 0, -1};
             HashSet<Integer> moves = new HashSet<Integer>();
@@ -443,6 +444,7 @@ public class ChessLogic {
     }
 
     static boolean checkValidity(int r, int c, int r2, int c2, Piece[][] board) {
+        System.out.println("CHECK VALIDITY");
         // Cloning added by Philip 4/19 to fix rook deletion
         Piece[][] boardClone = new Piece[board.length][board[0].length];
         for(int i = 0; i < board.length; i++)
@@ -507,6 +509,7 @@ public class ChessLogic {
 
     //TODO figure out how to not delete the rook.
     static boolean canCastle(int r, int c1, int c2, int rookc, int rookend, Piece[][] board) {
+        System.out.println("CAN CASTLE CALLED");
         // Cloning added by Philip 4/19 to fix rook deletion
         Piece[][] boardClone = new Piece[board.length][board[0].length];
         for(int i = 0; i < board.length; i++)
@@ -560,6 +563,7 @@ public class ChessLogic {
     }
 
     static boolean inCheck(boolean color, Piece[][] board) {
+        System.out.println("IN CHECK");
         int loc = findKing(color, board);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -575,6 +579,7 @@ public class ChessLogic {
 
     //One for checkmate, two for draw, zero for neither
     public static int gameOver(boolean color, Piece[][] board) {
+        System.out.println("GAME OVER");
         boolean check = inCheck(color, board);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {

@@ -56,20 +56,20 @@
         app:layout_constraintStart_toStartOf="@+id/boardView"
         app:layout_constraintTop_toBottomOf="@+id/boardView" />
 
-    <Button
+    <ImageView
         android:id="@+id/game_btnLeaveGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:layout_marginTop="8dp"
-        android:text="Leave Game"
+        app:srcCompat="@drawable/ic_exit_to_app_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/game_flagTop"
-        android:layout_width="43dp"
-        android:layout_height="46dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="0dp"
         app:layout_constraintBottom_toTopOf="@+id/boardView"
@@ -79,7 +79,7 @@
     <ImageView
         android:id="@+id/game_flagBottom"
         android:layout_width="45dp"
-        android:layout_height="44dp"
+        android:layout_height="45dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="@+id/boardView"

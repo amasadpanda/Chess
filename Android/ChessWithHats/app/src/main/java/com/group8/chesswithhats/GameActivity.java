@@ -49,7 +49,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView txtYou;
     private TextView txtOpponent;
     private TextView txtWinner;
-    private Button btnLeaveGame;
+    private ImageView btnLeaveGame;
     private ImageView flagTop;
     private ImageView flagBottom;
 
@@ -225,24 +225,42 @@ public class GameActivity extends AppCompatActivity {
         btnLeaveGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnLeaveGame.setVisibility(View.INVISIBLE);
-                CWHRequest cwhRequest = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.LEAVE_GAME, new OnCWHResponseListener() {
+                DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
                     @Override
-                    public void onCWHResponse(CWHResponse response) {
-                        Toast.makeText(GameActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch(which)
+                        {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                CWHRequest cwhRequest = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.LEAVE_GAME, new OnCWHResponseListener() {
+                                    @Override
+                                    public void onCWHResponse(CWHResponse response) {
+                                        Toast.makeText(GameActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
 
-                        if (response.isSuccess())
-                        {
-                            btnLeaveGame.setVisibility(View.INVISIBLE);
-                        }
-                        else
-                        {
-                            btnLeaveGame.setVisibility(View.VISIBLE);
+                                        if (response.isSuccess())
+                                        {
+                                            btnLeaveGame.setVisibility(View.INVISIBLE);
+                                        }
+                                        else
+                                        {
+                                            btnLeaveGame.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                });
+                                cwhRequest.getExtras().put("gameid", gameID);
+                                cwhRequest.sendRequest(GameActivity.this);
+
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                btnLeaveGame.setVisibility(View.VISIBLE);
+                                break;
                         }
                     }
-                });
-                cwhRequest.getExtras().put("gameid", gameID);
-                cwhRequest.sendRequest(GameActivity.this);
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+                builder.setMessage("Are you sure you want to leave?")
+                        .setPositiveButton("Yes", dialogClick)
+                        .setNegativeButton("No", dialogClick)
+                        .show();
             }
         });
     }

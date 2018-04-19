@@ -218,6 +218,11 @@ public class GameActivity extends AppCompatActivity {
                     @Override
                     public void onCWHResponse(CWHResponse response) {
                         Toast.makeText(GameActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
+
+                        if (response.isSuccess())
+                        {
+                            btnLeaveGame.setVisibility(View.GONE);
+                        }
                     }
                 });
                 cwhRequest.getExtras().put("gameid", gameID);

@@ -6,7 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;import android.view.View;import android.widget.TextView;
+import android.view.LayoutInflater;import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +47,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView txtGameType;
     private TextView txtVersus;
     private TextView txtTurn;
+    private Button btnLeaveGame;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -206,6 +209,21 @@ public class GameActivity extends AppCompatActivity {
         };
         gameReference.addValueEventListener(gameListener);
         listeners.put(gameReference, gameListener);
+
+        btnLeaveGame = findViewById(R.id.game_btnLeaveGame);
+        btnLeaveGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CWHRequest cwhRequest = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.LEAVE_GAME, new OnCWHResponseListener() {
+                    @Override
+                    public void onCWHResponse(CWHResponse response) {
+                        Toast.makeText(GameActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                cwhRequest.getExtras().put("gameid", gameID);
+                cwhRequest.sendRequest(GameActivity.this);
+            }
+        });
     }
 
     private void sendMoveToServer(int start, int end, String promote){

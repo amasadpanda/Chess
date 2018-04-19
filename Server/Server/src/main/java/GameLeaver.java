@@ -21,9 +21,8 @@ public class GameLeaver extends FireEater {
         ref.child("users").child(UID).child("current_games").child(gameID).removeValueAsync();
         ref.child("users").child(UID).child("past_games").child(gameID).setValueAsync(other);
 
-        g.white = other;
-        g.black = other;
-        g.turn = "winner="+other;
+        if(!g.turn.startsWith("winner"))
+            g.turn = "winner="+other;
 
         game.setValueAsync(g);
         return new CWHResponse("You have left the game, DISHONOR TO YOUR FAMILY", true);

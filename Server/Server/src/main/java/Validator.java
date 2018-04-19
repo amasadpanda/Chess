@@ -56,7 +56,7 @@ public class Validator {
                     return new CWHResponse("No gametype specified", false);
             }
             if(type == CWHRequest.RequestType.ACCEPT_GAME || type == CWHRequest.RequestType.DENY_GAME
-                    || type == CWHRequest.RequestType.MAKE_MOVE)
+                    || type == CWHRequest.RequestType.MAKE_MOVE || type == CWHRequest.RequestType.LEAVE_GAME)
             {
                 String gameID = request.getExtras().get("gameid");
                 if(gameID == null)

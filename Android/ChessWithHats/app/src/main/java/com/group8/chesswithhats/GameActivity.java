@@ -162,6 +162,36 @@ public class GameActivity extends AppCompatActivity {
                         txtTurn.setText(opponent + "'s move");
                     }
                     txtGameType.setText(game.gametype);
+
+
+
+                    // Now, load hat information for black and white players!
+                    database.getReference().child("users").child(game.black).child("hat").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.i(T,"Fetched black hat: \"" + dataSnapshot.getValue(String.class)+"\"");
+                            board.setBlackHat(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    database.getReference().child("users").child(game.white).child("hat").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.i(T,"Fetched white hat: \"" + dataSnapshot.getValue(String.class)+"\"");
+                            board.setWhiteHat(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }catch(Exception e){
                     Log.e(T, "Unable to load game", e);
                     GameActivity.this.finish();
@@ -208,10 +238,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     // Check if the user is signed in. If not, close the activity
+    //FIXME: This gets called twice, for some reason?
     private void checkLoginStatus() {
+        Log.d(T,"Checking login status");
         FirebaseUser currentUser = auth.getCurrentUser();
-        Log.w(T,"User is not signed in anymore!");
         if (currentUser == null) { // We are not signed in!
+            Log.w(T,"User is not signed in anymore!");
             finish();
         }
     }

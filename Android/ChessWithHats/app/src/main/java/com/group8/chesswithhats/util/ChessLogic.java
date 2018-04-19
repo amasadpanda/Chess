@@ -1,7 +1,8 @@
 package com.group8.chesswithhats.util;
 
+import com.group8.chesswithhats.Hats;
 import com.group8.chesswithhats.R;
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -13,21 +14,12 @@ public class ChessLogic {
     public static abstract class Piece {
 
         public boolean white;
-        protected int drawableID;
 
         public Piece(boolean isWhite) {
-
             white = isWhite;
-
         }
 
-        public Piece() {
-            this(true);
-        }
-
-        public int getDrawableID() {
-            return drawableID;
-        }
+        public abstract int getType();
 
         public abstract HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal);
 
@@ -102,11 +94,15 @@ public class ChessLogic {
 
     //Pawn
     public static class Pawn extends Piece {
+
         boolean movedTwiceLastTurn;
 
         public Pawn(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_pawn : R.drawable.black_pawn;
+        }
+
+        public int getType(){
+            return 0;
         }
 
         public Piece copy() {
@@ -184,7 +180,10 @@ public class ChessLogic {
 
         public King(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_king : R.drawable.black_king;
+        }
+
+        public int getType(){
+            return 5;
         }
 
         public Piece copy() {
@@ -224,7 +223,10 @@ public class ChessLogic {
     public static class Knight extends Piece {
         public Knight(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_knight : R.drawable.black_knight;
+        }
+
+        public int getType(){
+            return 2;
         }
 
         public Piece copy() {
@@ -257,8 +259,10 @@ public class ChessLogic {
 
         public Rook(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_rook : R.drawable.black_rook;
+        }
 
+        public int getType(){
+            return 1;
         }
 
         public Piece copy() {
@@ -322,7 +326,10 @@ public class ChessLogic {
     public static class Bishop extends Piece {
         public Bishop(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_bishop : R.drawable.black_bishop;
+        }
+
+        public int getType(){
+            return 3;
         }
 
         public Piece copy() {
@@ -368,7 +375,10 @@ public class ChessLogic {
     public static class Queen extends Piece {
         public Queen(boolean isWhite) {
             super(isWhite);
-            drawableID = white ? R.drawable.white_queen : R.drawable.black_queen;
+        }
+
+        public int getType(){
+            return 4;
         }
 
         public Piece copy() {
@@ -421,6 +431,13 @@ public class ChessLogic {
     }
 
     static boolean checkValidity(int r, int c, int r2, int c2, Piece[][] board) {
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j];
+        board = boardClone;
+
         boolean good = false;
 
         //Castling
@@ -475,6 +492,13 @@ public class ChessLogic {
 
     //TODO figure out how to not delete the rook.
     static boolean canCastle(int r, int c1, int c2, int rookc, int rookend, Piece[][] board) {
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j];
+        board = boardClone;
+
         King king = (King) (board[r][c1]);
         Rook rook = (Rook) (board[r][rookc]);
         board[r][rookc] = null;

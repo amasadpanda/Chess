@@ -431,6 +431,13 @@ public class ChessLogic {
     }
 
     static boolean checkValidity(int r, int c, int r2, int c2, Piece[][] board) {
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j];
+        board = boardClone;
+
         boolean good = false;
 
         //Castling
@@ -485,6 +492,13 @@ public class ChessLogic {
 
     //TODO figure out how to not delete the rook.
     static boolean canCastle(int r, int c1, int c2, int rookc, int rookend, Piece[][] board) {
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j];
+        board = boardClone;
+
         King king = (King) (board[r][c1]);
         Rook rook = (Rook) (board[r][rookc]);
         board[r][rookc] = null;

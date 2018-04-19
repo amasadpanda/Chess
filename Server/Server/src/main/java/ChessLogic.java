@@ -9,21 +9,12 @@ public class ChessLogic {
     public static abstract class Piece {
 
         public boolean white;
-        protected int drawableID;
 
         public Piece(boolean isWhite) {
-
             white = isWhite;
-
         }
 
-        public Piece() {
-            this(true);
-        }
-
-        public int getDrawableID() {
-            return drawableID;
-        }
+        public abstract int getType();
 
         public abstract HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal);
 
@@ -98,10 +89,15 @@ public class ChessLogic {
 
     //Pawn
     public static class Pawn extends Piece {
+
         boolean movedTwiceLastTurn;
 
         public Pawn(boolean isWhite) {
             super(isWhite);
+        }
+
+        public int getType(){
+            return 0;
         }
 
         public Piece copy() {
@@ -181,6 +177,10 @@ public class ChessLogic {
             super(isWhite);
         }
 
+        public int getType(){
+            return 5;
+        }
+
         public Piece copy() {
             King cpy = new King(this.white);
             cpy.moved = this.moved;
@@ -193,6 +193,7 @@ public class ChessLogic {
         }
 
         public HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal) {
+            System.out.println("KING GET MOVES");
             int r = loc / 8, c = loc % 8;
             int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1}, dc = {0, 1, 1, 1, 0, -1, -1, -1};
             HashSet<Integer> moves = new HashSet<Integer>();
@@ -218,6 +219,10 @@ public class ChessLogic {
     public static class Knight extends Piece {
         public Knight(boolean isWhite) {
             super(isWhite);
+        }
+
+        public int getType(){
+            return 2;
         }
 
         public Piece copy() {
@@ -250,7 +255,10 @@ public class ChessLogic {
 
         public Rook(boolean isWhite) {
             super(isWhite);
+        }
 
+        public int getType(){
+            return 1;
         }
 
         public Piece copy() {
@@ -260,6 +268,7 @@ public class ChessLogic {
         }
 
         public HashSet<Integer> getMoves(int loc, Piece[][] board, boolean forReal) {
+            System.out.println("ROOK GET MOVES");
             int r = loc / 8, c = loc % 8;
             int[] dr = {-1, 0, 1, 0}, dc = {0, 1, 0, -1};
             HashSet<Integer> moves = new HashSet<Integer>();
@@ -292,8 +301,19 @@ public class ChessLogic {
                             if (canCastle(r, c2, 2, c, 3, board) && (!forReal || checkValidity(r, c, r2, c2, board)))
                                 moves.add(r2 * 8 + c2);
                         } else {
-                            if (canCastle(r, c2, 6, c, 5, board) && (!forReal || checkValidity(r, c, r2, c2, board)))
-                                moves.add(r2 * 8 + c2);
+                            try {
+                                if (canCastle(r, c2, 6, c, 5, board) && (!forReal || checkValidity(r, c, r2, c2, board)))
+                                    moves.add(r2 * 8 + c2);
+                            }
+                            catch (Exception exc)
+                            {
+                                System.out.println("r = " + r + ", c = " + c + ", r2 = " + r2 + ", c2 = " + c2);
+                                System.out.println("board[r2][c2] = " + board[r2][c2]);
+                                System.out.println("board[r][c] = " + board[r][c]);
+                                System.out.println("board[r][c2] = " + board[r][c2]);
+
+                                throw exc;
+                            }
                         }
                     }
 
@@ -314,6 +334,10 @@ public class ChessLogic {
     public static class Bishop extends Piece {
         public Bishop(boolean isWhite) {
             super(isWhite);
+        }
+
+        public int getType(){
+            return 3;
         }
 
         public Piece copy() {
@@ -359,6 +383,10 @@ public class ChessLogic {
     public static class Queen extends Piece {
         public Queen(boolean isWhite) {
             super(isWhite);
+        }
+
+        public int getType(){
+            return 4;
         }
 
         public Piece copy() {
@@ -411,60 +439,79 @@ public class ChessLogic {
     }
 
     static boolean checkValidity(int r, int c, int r2, int c2, Piece[][] board) {
-        boolean good = false;
+        System.out.println("CHECK VALIDITY");
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j] == null ? null : board[i][j].copy();
+        board = boardClone;
 
+        boolean good = false;
+        boolean color=board[r][c].white;
+        movePiece(r,c,r2,c2,board);
+        if(!inCheck(color,board));
+        good=true;
         //Castling
-        if (board[r2][c2] != null && board[r][c].white == board[r2][c2].white) {
-            Rook rook = (Rook) (board[r][c]);
-            King king = (King) (board[r2][c2]);
-            rook.moved = true;
-            king.moved = true;
-            board[r][c] = null;
-            board[r2][c2] = null;
-            int nextc = 0, nextrc = 0;
-            if (c < c2) {
-                board[r2][2] = king;
-                board[r][3] = rook;
-                nextc = 2;
-                nextrc = 3;
-            } else {
-                board[r2][6] = king;
-                board[r2][5] = rook;
-                nextc = 6;
-                nextrc = 5;
-            }
-            if (!inCheck(board[r][nextrc].white, board))
-                good = true;
-            board[r2][nextc] = null;
-            board[r][nextrc] = null;
-            board[r][c] = rook;
-            board[r2][c2] = king;
-        }
-        //en Passant
-        else if (board[r][c] instanceof Pawn && board[r2][c2] == null && c != c2) {
-            Pawn temp = (Pawn) (board[r][c2]);
-            board[r2][c2] = board[r][c];
-            board[r][c2] = null;
-            board[r][c] = null;
-            if (!inCheck(board[r2][c2].white, board))
-                good = true;
-            board[r][c2] = temp;
-            board[r][c] = board[r2][c2];
-            board[r2][c2] = null;
-        } else {
-            Piece temp = board[r2][c2];
-            board[r2][c2] = board[r][c];
-            board[r][c] = null;
-            if (!inCheck(board[r2][c2].white, board))
-                good = true;
-            board[r][c] = board[r2][c2];
-            board[r2][c2] = temp;
-        }
+//        if (board[r2][c2] != null && board[r][c].white == board[r2][c2].white) {
+//            Rook rook = (Rook) (board[r][c]);
+//            King king = (King) (board[r2][c2]);
+//            rook.moved = true;
+//            king.moved = true;
+//            board[r][c] = null;
+//            board[r2][c2] = null;
+//            int nextc = 0, nextrc = 0;
+//            if (c < c2) {
+//                board[r2][2] = king;
+//                board[r][3] = rook;
+//                nextc = 2;
+//                nextrc = 3;
+//            } else {
+//                board[r2][6] = king;
+//                board[r2][5] = rook;
+//                nextc = 6;
+//                nextrc = 5;
+//            }
+//            if (!inCheck(board[r][nextrc].white, board))
+//                good = true;
+//            board[r2][nextc] = null;
+//            board[r][nextrc] = null;
+//            board[r][c] = rook;
+//            board[r2][c2] = king;
+//        }
+//        //en Passant
+//        else if (board[r][c] instanceof Pawn && board[r2][c2] == null && c != c2) {
+//            Pawn temp = (Pawn) (board[r][c2]);
+//            board[r2][c2] = board[r][c];
+//            board[r][c2] = null;
+//            board[r][c] = null;
+//            if (!inCheck(board[r2][c2].white, board))
+//                good = true;
+//            board[r][c2] = temp;
+//            board[r][c] = board[r2][c2];
+//            board[r2][c2] = null;
+//        } else {
+//            Piece temp = board[r2][c2];
+//            board[r2][c2] = board[r][c];
+//            board[r][c] = null;
+//            if (!inCheck(board[r2][c2].white, board))
+//                good = true;
+//            board[r][c] = board[r2][c2];
+//            board[r2][c2] = temp;
+//        }
         return good;
     }
 
     //TODO figure out how to not delete the rook.
     static boolean canCastle(int r, int c1, int c2, int rookc, int rookend, Piece[][] board) {
+        System.out.println("CAN CASTLE CALLED");
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j];
+        board = boardClone;
+
         King king = (King) (board[r][c1]);
         Rook rook = (Rook) (board[r][rookc]);
         board[r][rookc] = null;
@@ -511,6 +558,7 @@ public class ChessLogic {
     }
 
     static boolean inCheck(boolean color, Piece[][] board) {
+        System.out.println("IN CHECK");
         int loc = findKing(color, board);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -526,6 +574,7 @@ public class ChessLogic {
 
     //One for checkmate, two for draw, zero for neither
     public static int gameOver(boolean color, Piece[][] board) {
+        System.out.println("GAME OVER");
         boolean check = inCheck(color, board);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {

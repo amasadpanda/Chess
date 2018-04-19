@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;import android.support.v7.app.AppCompa
 import android.util.Log;
 import android.view.LayoutInflater;import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,9 +46,12 @@ public class GameActivity extends AppCompatActivity {
 
     private BoardView board;
     private TextView txtGameType;
-    private TextView txtVersus;
-    private TextView txtTurn;
+    private TextView txtYou;
+    private TextView txtOpponent;
+    private TextView txtWinner;
     private Button btnLeaveGame;
+    private ImageView flagTop;
+    private ImageView flagBottom;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,11 +136,15 @@ public class GameActivity extends AppCompatActivity {
         });
 
         txtGameType = findViewById(R.id.game_txtGameType);
-        txtVersus = findViewById(R.id.game_txtVersus);
-        txtTurn = findViewById(R.id.game_txtTurn);
+        txtYou = findViewById(R.id.game_txtYou);
+        txtOpponent = findViewById(R.id.game_txtOpponent);
+        flagBottom = findViewById(R.id.game_flagBottom);
+        flagTop = findViewById(R.id.game_flagTop);
+        txtWinner = findViewById(R.id.game_txtWinner);
 
-        //TODO: make it so white always goes first here. For clarity!
-        txtVersus.setText(auth.getCurrentUser().getDisplayName() + " vs. " + getIntent().getStringExtra("opponent"));
+
+        txtYou.setText(auth.getCurrentUser().getDisplayName());
+        txtOpponent.setText(getIntent().getStringExtra("opponent"));
 
         DatabaseReference gameReference = database.getReference().child("games").child(gameID);
         ValueEventListener gameListener = new ValueEventListener() {
@@ -150,19 +158,22 @@ public class GameActivity extends AppCompatActivity {
 
                     //Update the text view for whose turn it is
                     if(game.turn.startsWith("winner=")){
+                        txtWinner.setVisibility(View.VISIBLE);
                         //Somebody has winned!
                         String winner = game.turn.substring(7);
                         if(winner.equals("Nobody!!!"))
-                            txtTurn.setText("Stalemate...");
+                            txtWinner.setText("Stalemate...");
                         else if(winner.equals(userID))
-                            txtTurn.setText("You won!");
+                            txtWinner.setText("You won!");
                         else
-                            txtTurn.setText("Better luck next time!");
+                            txtWinner.setText("Better luck next time!");
                     }else if (game.black.equals(userID) && game.turn.equals("black") ||
                             game.white.equals(userID) && game.turn.equals("white")){
-                        txtTurn.setText("Your move");
+                        flagBottom.setVisibility(View.VISIBLE);
+                        flagTop.setVisibility(View.INVISIBLE);
                     }else{
-                        txtTurn.setText(opponent + "'s move");
+                        flagTop.setVisibility(View.VISIBLE);
+                        flagBottom.setVisibility(View.INVISIBLE);
                     }
                     txtGameType.setText(game.gametype);
 

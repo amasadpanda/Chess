@@ -33,33 +33,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txt_opponent"
+        android:id="@+id/game_txtOpponent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Loading..."
         android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@+id/boardView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.97"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_txtGameType"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="@+id/boardView" />
 
     <TextView
-        android:id="@+id/game_txtTurn"
+        android:id="@+id/game_txtWinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="44dp"
+        android:visibility="invisible"
         android:text="Loading..."
         android:textSize="26sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/boardView"
+        app:layout_constraintStart_toStartOf="@+id/boardView"
         app:layout_constraintTop_toBottomOf="@+id/boardView" />
 
     <Button
@@ -73,27 +67,32 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/game_flagTop"
         android:layout_width="43dp"
         android:layout_height="46dp"
-        app:srcCompat="@drawable/turn_indicator"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="75dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/boardView"
+        app:layout_constraintStart_toStartOf="@+id/boardView"
+        app:srcCompat="@drawable/turn_indicator" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/game_flagBottom"
         android:layout_width="45dp"
         android:layout_height="44dp"
-        app:srcCompat="@drawable/turn_indicator"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="471dp" />
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/boardView"
+        app:layout_constraintTop_toBottomOf="@+id/boardView"
+        app:srcCompat="@drawable/turn_indicator" />
 
     <TextView
-        android:id="@+id/txt_you"
+        android:id="@+id/game_txtYou"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Loading..."
         android:textSize="22sp"
-        tools:layout_editor_absoluteX="275dp"
-        tools:layout_editor_absoluteY="471dp" />
+        app:layout_constraintEnd_toEndOf="@+id/boardView"
+        app:layout_constraintTop_toBottomOf="@+id/boardView" />
 </android.support.constraint.ConstraintLayout>

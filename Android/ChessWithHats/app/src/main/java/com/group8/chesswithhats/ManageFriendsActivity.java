@@ -2,7 +2,9 @@ package com.group8.chesswithhats;
 
 import android.app.Application;
 import android.app.NotificationChannel;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -175,11 +177,17 @@ public class ManageFriendsActivity extends AppCompatActivity {
                 String senderUID = dataSnapshot.getKey();
                 String senderUsername = dataSnapshot.getValue(String.class);
 
+                Intent intent = new Intent(ManageFriendsActivity.this, ManageFriendsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(ManageFriendsActivity.this, 0, intent, 0);
+
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ManageFriendsActivity.this, NotificationChannel.DEFAULT_CHANNEL_ID)
                         .setSmallIcon(R.drawable.launcher_icon)
                         .setContentTitle("Friend Request!")
                         .setContentText(senderUsername + " sent you a friend request!")
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
 
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ManageFriendsActivity.this);
 

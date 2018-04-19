@@ -304,8 +304,19 @@ public class ChessLogic {
                             if (canCastle(r, c2, 2, c, 3, board) && (!forReal || checkValidity(r, c, r2, c2, board)))
                                 moves.add(r2 * 8 + c2);
                         } else {
-                            if (canCastle(r, c2, 6, c, 5, board) && (!forReal || checkValidity(r, c, r2, c2, board)))
-                                moves.add(r2 * 8 + c2);
+                            try {
+                                if (canCastle(r, c2, 6, c, 5, board) && (!forReal || checkValidity(r, c, r2, c2, board)))
+                                    moves.add(r2 * 8 + c2);
+                            }
+                            catch (Exception exc)
+                            {
+                                System.out.println("r = " + r + ", c = " + c + ", r2 = " + r2 + ", c2 = " + c2);
+                                System.out.println("board[r2][c2] = " + board[r2][c2]);
+                                System.out.println("board[r][c] = " + board[r][c]);
+                                System.out.println("board[r][c2] = " + board[r][c2]);
+
+                                throw exc;
+                            }
                         }
                     }
 

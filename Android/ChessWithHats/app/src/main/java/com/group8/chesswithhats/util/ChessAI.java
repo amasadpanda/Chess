@@ -164,7 +164,7 @@ public class ChessAI {
 				Piece newBoard[][] = new Piece[8][8];
 				for(int j = 0; j < 8; j++) {
 					for(int k = 0; k < 8; k++) {
-						newBoard[j][k] = board[j][k] == null ? null : board[j][k].copy();
+						newBoard[j][k] = (board[j][k] == null ? null : board[j][k].copy());
 					}
 				}
 

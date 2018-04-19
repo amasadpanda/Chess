@@ -214,6 +214,7 @@ public class GameActivity extends AppCompatActivity {
         btnLeaveGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnLeaveGame.setVisibility(View.INVISIBLE);
                 CWHRequest cwhRequest = new CWHRequest(auth.getCurrentUser(), CWHRequest.RequestType.LEAVE_GAME, new OnCWHResponseListener() {
                     @Override
                     public void onCWHResponse(CWHResponse response) {
@@ -221,7 +222,11 @@ public class GameActivity extends AppCompatActivity {
 
                         if (response.isSuccess())
                         {
-                            btnLeaveGame.setVisibility(View.GONE);
+                            btnLeaveGame.setVisibility(View.INVISIBLE);
+                        }
+                        else
+                        {
+                            btnLeaveGame.setVisibility(View.VISIBLE);
                         }
                     }
                 });

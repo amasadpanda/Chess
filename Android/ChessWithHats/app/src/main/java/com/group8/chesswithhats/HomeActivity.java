@@ -8,6 +8,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -31,6 +32,8 @@ import java.util.HashMap;
  * @author Philip Rodriguez
  */
 public class HomeActivity extends AppCompatActivity {
+
+    public static final String T = "HomeActivity";
 
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
@@ -137,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
         if (currentUser == null)
         {
             // This shouldn't have been able to happen...
-            System.out.println("CURRENT USER WAS NULL!!!!!");
+            Log.wtf(T,"CURRENT USER WAS NULL!!!!!");
             firebaseAuth.signOut();
         }
         else
@@ -146,7 +149,7 @@ public class HomeActivity extends AppCompatActivity {
             ChildEventListener gameInvitesListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    System.out.println("ON CHILD ADDED GAME INVITES: " + dataSnapshot);
+                    Log.d(T,"ON CHILD ADDED GAME INVITES: " + dataSnapshot);
                     try {
                         // We need to add to our linear layout!
                         final String gameID = dataSnapshot.getKey();
@@ -159,7 +162,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     catch (Exception exc)
                     {
-                        System.out.println("Attempted to add malformed child: " + dataSnapshot);
+                        Log.w(T,"Attempted to add malformed child: " + dataSnapshot);
                     }
                 }
 
@@ -208,19 +211,19 @@ public class HomeActivity extends AppCompatActivity {
             ChildEventListener currentGamesListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    System.out.println("ON CHILD ADDED CURRENT GAMES: " + dataSnapshot);
+                    Log.d(T,"ON CHILD ADDED CURRENT GAMES: " + dataSnapshot);
                     try {
                         // We need to add to our linear layout!
                         final String gameID = dataSnapshot.getKey();
                         final String opponent = dataSnapshot.getValue(String.class);
 
                         CurrentGameView newChild = new CurrentGameView(HomeActivity.this, gameID, opponent);
-                        llCurrentGames.addView(newChild);
+                        llCurrentGames.addView(newChild,0);
                         txtNoCurrentGames.setVisibility(View.GONE);
                     }
                     catch (Exception exc)
                     {
-                        System.out.println("Attempted to add malformed child: " + dataSnapshot);
+                        Log.w(T,"Attempted to add malformed child: " + dataSnapshot);
                     }
                 }
 
@@ -232,7 +235,7 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     // We need to find and remove the relevant child!
-                    System.out.println("ON CHILD REMOVED: " + dataSnapshot);
+                    Log.d(T,"ON CHILD REMOVED: " + dataSnapshot);
                     String gameID = dataSnapshot.getKey();
                     for (int v = 0; v < llCurrentGames.getChildCount(); v++)
                     {

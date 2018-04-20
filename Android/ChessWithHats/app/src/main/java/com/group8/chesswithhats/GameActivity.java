@@ -239,10 +239,12 @@ public class GameActivity extends AppCompatActivity {
                                         if (response.isSuccess())
                                         {
                                             btnLeaveGame.setVisibility(View.INVISIBLE);
+                                            finish();
                                         }
                                         else
                                         {
                                             btnLeaveGame.setVisibility(View.VISIBLE);
+                                            finish();
                                         }
                                     }
                                 });
@@ -257,7 +259,7 @@ public class GameActivity extends AppCompatActivity {
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-                builder.setMessage("Are you sure you want to leave?")
+                builder.setMessage("Are you sure you want to forfeit this game?")
                         .setPositiveButton("Yes", dialogClick)
                         .setNegativeButton("No", dialogClick)
                         .show();

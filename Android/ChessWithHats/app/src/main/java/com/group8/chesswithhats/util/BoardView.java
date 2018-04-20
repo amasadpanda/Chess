@@ -87,7 +87,7 @@ public class BoardView extends View{
         //at the beginning of the makeMove call...
         //TODO: switch back to pablo's code when he finishes that up.
         //TODO: also enable him to use pawn promotion.
-        int move[] = ChessAI.getRandomMove(board, white);
+        int move[] = ChessAI.getMove(board, white, 3);
         if(move==null){
             Log.d(T,"No moves left, human player won :(");
             return;

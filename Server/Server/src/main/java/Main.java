@@ -18,8 +18,9 @@ import java.util.logging.Level;
 public class Main {
     public static void main(String[] args) throws Exception {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
-        Validator.initialize();
         Ruleset.init();
+        Validator.initialize();
+
         startServer();
 
         //CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);

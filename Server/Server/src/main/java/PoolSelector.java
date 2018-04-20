@@ -1,3 +1,6 @@
+import Rulesets.Ruleset;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PoolSelector extends FireEater{
@@ -8,12 +11,12 @@ public class PoolSelector extends FireEater{
 
         pool = new HashMap<>();
 
+        ArrayList<String> rules = Ruleset.getListOfRules();
+
         pool.put("Ranked Chess", new MatchmakingPool("Ranked Chess"));
 
-        pool.put("Chess", new MatchmakingPool("Chess"));
-        pool.put("Chess960", new MatchmakingPool("Chess960"));
-        pool.put("Peasants' Revolt", new MatchmakingPool("Peasants' Revolt"));
-        pool.put("Transformers", new MatchmakingPool("Transformers"));
+        for(String s : rules)
+            pool.put(s, new MatchmakingPool(s));
     }
 
     @Override

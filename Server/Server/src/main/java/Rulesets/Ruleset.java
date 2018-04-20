@@ -11,10 +11,11 @@ import java.util.Map;
 
 public abstract class Ruleset {
 
-    private transient static HashMap<String, Ruleset> getRuleset = new HashMap<>();
+    private static HashMap<String, Ruleset> getRuleset = new HashMap<>();
+    public static ArrayList<String> rulesetList = new ArrayList<>();
 
-    transient String name;
-    transient int rL, cL;
+    String name;
+    int rL, cL;
 
     public Ruleset(String name, int r, int c)
     {
@@ -66,14 +67,18 @@ public abstract class Ruleset {
     public static void init()
     {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("rulesets");
-        ArrayList<String> gameModes = new ArrayList<>();
 
-        gameModes.add(new Chess().name);
-        gameModes.add(new Chess960().name);
-        gameModes.add(new PeasantsRevolt().name);
-        gameModes.add(new Transformers().name);
-        gameModes.add(new Andernach().name);
+        rulesetList.add(new Chess().name);
+        rulesetList.add(new Chess960().name);
+        rulesetList.add(new PeasantsRevolt().name);
+        rulesetList.add(new Transformers().name);
+        rulesetList.add(new Andernach().name);
 
-        ref.setValueAsync(gameModes);
+        ref.setValueAsync(rulesetList);
+    }
+
+    public static ArrayList<String> getListOfRules()
+    {
+        return rulesetList;
     }
 }

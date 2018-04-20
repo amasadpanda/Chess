@@ -33,43 +33,68 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/game_txtVersus"
+        android:id="@+id/game_txtOpponent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Loading..."
         android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@+id/boardView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_txtGameType"
-        app:layout_constraintVertical_bias="0.444" />
+        app:layout_constraintEnd_toEndOf="@+id/boardView" />
 
     <TextView
-        android:id="@+id/game_txtTurn"
+        android:id="@+id/game_txtWinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="44dp"
+        android:visibility="invisible"
         android:text="Loading..."
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="26sp"
+        app:layout_constraintEnd_toEndOf="@+id/boardView"
+        app:layout_constraintStart_toStartOf="@+id/boardView"
         app:layout_constraintTop_toBottomOf="@+id/boardView" />
 
-    <Button
+    <ImageView
         android:id="@+id/game_btnLeaveGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginTop="8dp"
-        android:text="Leave Game"
+        app:srcCompat="@drawable/ic_exit_to_app_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/game_flagTop"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/boardView"
+        app:layout_constraintStart_toStartOf="@+id/boardView"
+        app:srcCompat="@drawable/turn_indicator" />
+
+    <ImageView
+        android:id="@+id/game_flagBottom"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="0dp"
+        android:visibility="invisible"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/boardView"
+        app:layout_constraintTop_toBottomOf="@+id/boardView"
+        app:srcCompat="@drawable/turn_indicator" />
+
+    <TextView
+        android:id="@+id/game_txtYou"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Loading..."
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="@+id/boardView"
+        app:layout_constraintTop_toBottomOf="@+id/boardView" />
 </android.support.constraint.ConstraintLayout>

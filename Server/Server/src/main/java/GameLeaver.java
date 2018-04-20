@@ -6,7 +6,6 @@ import java.util.Map;
 public class GameLeaver extends FireEater {
     @Override
     public CWHResponse handle(CWHRequest request) {
-
         try {
             String UID = request.getExtras().get("uid");
             String username = request.getExtras().get("username");

@@ -70,12 +70,12 @@ public class BoardView extends View{
         if(game.black.equals(user)) {
             myTurn = game.turn.equals("black");
             white = false;
-            if(!myTurn && game.white.equals("COMPUTER"))
+            if(!myTurn && game.white.equals("COMPUTER") && !game.turn.startsWith("winner="))
                 sendAIMove(true);
         }else{
             myTurn = game.turn.equals("white");
             white = true;
-            if(!myTurn && game.black.equals("COMPUTER"))
+            if(!myTurn && game.black.equals("COMPUTER") && !game.turn.startsWith("winner="))
                 sendAIMove(false);
         }
         invalidate();

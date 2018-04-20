@@ -107,9 +107,40 @@ public class NewGameActivity extends AppCompatActivity {
         edtUsername = findViewById(R.id.newgame_edtUsername);
         loadingDialog = new LoadingDialog(this, "Loading", "Handling game request...");
 
-        ArrayAdapter<CharSequence> gameTypeAdapter = ArrayAdapter.createFromResource(this, R.array.newgame_gameTypes, android.R.layout.simple_spinner_item);
+        ArrayList<String> gameTypeOptions = new ArrayList<>();
+        final ArrayAdapter<String> gameTypeAdapter = new ArrayAdapter<String>(NewGameActivity.this, R.layout.support_simple_spinner_dropdown_item, gameTypeOptions);
         gameTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnGameType.setAdapter(gameTypeAdapter);
+
+        DatabaseReference rulesetsReference = firebaseDatabase.getReference().child("rulesets");
+        ChildEventListener rulesetsListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                gameTypeAdapter.add(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                gameTypeAdapter.remove(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        rulesetsReference.addChildEventListener(rulesetsListener);
+        listeners.put(rulesetsReference, rulesetsListener);
 
         ArrayAdapter<CharSequence> opponentAdapter = ArrayAdapter.createFromResource(this, R.array.newgame_opponentTypes, android.R.layout.simple_spinner_item);
         opponentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

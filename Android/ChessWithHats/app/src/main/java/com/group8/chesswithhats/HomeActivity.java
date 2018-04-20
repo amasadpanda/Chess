@@ -154,7 +154,7 @@ public class HomeActivity extends AppCompatActivity {
                         String gameType = dataSnapshot.getValue(String.class).split(";")[1];
 
                         GameInviteView newChild = new GameInviteView(HomeActivity.this, gameID, inviterUsername, gameType, firebaseAuth);
-                        llGameInvites.addView(newChild);
+                        llGameInvites.addView(newChild, 0);
                         txtNoCurrentGameInvites.setVisibility(View.GONE);
                     }
                     catch (Exception exc)
@@ -215,7 +215,7 @@ public class HomeActivity extends AppCompatActivity {
                         final String opponent = dataSnapshot.getValue(String.class);
 
                         CurrentGameView newChild = new CurrentGameView(HomeActivity.this, gameID, opponent);
-                        llCurrentGames.addView(newChild);
+                        llCurrentGames.addView(newChild, 0);
                         txtNoCurrentGames.setVisibility(View.GONE);
                     }
                     catch (Exception exc)

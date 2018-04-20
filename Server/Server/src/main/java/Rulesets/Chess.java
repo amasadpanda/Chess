@@ -41,7 +41,6 @@ public class Chess extends Ruleset{
         board[7][5]=new Bishop(true);
         board[7][6]=new Knight(true);
         board[7][7]=new Rook(true);
-
         return board;
     }
 

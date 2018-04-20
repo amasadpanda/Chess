@@ -1,6 +1,7 @@
 import Rulesets.Piece;
 import Rulesets.Ruleset;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ public class Game {
         }
     }
 
-    public Ruleset getRuleset()
+    public Ruleset the111Ruleset()
     {
         if(gametype.equals("Chess") || gametype.equals("Ranked Chess"))
             return Ruleset.get("Chess");
@@ -53,22 +54,22 @@ public class Game {
     {
         gametype = game;
         // set starting board config here
-        board = toHashMap(getRuleset().getStartState());
+        board = toHashMap(the111Ruleset().getStartState());
     }
 
     public boolean movePiece(int r1, int c1, int r2, int c2, Piece[][] board, Piece promoteTo)
     {
-        return getRuleset().movePiece(r1, c1, r2, c2, board, promoteTo);
+        return the111Ruleset().movePiece(r1, c1, r2, c2, board, promoteTo);
     }
 
-    public Piece[][] getBoard()
+    public static Piece[][] gettingBoard(Game g)
     {
-        return getRuleset().toPieceArray(board);
+        return g.the111Ruleset().toPieceArray(g.board);
     }
 
     public int gameOver(Piece[][] board)
     {
-        return getRuleset().gameOver(board);
+        return the111Ruleset().gameOver(board);
     }
 
 

@@ -6,10 +6,10 @@ import java.util.Map;
 
 public abstract class Ruleset {
 
-    private static HashMap<String, Ruleset> getRuleset = new HashMap<>();
+    private transient static HashMap<String, Ruleset> getRuleset = new HashMap<>();
 
-    String name;
-    int rL, cL;
+    transient String name;
+    transient int rL, cL;
 
     public Ruleset(String name, int r, int c)
     {
@@ -55,5 +55,13 @@ public abstract class Ruleset {
     public static Ruleset get(String name)
     {
         return getRuleset.get(name);
+    }
+
+    public static void init()
+    {
+        new Chess();
+        new Chess960();
+        new PeasantsRevolt();
+        new Transformers();
     }
 }

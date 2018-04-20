@@ -66,7 +66,7 @@ public class Transformers extends Chess {
         b[3] = new Knight(e);
         b[4] = new Bishop(e);
 
-        board[r2][c2] = b[(int)Math.random()*6];
+        board[r2][c2] = b[(int)(Math.random()*6)];
 
         if (board[r2][c2] instanceof King) {
             King king = (King) (board[r2][c2]);

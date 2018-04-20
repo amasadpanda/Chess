@@ -13,6 +13,7 @@ public class PoolSelector extends FireEater{
         pool.put("Chess", new MatchmakingPool("Chess"));
         pool.put("Chess960", new MatchmakingPool("Chess960"));
         pool.put("Peasants' Revolt", new MatchmakingPool("Peasants' Revolt"));
+        pool.put("Transformers", new MatchmakingPool("Transformers"));
     }
 
     @Override

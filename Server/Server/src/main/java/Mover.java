@@ -21,7 +21,7 @@ public class Mover extends FireEater{
             gameRef.addListenerForSingleValueEvent(getGame);
 
             Game game = getGame.getSnapshot().getValue(Game.class);
-            Piece[][] boardstate = game.getBoard();
+            Piece[][] boardstate = Game.gettingBoard(game);
             int r = getR(startingPlace);
             int c = getC(startingPlace);
             Piece myPiece = boardstate[r][c];
@@ -34,7 +34,7 @@ public class Mover extends FireEater{
             //pawn promotion
 
 
-            game.movePiece(r,c, getR(clientMove), getC(clientMove), boardstate, game.getRuleset().getPiece(promotion));
+            game.movePiece(r,c, getR(clientMove), getC(clientMove), boardstate, game.the111Ruleset().getPiece(promotion));
             game.updateHashMap(boardstate);
 
             // Before game.move may have been null so null would be at the beginning of game moves.. fixed by PHilip 4/16/2018 1:40PM

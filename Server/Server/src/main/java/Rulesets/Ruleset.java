@@ -1,5 +1,10 @@
 package Rulesets;
 
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,6 +18,7 @@ public abstract class Ruleset {
 
     public Ruleset(String name, int r, int c)
     {
+        this.name = name;
         getRuleset.put(name, this);
         rL = r;
         cL = c;
@@ -59,9 +65,15 @@ public abstract class Ruleset {
 
     public static void init()
     {
-        new Chess();
-        new Chess960();
-        new PeasantsRevolt();
-        new Transformers();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("rulesets");
+        ArrayList<String> gameModes = new ArrayList<>();
+
+        gameModes.add(new Chess().name);
+        gameModes.add(new Chess960().name);
+        gameModes.add(new PeasantsRevolt().name);
+        gameModes.add(new Transformers().name);
+        gameModes.add(new Andernach().name);
+
+        ref.setValueAsync(gameModes);
     }
 }

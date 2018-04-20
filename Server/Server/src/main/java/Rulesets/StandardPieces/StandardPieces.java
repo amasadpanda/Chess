@@ -9,6 +9,13 @@ public class StandardPieces {
     public static boolean checkValidity(int r, int c, int r2, int c2, Piece[][] board) {
         boolean good = false;
 
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j] == null ? null : board[i][j].copy();
+        board = boardClone;
+
         //Castling
         if (board[r2][c2] != null && board[r][c].white == board[r2][c2].white) {
             Rook rook = (Rook) (board[r][c]);
@@ -84,6 +91,14 @@ public class StandardPieces {
     }
 
     static boolean canCastle(int r, int c1, int c2, int rookc, int rookend, Piece[][] board) {
+        // Cloning added by Philip 4/19 to fix rook deletion
+        Piece[][] boardClone = new Piece[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                boardClone[i][j] = board[i][j] == null ? null : board[i][j].copy();
+        board = boardClone;
+
+
         King king = (King) (board[r][c1]);
         Rook rook = (Rook) (board[r][rookc]);
         board[r][rookc] = null;

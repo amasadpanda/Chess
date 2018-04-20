@@ -1,3 +1,4 @@
+import Rulesets.Ruleset;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -18,6 +19,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         FireEater.initialize("resources/firebase/chess-with-hats-firebase-adminsdk-e6fic-f6835bdf65.json");
         Validator.initialize();
+        Ruleset.init();
         startServer();
 
         //CWHRequest c = new CWHRequest("null auth id", CWHRequest.RequestType.MAKE_MOVE);

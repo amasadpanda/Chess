@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -448,57 +449,57 @@ public class ChessLogic {
         board = boardClone;
 
         boolean good = false;
-        boolean color=board[r][c].white;
-        movePiece(r,c,r2,c2,board);
-        if(!inCheck(color,board));
-        good=true;
+//        boolean color=board[r][c].white;
+//        movePiece(r,c,r2,c2,board);
+//        if(!inCheck(color,board));
+//        good=true;
         //Castling
-//        if (board[r2][c2] != null && board[r][c].white == board[r2][c2].white) {
-//            Rook rook = (Rook) (board[r][c]);
-//            King king = (King) (board[r2][c2]);
-//            rook.moved = true;
-//            king.moved = true;
-//            board[r][c] = null;
-//            board[r2][c2] = null;
-//            int nextc = 0, nextrc = 0;
-//            if (c < c2) {
-//                board[r2][2] = king;
-//                board[r][3] = rook;
-//                nextc = 2;
-//                nextrc = 3;
-//            } else {
-//                board[r2][6] = king;
-//                board[r2][5] = rook;
-//                nextc = 6;
-//                nextrc = 5;
-//            }
-//            if (!inCheck(board[r][nextrc].white, board))
-//                good = true;
-//            board[r2][nextc] = null;
-//            board[r][nextrc] = null;
-//            board[r][c] = rook;
-//            board[r2][c2] = king;
-//        }
-//        //en Passant
-//        else if (board[r][c] instanceof Pawn && board[r2][c2] == null && c != c2) {
-//            Pawn temp = (Pawn) (board[r][c2]);
-//            board[r2][c2] = board[r][c];
-//            board[r][c2] = null;
-//            board[r][c] = null;
-//            if (!inCheck(board[r2][c2].white, board))
-//                good = true;
-//            board[r][c2] = temp;
-//            board[r][c] = board[r2][c2];
-//            board[r2][c2] = null;
-//        } else {
-//            Piece temp = board[r2][c2];
-//            board[r2][c2] = board[r][c];
-//            board[r][c] = null;
-//            if (!inCheck(board[r2][c2].white, board))
-//                good = true;
-//            board[r][c] = board[r2][c2];
-//            board[r2][c2] = temp;
-//        }
+        if (board[r2][c2] != null && board[r][c].white == board[r2][c2].white) {
+            Rook rook = (Rook) (board[r][c]);
+            King king = (King) (board[r2][c2]);
+            rook.moved = true;
+            king.moved = true;
+            board[r][c] = null;
+            board[r2][c2] = null;
+            int nextc = 0, nextrc = 0;
+            if (c < c2) {
+                board[r2][2] = king;
+                board[r][3] = rook;
+                nextc = 2;
+                nextrc = 3;
+            } else {
+                board[r2][6] = king;
+                board[r2][5] = rook;
+                nextc = 6;
+                nextrc = 5;
+            }
+            if (!inCheck(board[r][nextrc].white, board))
+                good = true;
+            board[r2][nextc] = null;
+            board[r][nextrc] = null;
+            board[r][c] = rook;
+            board[r2][c2] = king;
+        }
+        //en Passant
+        else if (board[r][c] instanceof Pawn && board[r2][c2] == null && c != c2) {
+            Pawn temp = (Pawn) (board[r][c2]);
+            board[r2][c2] = board[r][c];
+            board[r][c2] = null;
+            board[r][c] = null;
+            if (!inCheck(board[r2][c2].white, board))
+                good = true;
+            board[r][c2] = temp;
+            board[r][c] = board[r2][c2];
+            board[r2][c2] = null;
+        } else {
+            Piece temp = board[r2][c2];
+            board[r2][c2] = board[r][c];
+            board[r][c] = null;
+            if (!inCheck(board[r2][c2].white, board))
+                good = true;
+            board[r][c] = board[r2][c2];
+            board[r2][c2] = temp;
+        }
         return good;
     }
 
